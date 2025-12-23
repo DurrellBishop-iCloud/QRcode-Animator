@@ -1,0 +1,4714 @@
+{
+  "characterCount" : 0,
+  "children" : [
+    {
+      "characterCount" : 327,
+      "children" : [
+        {
+          "characterCount" : 142,
+          "children" : [
+
+          ],
+          "container" : "HandShutterTests.swift",
+          "description" : "Defines the shape and behavior of hand shutter tests",
+          "lineNumber" : 11,
+          "name" : "HandShutterTests",
+          "type" : "struct"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "HandShutterTests.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 6057,
+      "children" : [
+        {
+          "characterCount" : 13,
+          "children" : [
+
+          ],
+          "container" : "PhotoAlbumManager.swift",
+          "description" : "Brings in tools for additional capabilities",
+          "lineNumber" : 9,
+          "name" : "Photos",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 12,
+          "children" : [
+
+          ],
+          "container" : "PhotoAlbumManager.swift",
+          "description" : "Brings in tools for creating iOS screens and controls",
+          "lineNumber" : 10,
+          "name" : "UIKit",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 39,
+          "children" : [
+
+          ],
+          "container" : "PhotoAlbumManager.swift",
+          "description" : "Holds a fixed value for shared",
+          "lineNumber" : 13,
+          "name" : "shared",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 41,
+          "children" : [
+
+          ],
+          "container" : "PhotoAlbumManager.swift",
+          "description" : "Holds a fixed value for album name",
+          "lineNumber" : 14,
+          "name" : "albumName",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 37,
+          "children" : [
+
+          ],
+          "container" : "PhotoAlbumManager.swift",
+          "description" : "Holds a value that can change for album",
+          "lineNumber" : 15,
+          "name" : "album",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 35,
+          "children" : [
+
+          ],
+          "container" : "PhotoAlbumManager.swift",
+          "description" : "Holds a fixed value for fetch options",
+          "lineNumber" : 52,
+          "name" : "fetchOptions",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 90,
+          "children" : [
+
+          ],
+          "container" : "PhotoAlbumManager.swift",
+          "description" : "Stores information about album",
+          "lineNumber" : 59,
+          "name" : "album",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 189,
+          "children" : [
+
+          ],
+          "container" : "PhotoAlbumManager.swift",
+          "description" : "Stores information about album change request",
+          "lineNumber" : 70,
+          "name" : "albumChangeRequest",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 919,
+          "children" : [
+
+          ],
+          "container" : "PhotoAlbumManager.swift",
+          "description" : "Retrieves all album names",
+          "lineNumber" : 87,
+          "name" : "getAllAlbumNames",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 90,
+          "children" : [
+
+          ],
+          "container" : "PhotoAlbumManager.swift",
+          "description" : "Stores information about album",
+          "lineNumber" : 112,
+          "name" : "album",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 66,
+          "children" : [
+
+          ],
+          "container" : "PhotoAlbumManager.swift",
+          "description" : "Holds a fixed value for assets",
+          "lineNumber" : 119,
+          "name" : "assets",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 90,
+          "children" : [
+
+          ],
+          "container" : "PhotoAlbumManager.swift",
+          "description" : "Stores information about album",
+          "lineNumber" : 142,
+          "name" : "album",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 190,
+          "children" : [
+
+          ],
+          "container" : "PhotoAlbumManager.swift",
+          "description" : "Stores information about album change request",
+          "lineNumber" : 153,
+          "name" : "albumChangeRequest",
+          "type" : "property"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "PhotoAlbumManager.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 5994,
+      "children" : [
+        {
+          "characterCount" : 13,
+          "children" : [
+
+          ],
+          "container" : "VoiceCommandTrigger.swift",
+          "description" : "Brings in tools for additional capabilities",
+          "lineNumber" : 9,
+          "name" : "Speech",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 19,
+          "children" : [
+
+          ],
+          "container" : "VoiceCommandTrigger.swift",
+          "description" : "Brings in tools for working with audio and video",
+          "lineNumber" : 10,
+          "name" : "AVFoundation",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 51,
+          "children" : [
+
+          ],
+          "container" : "VoiceCommandTrigger.swift",
+          "description" : "Holds a fixed value for trigger type",
+          "lineNumber" : 13,
+          "name" : "triggerType",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 155,
+          "children" : [
+
+          ],
+          "container" : "VoiceCommandTrigger.swift",
+          "description" : "Stores information about is enabled",
+          "lineNumber" : 14,
+          "name" : "isEnabled",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 39,
+          "children" : [
+
+          ],
+          "container" : "VoiceCommandTrigger.swift",
+          "description" : "Holds a value that can change for status callback",
+          "lineNumber" : 25,
+          "name" : "statusCallback",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 70,
+          "children" : [
+
+          ],
+          "container" : "VoiceCommandTrigger.swift",
+          "description" : "Holds a value that can change for recognition request",
+          "lineNumber" : 28,
+          "name" : "recognitionRequest",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 53,
+          "children" : [
+
+          ],
+          "container" : "VoiceCommandTrigger.swift",
+          "description" : "Holds a value that can change for recognition task",
+          "lineNumber" : 29,
+          "name" : "recognitionTask",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 41,
+          "children" : [
+
+          ],
+          "container" : "VoiceCommandTrigger.swift",
+          "description" : "Holds a value that can change for audio engine",
+          "lineNumber" : 30,
+          "name" : "audioEngine",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 43,
+          "children" : [
+
+          ],
+          "container" : "VoiceCommandTrigger.swift",
+          "description" : "Holds a fixed value for mode words",
+          "lineNumber" : 33,
+          "name" : "modeWords",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 43,
+          "children" : [
+
+          ],
+          "container" : "VoiceCommandTrigger.swift",
+          "description" : "Holds a value that can change for mode change callback",
+          "lineNumber" : 34,
+          "name" : "modeChangeCallback",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 52,
+          "children" : [
+
+          ],
+          "container" : "VoiceCommandTrigger.swift",
+          "description" : "Holds a value that can change for last trigger time",
+          "lineNumber" : 35,
+          "name" : "lastTriggerTime",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 71,
+          "children" : [
+
+          ],
+          "container" : "VoiceCommandTrigger.swift",
+          "description" : "Holds a fixed value for trigger cooldown",
+          "lineNumber" : 36,
+          "name" : "triggerCooldown",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 432,
+          "children" : [
+
+          ],
+          "container" : "VoiceCommandTrigger.swift",
+          "description" : "Performs an action for request permissions",
+          "lineNumber" : 67,
+          "name" : "requestPermissions",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 82,
+          "children" : [
+
+          ],
+          "container" : "VoiceCommandTrigger.swift",
+          "description" : "Stores information about speech recognizer",
+          "lineNumber" : 83,
+          "name" : "speechRecognizer",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 55,
+          "children" : [
+
+          ],
+          "container" : "VoiceCommandTrigger.swift",
+          "description" : "Holds a fixed value for recording format",
+          "lineNumber" : 97,
+          "name" : "recordingFormat",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 1826,
+          "children" : [
+
+          ],
+          "container" : "VoiceCommandTrigger.swift",
+          "description" : "Stores information about result",
+          "lineNumber" : 104,
+          "name" : "result",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 95,
+          "children" : [
+
+          ],
+          "container" : "VoiceCommandTrigger.swift",
+          "description" : "Performs an action for speech recognizer",
+          "lineNumber" : 156,
+          "name" : "speechRecognizer",
+          "type" : "function"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "VoiceCommandTrigger.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 4307,
+      "children" : [
+        {
+          "characterCount" : 43,
+          "children" : [
+
+          ],
+          "container" : "SettingsView.swift",
+          "description" : "Holds a value that can change for dismiss",
+          "lineNumber" : 11,
+          "name" : "dismiss",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 48,
+          "children" : [
+
+          ],
+          "container" : "SettingsView.swift",
+          "description" : "Holds a value that can change for camera manager",
+          "lineNumber" : 12,
+          "name" : "cameraManager",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 382,
+          "children" : [
+
+          ],
+          "container" : "SettingsView.swift",
+          "description" : "Performs an action for trigger row",
+          "lineNumber" : 51,
+          "name" : "triggerRow",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 1040,
+          "children" : [
+
+          ],
+          "container" : "SettingsView.swift",
+          "description" : "Stores information about camera position row",
+          "lineNumber" : 67,
+          "name" : "cameraPositionRow",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 305,
+          "children" : [
+
+          ],
+          "container" : "SettingsView.swift",
+          "description" : "Stores information about animation rows",
+          "lineNumber" : 102,
+          "name" : "animationRows",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 390,
+          "children" : [
+
+          ],
+          "container" : "SettingsView.swift",
+          "description" : "Stores information about storage rows",
+          "lineNumber" : 119,
+          "name" : "storageRows",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 464,
+          "children" : [
+
+          ],
+          "container" : "SettingsView.swift",
+          "description" : "Stores information about hand detection info",
+          "lineNumber" : 136,
+          "name" : "handDetectionInfo",
+          "type" : "property"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "SettingsView.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 6052,
+      "children" : [
+        {
+          "characterCount" : 13,
+          "children" : [
+
+          ],
+          "container" : "AlbumPickerView.swift",
+          "description" : "Brings in tools for additional capabilities",
+          "lineNumber" : 9,
+          "name" : "Photos",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 43,
+          "children" : [
+
+          ],
+          "container" : "AlbumPickerView.swift",
+          "description" : "Holds a value that can change for dismiss",
+          "lineNumber" : 12,
+          "name" : "dismiss",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 25,
+          "children" : [
+
+          ],
+          "container" : "AlbumPickerView.swift",
+          "description" : "Holds a fixed value for selected album",
+          "lineNumber" : 13,
+          "name" : "selectedAlbum",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 33,
+          "children" : [
+
+          ],
+          "container" : "AlbumPickerView.swift",
+          "description" : "Holds a fixed value for on selection",
+          "lineNumber" : 14,
+          "name" : "onSelection",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 35,
+          "children" : [
+
+          ],
+          "container" : "AlbumPickerView.swift",
+          "description" : "Holds a value that can change for is loading",
+          "lineNumber" : 17,
+          "name" : "isLoading",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 16,
+          "children" : [
+
+          ],
+          "container" : "AlbumPickerView.swift",
+          "description" : "Holds a fixed value for name",
+          "lineNumber" : 20,
+          "name" : "name",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 14,
+          "children" : [
+
+          ],
+          "container" : "AlbumPickerView.swift",
+          "description" : "Holds a fixed value for count",
+          "lineNumber" : 21,
+          "name" : "count",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 23,
+          "children" : [
+
+          ],
+          "container" : "AlbumPickerView.swift",
+          "description" : "Holds a fixed value for thumbnail",
+          "lineNumber" : 22,
+          "name" : "thumbnail",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 2949,
+          "children" : [
+
+          ],
+          "container" : "AlbumPickerView.swift",
+          "description" : "Stores information about body",
+          "lineNumber" : 25,
+          "name" : "body",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 43,
+          "children" : [
+
+          ],
+          "container" : "AlbumPickerView.swift",
+          "description" : "Holds a fixed value for image manager",
+          "lineNumber" : 103,
+          "name" : "imageManager",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 51,
+          "children" : [
+
+          ],
+          "container" : "AlbumPickerView.swift",
+          "description" : "Holds a fixed value for thumbnail size",
+          "lineNumber" : 104,
+          "name" : "thumbnailSize",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 44,
+          "children" : [
+
+          ],
+          "container" : "AlbumPickerView.swift",
+          "description" : "Holds a fixed value for request options",
+          "lineNumber" : 105,
+          "name" : "requestOptions",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 54,
+          "children" : [
+
+          ],
+          "container" : "AlbumPickerView.swift",
+          "description" : "Holds a fixed value for album name",
+          "lineNumber" : 110,
+          "name" : "albumName",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 41,
+          "children" : [
+
+          ],
+          "container" : "AlbumPickerView.swift",
+          "description" : "Holds a fixed value for assets fetch options",
+          "lineNumber" : 113,
+          "name" : "assetsFetchOptions",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 29,
+          "children" : [
+
+          ],
+          "container" : "AlbumPickerView.swift",
+          "description" : "Holds a fixed value for photo count",
+          "lineNumber" : 116,
+          "name" : "photoCount",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 23,
+          "children" : [
+
+          ],
+          "container" : "AlbumPickerView.swift",
+          "description" : "Holds a value that can change for thumbnail",
+          "lineNumber" : 119,
+          "name" : "thumbnail",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 350,
+          "children" : [
+
+          ],
+          "container" : "AlbumPickerView.swift",
+          "description" : "Stores information about first asset",
+          "lineNumber" : 120,
+          "name" : "firstAsset",
+          "type" : "property"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "AlbumPickerView.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 6920,
+      "children" : [
+        {
+          "characterCount" : 13,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Brings in tools for additional capabilities",
+          "lineNumber" : 9,
+          "name" : "Photos",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 12,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Brings in tools for creating iOS screens and controls",
+          "lineNumber" : 10,
+          "name" : "UIKit",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 14,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Brings in tools for building modern user interfaces",
+          "lineNumber" : 11,
+          "name" : "SwiftUI",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 37,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Holds a value that can change for frames",
+          "lineNumber" : 14,
+          "name" : "frames",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 32,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Holds a value that can change for is playing",
+          "lineNumber" : 15,
+          "name" : "isPlaying",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 36,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Holds a value that can change for current frame index",
+          "lineNumber" : 16,
+          "name" : "currentFrameIndex",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 46,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Holds a value that can change for frame rate",
+          "lineNumber" : 17,
+          "name" : "frameRate",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 32,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Holds a value that can change for is loading",
+          "lineNumber" : 18,
+          "name" : "isLoading",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 49,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Holds a value that can change for bounce mode",
+          "lineNumber" : 19,
+          "name" : "bounceMode",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 76,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Holds a value that can change for selected album name",
+          "lineNumber" : 20,
+          "name" : "selectedAlbumName",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 65,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Holds a value that can change for bounce direction",
+          "lineNumber" : 27,
+          "name" : "bounceDirection",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 27,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Holds a value that can change for bounce count",
+          "lineNumber" : 28,
+          "name" : "bounceCount",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 54,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Holds a fixed value for fps options",
+          "lineNumber" : 29,
+          "name" : "fpsOptions",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 40,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Holds a fixed value for fps key",
+          "lineNumber" : 30,
+          "name" : "fpsKey",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 44,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Holds a fixed value for album key",
+          "lineNumber" : 31,
+          "name" : "albumKey",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 42,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Stores information about saved album",
+          "lineNumber" : 42,
+          "name" : "savedAlbum",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 458,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Loads frames from album",
+          "lineNumber" : 47,
+          "name" : "loadFramesFromAlbum",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 110,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Stores information about album",
+          "lineNumber" : 66,
+          "name" : "album",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 44,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Holds a fixed value for request options",
+          "lineNumber" : 77,
+          "name" : "requestOptions",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 35,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Holds a fixed value for dispatch group",
+          "lineNumber" : 82,
+          "name" : "dispatchGroup",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 278,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Retrieves album",
+          "lineNumber" : 107,
+          "name" : "fetchAlbum",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 53,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Holds a fixed value for next index",
+          "lineNumber" : 147,
+          "name" : "nextIndex",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 179,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Changes album",
+          "lineNumber" : 164,
+          "name" : "setAlbum",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 129,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Performs an action for next frame",
+          "lineNumber" : 185,
+          "name" : "nextFrame",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 107,
+          "children" : [
+
+          ],
+          "container" : "MoviePlaybackManager.swift",
+          "description" : "Stores information about current frame",
+          "lineNumber" : 217,
+          "name" : "currentFrame",
+          "type" : "property"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "MoviePlaybackManager.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 702,
+      "children" : [
+        {
+          "characterCount" : 19,
+          "children" : [
+
+          ],
+          "container" : "CameraPreview.swift",
+          "description" : "Brings in tools for working with audio and video",
+          "lineNumber" : 9,
+          "name" : "AVFoundation",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 44,
+          "children" : [
+
+          ],
+          "container" : "CameraPreview.swift",
+          "description" : "Holds a fixed value for preview layer",
+          "lineNumber" : 12,
+          "name" : "previewLayer",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 19,
+          "children" : [
+
+          ],
+          "container" : "CameraPreview.swift",
+          "description" : "Holds a fixed value for view",
+          "lineNumber" : 15,
+          "name" : "view",
+          "type" : "constant"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "CameraPreview.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 10070,
+      "children" : [
+        {
+          "characterCount" : 13,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Brings in tools for additional capabilities",
+          "lineNumber" : 9,
+          "name" : "Speech",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 19,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Brings in tools for working with audio and video",
+          "lineNumber" : 10,
+          "name" : "AVFoundation",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 47,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a fixed value for shared",
+          "lineNumber" : 13,
+          "name" : "shared",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 70,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a value that can change for recognition request",
+          "lineNumber" : 16,
+          "name" : "recognitionRequest",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 53,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a value that can change for recognition task",
+          "lineNumber" : 17,
+          "name" : "recognitionTask",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 41,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a value that can change for audio engine",
+          "lineNumber" : 18,
+          "name" : "audioEngine",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 64,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a value that can change for capture callback",
+          "lineNumber" : 21,
+          "name" : "captureCallback",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 67,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a value that can change for video start callback",
+          "lineNumber" : 22,
+          "name" : "videoStartCallback",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 42,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a value that can change for audio level callback",
+          "lineNumber" : 23,
+          "name" : "audioLevelCallback",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 65,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a value that can change for make movie callback",
+          "lineNumber" : 24,
+          "name" : "makeMovieCallback",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 38,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a value that can change for clear frames callback",
+          "lineNumber" : 25,
+          "name" : "clearFramesCallback",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 32,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a value that can change for pause callback",
+          "lineNumber" : 26,
+          "name" : "pauseCallback",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 35,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a fixed value for capture words",
+          "lineNumber" : 29,
+          "name" : "captureWords",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 73,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a fixed value for make movie words",
+          "lineNumber" : 30,
+          "name" : "makeMovieWords",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 50,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a fixed value for clear words",
+          "lineNumber" : 31,
+          "name" : "clearWords",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 34,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a fixed value for start words",
+          "lineNumber" : 32,
+          "name" : "startWords",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 34,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a fixed value for pause words",
+          "lineNumber" : 33,
+          "name" : "pauseWords",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 32,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a fixed value for stop words",
+          "lineNumber" : 34,
+          "name" : "stopWords",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 52,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a value that can change for last trigger time",
+          "lineNumber" : 35,
+          "name" : "lastTriggerTime",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 47,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Holds a fixed value for trigger cooldown",
+          "lineNumber" : 36,
+          "name" : "triggerCooldown",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 7582,
+          "children" : [
+
+          ],
+          "container" : "GlobalVoiceCommandManager.swift",
+          "description" : "Performs an action for start speech recognition",
+          "lineNumber" : 75,
+          "name" : "startSpeechRecognition",
+          "type" : "function"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "GlobalVoiceCommandManager.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 6364,
+      "children" : [
+        {
+          "characterCount" : 65,
+          "children" : [
+
+          ],
+          "container" : "MovieView.swift",
+          "description" : "Holds a value that can change for playback manager",
+          "lineNumber" : 11,
+          "name" : "playbackManager",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 41,
+          "children" : [
+
+          ],
+          "container" : "MovieView.swift",
+          "description" : "Holds a value that can change for showing controls",
+          "lineNumber" : 12,
+          "name" : "showingControls",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 39,
+          "children" : [
+
+          ],
+          "container" : "MovieView.swift",
+          "description" : "Holds a value that can change for show settings",
+          "lineNumber" : 13,
+          "name" : "showSettings",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 59,
+          "children" : [
+
+          ],
+          "container" : "MovieView.swift",
+          "description" : "Holds a fixed value for current frame",
+          "lineNumber" : 28,
+          "name" : "currentFrame",
+          "type" : "constant"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "MovieView.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 28124,
+      "children" : [
+        {
+          "characterCount" : 19,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Brings in tools for working with audio and video",
+          "lineNumber" : 9,
+          "name" : "AVFoundation",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 12,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Brings in tools for creating iOS screens and controls",
+          "lineNumber" : 10,
+          "name" : "UIKit",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 13,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Brings in tools for additional capabilities",
+          "lineNumber" : 11,
+          "name" : "Photos",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 19,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Brings in tools for additional capabilities",
+          "lineNumber" : 12,
+          "name" : "AudioToolbox",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 34,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a value that can change for is recording",
+          "lineNumber" : 15,
+          "name" : "isRecording",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 39,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a value that can change for clips",
+          "lineNumber" : 16,
+          "name" : "clips",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 36,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a value that can change for processing status",
+          "lineNumber" : 17,
+          "name" : "processingStatus",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 56,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a value that can change for preview layer",
+          "lineNumber" : 18,
+          "name" : "previewLayer",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 436,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Lists all possible options for hybrid clip",
+          "lineNumber" : 21,
+          "name" : "HybridClip",
+          "type" : "enum"
+        },
+        {
+          "characterCount" : 15,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for id",
+          "lineNumber" : 41,
+          "name" : "id",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 19,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for forward url",
+          "lineNumber" : 42,
+          "name" : "forwardURL",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 21,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for reversed url",
+          "lineNumber" : 43,
+          "name" : "reversedURL",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 20,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for duration",
+          "lineNumber" : 44,
+          "name" : "duration",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 19,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for created at",
+          "lineNumber" : 45,
+          "name" : "createdAt",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 31,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a value that can change for reversal time",
+          "lineNumber" : 46,
+          "name" : "reversalTime",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 118,
+          "children" : [
+            {
+              "characterCount" : 15,
+              "children" : [
+
+              ],
+              "container" : "PhotoClipData",
+              "description" : "Holds a fixed value for id",
+              "lineNumber" : 1,
+              "name" : "id",
+              "type" : "constant"
+            },
+            {
+              "characterCount" : 58,
+              "children" : [
+
+              ],
+              "container" : "PhotoClipData",
+              "description" : "Holds a fixed value for image",
+              "lineNumber" : 2,
+              "name" : "image",
+              "type" : "constant"
+            },
+            {
+              "characterCount" : 19,
+              "children" : [
+
+              ],
+              "container" : "PhotoClipData",
+              "description" : "Holds a fixed value for created at",
+              "lineNumber" : 3,
+              "name" : "createdAt",
+              "type" : "constant"
+            }
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Defines the shape and behavior of photo clip data",
+          "lineNumber" : 49,
+          "name" : "PhotoClipData",
+          "type" : "struct"
+        },
+        {
+          "characterCount" : 50,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a value that can change for video output",
+          "lineNumber" : 56,
+          "name" : "videoOutput",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 46,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a value that can change for photo output",
+          "lineNumber" : 57,
+          "name" : "photoOutput",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 43,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a value that can change for current camera",
+          "lineNumber" : 58,
+          "name" : "currentCamera",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 34,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a value that can change for current output url",
+          "lineNumber" : 59,
+          "name" : "currentOutputURL",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 37,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a value that can change for recording tap timer",
+          "lineNumber" : 64,
+          "name" : "recordingTapTimer",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 71,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for tap sound id",
+          "lineNumber" : 65,
+          "name" : "tapSoundID",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 1367,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Changes up camera",
+          "lineNumber" : 72,
+          "name" : "setupCamera",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 57,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for capture session",
+          "lineNumber" : 117,
+          "name" : "captureSession",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 57,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for capture session",
+          "lineNumber" : 142,
+          "name" : "captureSession",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 938,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Performs an action for start recording",
+          "lineNumber" : 153,
+          "name" : "startRecording",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 64,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for video output",
+          "lineNumber" : 182,
+          "name" : "videoOutput",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 1443,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Performs an action for trim video",
+          "lineNumber" : 195,
+          "name" : "trimVideo",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 22,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for start time",
+          "lineNumber" : 235,
+          "name" : "startTime",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 29,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for asset",
+          "lineNumber" : 238,
+          "name" : "asset",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 51,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Stores information about video track",
+          "lineNumber" : 239,
+          "name" : "videoTrack",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 45,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for transform",
+          "lineNumber" : 245,
+          "name" : "transform",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 51,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Stores information about writer",
+          "lineNumber" : 254,
+          "name" : "writer",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 37,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for output settings",
+          "lineNumber" : 260,
+          "name" : "outputSettings",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 29,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a value that can change for current time",
+          "lineNumber" : 295,
+          "name" : "currentTime",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 67,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for frame duration",
+          "lineNumber" : 296,
+          "name" : "frameDuration",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 36,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a value that can change for timing info",
+          "lineNumber" : 303,
+          "name" : "timingInfo",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 58,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for image buffer",
+          "lineNumber" : 310,
+          "name" : "imageBuffer",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 552,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Stores information about format description",
+          "lineNumber" : 311,
+          "name" : "formatDescription",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 56,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for processing time",
+          "lineNumber" : 334,
+          "name" : "processingTime",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 51,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for photo output",
+          "lineNumber" : 345,
+          "name" : "photoOutput",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 472,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Performs an action for clear clips",
+          "lineNumber" : 370,
+          "name" : "clearClips",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 40,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for composition",
+          "lineNumber" : 402,
+          "name" : "composition",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 177,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Stores information about video track",
+          "lineNumber" : 403,
+          "name" : "videoTrack",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 44,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a value that can change for composition transform",
+          "lineNumber" : 409,
+          "name" : "compositionTransform",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 22,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for data)",
+          "lineNumber" : 416,
+          "name" : "data)",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 34,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for asset",
+          "lineNumber" : 423,
+          "name" : "asset",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 83,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for source track",
+          "lineNumber" : 424,
+          "name" : "sourceTrack",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 67,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for time range",
+          "lineNumber" : 431,
+          "name" : "timeRange",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 17,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for asset url",
+          "lineNumber" : 438,
+          "name" : "assetURL",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 22,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for data)",
+          "lineNumber" : 441,
+          "name" : "data)",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 34,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for asset",
+          "lineNumber" : 448,
+          "name" : "asset",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 83,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for source track",
+          "lineNumber" : 449,
+          "name" : "sourceTrack",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 835,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Stores information about first clip",
+          "lineNumber" : 458,
+          "name" : "firstClip",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 50,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for video composition",
+          "lineNumber" : 481,
+          "name" : "videoComposition",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 69,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for transform",
+          "lineNumber" : 492,
+          "name" : "transform",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 56,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for instruction",
+          "lineNumber" : 495,
+          "name" : "instruction",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 88,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for layer instruction",
+          "lineNumber" : 498,
+          "name" : "layerInstruction",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 52,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for temp url",
+          "lineNumber" : 505,
+          "name" : "tempURL",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 180,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Stores information about export session",
+          "lineNumber" : 508,
+          "name" : "exportSession",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 35,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for dispatch group",
+          "lineNumber" : 550,
+          "name" : "dispatchGroup",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 715,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Stores information about data)",
+          "lineNumber" : 553,
+          "name" : "data)",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 69,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for final urls",
+          "lineNumber" : 574,
+          "name" : "finalURLs",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 1904,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Makes a new video from image",
+          "lineNumber" : 579,
+          "name" : "createVideoFromImage",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 13,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for attrs",
+          "lineNumber" : 633,
+          "name" : "attrs",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 31,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a value that can change for pixel buffer",
+          "lineNumber" : 638,
+          "name" : "pixelBuffer",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 116,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for status",
+          "lineNumber" : 639,
+          "name" : "status",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 51,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for pixel data",
+          "lineNumber" : 648,
+          "name" : "pixelData",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 49,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Holds a fixed value for rgb color space",
+          "lineNumber" : 649,
+          "name" : "rgbColorSpace",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 2105,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Performs an action for file output",
+          "lineNumber" : 672,
+          "name" : "fileOutput",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 673,
+          "children" : [
+            {
+              "characterCount" : 549,
+              "children" : [
+
+              ],
+              "container" : "HybridCaptureManager",
+              "description" : "Performs an action for photo output",
+              "lineNumber" : 1,
+              "name" : "photoOutput",
+              "type" : "function"
+            }
+          ],
+          "container" : "HybridCaptureManager.swift",
+          "description" : "Adds new abilities to hybrid capture manager",
+          "lineNumber" : 735,
+          "name" : "HybridCaptureManager",
+          "type" : "extension"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "HybridCaptureManager.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 17217,
+      "children" : [
+        {
+          "characterCount" : 12,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureView.swift",
+          "description" : "Brings in tools for additional capabilities",
+          "lineNumber" : 9,
+          "name" : "AVKit",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 57,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureView.swift",
+          "description" : "Holds a value that can change for manager",
+          "lineNumber" : 12,
+          "name" : "manager",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 42,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureView.swift",
+          "description" : "Holds a value that can change for showing playback",
+          "lineNumber" : 13,
+          "name" : "showingPlayback",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 43,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureView.swift",
+          "description" : "Holds a value that can change for showing save alert",
+          "lineNumber" : 14,
+          "name" : "showingSaveAlert",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 40,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureView.swift",
+          "description" : "Holds a value that can change for save alert message",
+          "lineNumber" : 15,
+          "name" : "saveAlertMessage",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 33,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureView.swift",
+          "description" : "Holds a value that can change for show ui",
+          "lineNumber" : 16,
+          "name" : "showUI",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 37,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureView.swift",
+          "description" : "Holds a value that can change for show red dot",
+          "lineNumber" : 17,
+          "name" : "showRedDot",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 40,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureView.swift",
+          "description" : "Holds a value that can change for show yellow dot",
+          "lineNumber" : 18,
+          "name" : "showYellowDot",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 96,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureView.swift",
+          "description" : "Stores information about preview layer",
+          "lineNumber" : 25,
+          "name" : "previewLayer",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 105,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureView.swift",
+          "description" : "Holds a fixed value for video count",
+          "lineNumber" : 71,
+          "name" : "videoCount",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 105,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureView.swift",
+          "description" : "Holds a fixed value for photo count",
+          "lineNumber" : 72,
+          "name" : "photoCount",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 1590,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureView.swift",
+          "description" : "Changes up voice commands",
+          "lineNumber" : 231,
+          "name" : "setupVoiceCommands",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 280,
+          "children" : [
+
+          ],
+          "container" : "HybridCaptureView.swift",
+          "description" : "Performs an action for flash yellow dot",
+          "lineNumber" : 284,
+          "name" : "flashYellowDot",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 4876,
+          "children" : [
+            {
+              "characterCount" : 44,
+              "children" : [
+
+              ],
+              "container" : "HybridPlaybackView",
+              "description" : "Holds a fixed value for clips",
+              "lineNumber" : 1,
+              "name" : "clips",
+              "type" : "constant"
+            },
+            {
+              "characterCount" : 43,
+              "children" : [
+
+              ],
+              "container" : "HybridPlaybackView",
+              "description" : "Holds a value that can change for dismiss",
+              "lineNumber" : 2,
+              "name" : "dismiss",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 35,
+              "children" : [
+
+              ],
+              "container" : "HybridPlaybackView",
+              "description" : "Holds a value that can change for current index",
+              "lineNumber" : 3,
+              "name" : "currentIndex",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 36,
+              "children" : [
+
+              ],
+              "container" : "HybridPlaybackView",
+              "description" : "Holds a value that can change for is playing",
+              "lineNumber" : 4,
+              "name" : "isPlaying",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 37,
+              "children" : [
+
+              ],
+              "container" : "HybridPlaybackView",
+              "description" : "Holds a value that can change for play forward",
+              "lineNumber" : 5,
+              "name" : "playForward",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 36,
+              "children" : [
+
+              ],
+              "container" : "HybridPlaybackView",
+              "description" : "Holds a value that can change for player",
+              "lineNumber" : 6,
+              "name" : "player",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 77,
+              "children" : [
+
+              ],
+              "container" : "HybridPlaybackView",
+              "description" : "Performs an action for play sequence",
+              "lineNumber" : 69,
+              "name" : "playSequence",
+              "type" : "function"
+            },
+            {
+              "characterCount" : 12,
+              "children" : [
+
+              ],
+              "container" : "HybridPlaybackView",
+              "description" : "Holds a fixed value for url",
+              "lineNumber" : 88,
+              "name" : "url",
+              "type" : "constant"
+            },
+            {
+              "characterCount" : 22,
+              "children" : [
+
+              ],
+              "container" : "HybridPlaybackView",
+              "description" : "Holds a fixed value for data)",
+              "lineNumber" : 91,
+              "name" : "data)",
+              "type" : "constant"
+            },
+            {
+              "characterCount" : 39,
+              "children" : [
+
+              ],
+              "container" : "HybridPlaybackView",
+              "description" : "Holds a fixed value for player item",
+              "lineNumber" : 114,
+              "name" : "playerItem",
+              "type" : "constant"
+            },
+            {
+              "characterCount" : 48,
+              "children" : [
+
+              ],
+              "container" : "HybridPlaybackView",
+              "description" : "Holds a fixed value for new player",
+              "lineNumber" : 115,
+              "name" : "newPlayer",
+              "type" : "constant"
+            }
+          ],
+          "container" : "HybridCaptureView.swift",
+          "description" : "Defines the shape and behavior of hybrid playback view",
+          "lineNumber" : 297,
+          "name" : "HybridPlaybackView",
+          "type" : "struct"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "HybridCaptureView.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 7627,
+      "children" : [
+        {
+          "characterCount" : 19,
+          "children" : [
+
+          ],
+          "container" : "MovieExporter.swift",
+          "description" : "Brings in tools for working with audio and video",
+          "lineNumber" : 9,
+          "name" : "AVFoundation",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 12,
+          "children" : [
+
+          ],
+          "container" : "MovieExporter.swift",
+          "description" : "Brings in tools for creating iOS screens and controls",
+          "lineNumber" : 10,
+          "name" : "UIKit",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 13,
+          "children" : [
+
+          ],
+          "container" : "MovieExporter.swift",
+          "description" : "Brings in tools for additional capabilities",
+          "lineNumber" : 11,
+          "name" : "Photos",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 1822,
+          "children" : [
+
+          ],
+          "container" : "MovieExporter.swift",
+          "description" : "Performs an action for export to photos",
+          "lineNumber" : 14,
+          "name" : "exportToPhotos",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 31,
+          "children" : [
+
+          ],
+          "container" : "MovieExporter.swift",
+          "description" : "Holds a fixed value for frame size",
+          "lineNumber" : 63,
+          "name" : "frameSize",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 62,
+          "children" : [
+
+          ],
+          "container" : "MovieExporter.swift",
+          "description" : "Holds a fixed value for pixel buffer adaptor",
+          "lineNumber" : 82,
+          "name" : "pixelBufferAdaptor",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 25,
+          "children" : [
+
+          ],
+          "container" : "MovieExporter.swift",
+          "description" : "Holds a value that can change for frame count",
+          "lineNumber" : 103,
+          "name" : "frameCount",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 47,
+          "children" : [
+
+          ],
+          "container" : "MovieExporter.swift",
+          "description" : "Holds a fixed value for queue",
+          "lineNumber" : 106,
+          "name" : "queue",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 13,
+          "children" : [
+
+          ],
+          "container" : "MovieExporter.swift",
+          "description" : "Holds a fixed value for attrs",
+          "lineNumber" : 145,
+          "name" : "attrs",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 31,
+          "children" : [
+
+          ],
+          "container" : "MovieExporter.swift",
+          "description" : "Holds a value that can change for pixel buffer",
+          "lineNumber" : 150,
+          "name" : "pixelBuffer",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 33,
+          "children" : [
+
+          ],
+          "container" : "MovieExporter.swift",
+          "description" : "Holds a fixed value for status",
+          "lineNumber" : 151,
+          "name" : "status",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 22,
+          "children" : [
+
+          ],
+          "container" : "MovieExporter.swift",
+          "description" : "Stores information about buffer",
+          "lineNumber" : 160,
+          "name" : "buffer",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 51,
+          "children" : [
+
+          ],
+          "container" : "MovieExporter.swift",
+          "description" : "Holds a fixed value for pixel data",
+          "lineNumber" : 167,
+          "name" : "pixelData",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 49,
+          "children" : [
+
+          ],
+          "container" : "MovieExporter.swift",
+          "description" : "Holds a fixed value for rgb color space",
+          "lineNumber" : 168,
+          "name" : "rgbColorSpace",
+          "type" : "constant"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "MovieExporter.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 259,
+      "children" : [
+        {
+          "characterCount" : 97,
+          "children" : [
+            {
+              "characterCount" : 64,
+              "children" : [
+
+              ],
+              "container" : "AirPodStopFrameApp",
+              "description" : "Stores information about body",
+              "lineNumber" : 1,
+              "name" : "body",
+              "type" : "property"
+            }
+          ],
+          "container" : "HandShutterApp.swift",
+          "description" : "Defines the shape and behavior of air pod stop frame app",
+          "lineNumber" : 11,
+          "name" : "AirPodStopFrameApp",
+          "type" : "struct"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "HandShutterApp.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 15559,
+      "children" : [
+        {
+          "characterCount" : 19,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Brings in tools for working with audio and video",
+          "lineNumber" : 9,
+          "name" : "AVFoundation",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 12,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Brings in tools for creating iOS screens and controls",
+          "lineNumber" : 10,
+          "name" : "UIKit",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 34,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a value that can change for is recording",
+          "lineNumber" : 13,
+          "name" : "isRecording",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 46,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a value that can change for recorded clips",
+          "lineNumber" : 14,
+          "name" : "recordedClips",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 36,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a value that can change for processing status",
+          "lineNumber" : 15,
+          "name" : "processingStatus",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 56,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a value that can change for preview layer",
+          "lineNumber" : 16,
+          "name" : "previewLayer",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 15,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for id",
+          "lineNumber" : 19,
+          "name" : "id",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 19,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for forward url",
+          "lineNumber" : 20,
+          "name" : "forwardURL",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 21,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for reversed url",
+          "lineNumber" : 21,
+          "name" : "reversedURL",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 20,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for duration",
+          "lineNumber" : 22,
+          "name" : "duration",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 19,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for created at",
+          "lineNumber" : 23,
+          "name" : "createdAt",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 31,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a value that can change for reversal time",
+          "lineNumber" : 24,
+          "name" : "reversalTime",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 45,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a value that can change for capture session",
+          "lineNumber" : 27,
+          "name" : "captureSession",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 50,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a value that can change for video output",
+          "lineNumber" : 28,
+          "name" : "videoOutput",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 43,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a value that can change for current camera",
+          "lineNumber" : 29,
+          "name" : "currentCamera",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 34,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a value that can change for current output url",
+          "lineNumber" : 30,
+          "name" : "currentOutputURL",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 1042,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Changes up camera",
+          "lineNumber" : 37,
+          "name" : "setupCamera",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 57,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for capture session",
+          "lineNumber" : 74,
+          "name" : "captureSession",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 235,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Performs an action for stop session",
+          "lineNumber" : 83,
+          "name" : "stopSession",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 65,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for video output",
+          "lineNumber" : 94,
+          "name" : "videoOutput",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 64,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for video output",
+          "lineNumber" : 111,
+          "name" : "videoOutput",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 29,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for asset",
+          "lineNumber" : 118,
+          "name" : "asset",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 29,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for duration",
+          "lineNumber" : 119,
+          "name" : "duration",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 104,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for trim duration",
+          "lineNumber" : 122,
+          "name" : "trimDuration",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 22,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for start time",
+          "lineNumber" : 157,
+          "name" : "startTime",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 29,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for asset",
+          "lineNumber" : 160,
+          "name" : "asset",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 51,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Stores information about video track",
+          "lineNumber" : 161,
+          "name" : "videoTrack",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 45,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for transform",
+          "lineNumber" : 167,
+          "name" : "transform",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 51,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Stores information about writer",
+          "lineNumber" : 176,
+          "name" : "writer",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 37,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for output settings",
+          "lineNumber" : 182,
+          "name" : "outputSettings",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 29,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a value that can change for current time",
+          "lineNumber" : 217,
+          "name" : "currentTime",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 67,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for frame duration",
+          "lineNumber" : 218,
+          "name" : "frameDuration",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 36,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a value that can change for timing info",
+          "lineNumber" : 225,
+          "name" : "timingInfo",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 58,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for image buffer",
+          "lineNumber" : 232,
+          "name" : "imageBuffer",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 552,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Stores information about format description",
+          "lineNumber" : 233,
+          "name" : "formatDescription",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 56,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Holds a fixed value for processing time",
+          "lineNumber" : 256,
+          "name" : "processingTime",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 3701,
+          "children" : [
+
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Performs an action for export to photos",
+          "lineNumber" : 279,
+          "name" : "exportToPhotos",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 2247,
+          "children" : [
+            {
+              "characterCount" : 2091,
+              "children" : [
+
+              ],
+              "container" : "VideoRecordingManager",
+              "description" : "Performs an action for file output",
+              "lineNumber" : 1,
+              "name" : "fileOutput",
+              "type" : "function"
+            }
+          ],
+          "container" : "VideoRecordingManager.swift",
+          "description" : "Adds new abilities to video recording manager",
+          "lineNumber" : 367,
+          "name" : "VideoRecordingManager",
+          "type" : "extension"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "VideoRecordingManager.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 17647,
+      "children" : [
+        {
+          "characterCount" : 12,
+          "children" : [
+
+          ],
+          "container" : "CameraManager.swift",
+          "description" : "Brings in tools for creating iOS screens and controls",
+          "lineNumber" : 9,
+          "name" : "UIKit",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 14,
+          "children" : [
+
+          ],
+          "container" : "CameraManager.swift",
+          "description" : "Brings in tools for building modern user interfaces",
+          "lineNumber" : 10,
+          "name" : "SwiftUI",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 13,
+          "children" : [
+
+          ],
+          "container" : "CameraManager.swift",
+          "description" : "Brings in tools for additional capabilities",
+          "lineNumber" : 11,
+          "name" : "Photos",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 153,
+          "children" : [
+
+          ],
+          "container" : "CameraManager.swift",
+          "description" : "Stores information about spot color",
+          "lineNumber" : 18,
+          "name" : "spotColor",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 14907,
+          "children" : [
+            {
+              "characterCount" : 45,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a value that can change for capture session",
+              "lineNumber" : 1,
+              "name" : "captureSession",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 50,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a value that can change for video output",
+              "lineNumber" : 2,
+              "name" : "videoOutput",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 43,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a value that can change for current camera",
+              "lineNumber" : 3,
+              "name" : "currentCamera",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 46,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a value that can change for photo output",
+              "lineNumber" : 4,
+              "name" : "photoOutput",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 45,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a value that can change for captured frames",
+              "lineNumber" : 7,
+              "name" : "capturedFrames",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 69,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a value that can change for current trigger type",
+              "lineNumber" : 8,
+              "name" : "currentTriggerType",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 34,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a value that can change for should flash",
+              "lineNumber" : 9,
+              "name" : "shouldFlash",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 55,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a value that can change for voice command status",
+              "lineNumber" : 10,
+              "name" : "voiceCommandStatus",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 71,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a value that can change for hand detection status",
+              "lineNumber" : 11,
+              "name" : "handDetectionStatus",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 63,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a value that can change for hand detection state",
+              "lineNumber" : 12,
+              "name" : "handDetectionState",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 40,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a value that can change for is using front camera",
+              "lineNumber" : 13,
+              "name" : "isUsingFrontCamera",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 54,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a value that can change for current lens type",
+              "lineNumber" : 14,
+              "name" : "currentLensType",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 214,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Stores information about device type",
+              "lineNumber" : 21,
+              "name" : "deviceType",
+              "type" : "property"
+            },
+            {
+              "characterCount" : 64,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a value that can change for triggers",
+              "lineNumber" : 38,
+              "name" : "triggers",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 79,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a fixed value for video data output queue",
+              "lineNumber" : 39,
+              "name" : "videoDataOutputQueue",
+              "type" : "constant"
+            },
+            {
+              "characterCount" : 26,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a value that can change for frame count",
+              "lineNumber" : 40,
+              "name" : "frameCount",
+              "type" : "variable"
+            },
+            {
+              "characterCount" : 670,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Changes up triggers",
+              "lineNumber" : 49,
+              "name" : "setupTriggers",
+              "type" : "function"
+            },
+            {
+              "characterCount" : 82,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a fixed value for camera position",
+              "lineNumber" : 70,
+              "name" : "cameraPosition",
+              "type" : "constant"
+            },
+            {
+              "characterCount" : 116,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a fixed value for device type",
+              "lineNumber" : 71,
+              "name" : "deviceType",
+              "type" : "constant"
+            },
+            {
+              "characterCount" : 74,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Stores information about fallback camera",
+              "lineNumber" : 76,
+              "name" : "fallbackCamera",
+              "type" : "property"
+            },
+            {
+              "characterCount" : 1676,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Changes up camera with device",
+              "lineNumber" : 88,
+              "name" : "setupCameraWithDevice",
+              "type" : "function"
+            },
+            {
+              "characterCount" : 71,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Stores information about capture session",
+              "lineNumber" : 152,
+              "name" : "captureSession",
+              "type" : "property"
+            },
+            {
+              "characterCount" : 115,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Stores information about hand trigger",
+              "lineNumber" : 178,
+              "name" : "handTrigger",
+              "type" : "property"
+            },
+            {
+              "characterCount" : 57,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a fixed value for capture session",
+              "lineNumber" : 190,
+              "name" : "captureSession",
+              "type" : "constant"
+            },
+            {
+              "characterCount" : 1793,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Performs an action for switch camera",
+              "lineNumber" : 201,
+              "name" : "switchCamera",
+              "type" : "function"
+            },
+            {
+              "characterCount" : 52,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Stores information about current input",
+              "lineNumber" : 256,
+              "name" : "currentInput",
+              "type" : "property"
+            },
+            {
+              "characterCount" : 79,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a fixed value for current index",
+              "lineNumber" : 261,
+              "name" : "currentIndex",
+              "type" : "constant"
+            },
+            {
+              "characterCount" : 66,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a fixed value for next index",
+              "lineNumber" : 262,
+              "name" : "nextIndex",
+              "type" : "constant"
+            },
+            {
+              "characterCount" : 52,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a fixed value for new lens type",
+              "lineNumber" : 263,
+              "name" : "newLensType",
+              "type" : "constant"
+            },
+            {
+              "characterCount" : 67,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a fixed value for next next index",
+              "lineNumber" : 268,
+              "name" : "nextNextIndex",
+              "type" : "constant"
+            },
+            {
+              "characterCount" : 61,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Holds a fixed value for fallback lens type",
+              "lineNumber" : 269,
+              "name" : "fallbackLensType",
+              "type" : "constant"
+            },
+            {
+              "characterCount" : 151,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Changes trigger type",
+              "lineNumber" : 312,
+              "name" : "setTriggerType",
+              "type" : "function"
+            },
+            {
+              "characterCount" : 34,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Stores information about tap trigger",
+              "lineNumber" : 319,
+              "name" : "tapTrigger",
+              "type" : "property"
+            },
+            {
+              "characterCount" : 224,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Performs an action for capture frame",
+              "lineNumber" : 324,
+              "name" : "captureFrame",
+              "type" : "function"
+            },
+            {
+              "characterCount" : 435,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Performs an action for clear album images",
+              "lineNumber" : 378,
+              "name" : "clearAlbumImages",
+              "type" : "function"
+            }
+          ],
+          "container" : "CameraManager.swift",
+          "description" : "Organizes and coordinates camera",
+          "lineNumber" : 35,
+          "name" : "CameraManager",
+          "type" : "class"
+        },
+        {
+          "characterCount" : 427,
+          "children" : [
+
+          ],
+          "container" : "CameraManager.swift",
+          "description" : "Performs an action for capture output",
+          "lineNumber" : 430,
+          "name" : "captureOutput",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 918,
+          "children" : [
+            {
+              "characterCount" : 794,
+              "children" : [
+
+              ],
+              "container" : "CameraManager",
+              "description" : "Performs an action for photo output",
+              "lineNumber" : 1,
+              "name" : "photoOutput",
+              "type" : "function"
+            }
+          ],
+          "container" : "CameraManager.swift",
+          "description" : "Adds new abilities to camera manager",
+          "lineNumber" : 443,
+          "name" : "CameraManager",
+          "type" : "extension"
+        },
+        {
+          "characterCount" : 52,
+          "children" : [
+
+          ],
+          "container" : "CameraManager.swift",
+          "description" : "Performs an action for did trigger capture",
+          "lineNumber" : 472,
+          "name" : "didTriggerCapture",
+          "type" : "function"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "CameraManager.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 700,
+      "children" : [
+        {
+          "characterCount" : 59,
+          "children" : [
+
+          ],
+          "container" : "CaptureTrigger.swift",
+          "description" : "Sets rules that other parts must follow for capture trigger delegate",
+          "lineNumber" : 21,
+          "name" : "CaptureTriggerDelegate",
+          "type" : "protocol"
+        },
+        {
+          "characterCount" : 43,
+          "children" : [
+
+          ],
+          "container" : "CaptureTrigger.swift",
+          "description" : "Holds a value that can change for trigger type",
+          "lineNumber" : 27,
+          "name" : "triggerType",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 31,
+          "children" : [
+
+          ],
+          "container" : "CaptureTrigger.swift",
+          "description" : "Holds a value that can change for is enabled",
+          "lineNumber" : 28,
+          "name" : "isEnabled",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 49,
+          "children" : [
+
+          ],
+          "container" : "CaptureTrigger.swift",
+          "description" : "Holds a value that can change for delegate",
+          "lineNumber" : 29,
+          "name" : "delegate",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 0,
+          "children" : [
+
+          ],
+          "container" : "CaptureTrigger.swift",
+          "description" : "Performs an action for stop monitoring",
+          "lineNumber" : 32,
+          "name" : "stopMonitoring",
+          "type" : "function"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "CaptureTrigger.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 8926,
+      "children" : [
+        {
+          "characterCount" : 13,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Brings in tools for additional capabilities",
+          "lineNumber" : 9,
+          "name" : "Vision",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 19,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Brings in tools for working with audio and video",
+          "lineNumber" : 10,
+          "name" : "AVFoundation",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 66,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for distance)",
+          "lineNumber" : 23,
+          "name" : "distance)",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 67,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for distance)",
+          "lineNumber" : 24,
+          "name" : "distance)",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 64,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for distance)",
+          "lineNumber" : 25,
+          "name" : "distance)",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 68,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for distance)",
+          "lineNumber" : 26,
+          "name" : "distance)",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 263,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Stores information about category",
+          "lineNumber" : 31,
+          "name" : "category",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 57,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a value that can change for body pose request",
+          "lineNumber" : 79,
+          "name" : "bodyPoseRequest",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 60,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a value that can change for last estimated distance",
+          "lineNumber" : 80,
+          "name" : "lastEstimatedDistance",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 95,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for handler",
+          "lineNumber" : 87,
+          "name" : "handler",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 50,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for distance",
+          "lineNumber" : 92,
+          "name" : "distance",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 67,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Stores information about results",
+          "lineNumber" : 107,
+          "name" : "results",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 49,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for neck",
+          "lineNumber" : 117,
+          "name" : "neck",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 67,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for right shoulder",
+          "lineNumber" : 118,
+          "name" : "rightShoulder",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 65,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for left shoulder",
+          "lineNumber" : 119,
+          "name" : "leftShoulder",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 57,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for right hip",
+          "lineNumber" : 120,
+          "name" : "rightHip",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 55,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for left hip",
+          "lineNumber" : 121,
+          "name" : "leftHip",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 59,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for right knee",
+          "lineNumber" : 122,
+          "name" : "rightKnee",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 57,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for left knee",
+          "lineNumber" : 123,
+          "name" : "leftKnee",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 61,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for right ankle",
+          "lineNumber" : 124,
+          "name" : "rightAnkle",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 59,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for left ankle",
+          "lineNumber" : 125,
+          "name" : "leftAnkle",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 45,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for has head",
+          "lineNumber" : 130,
+          "name" : "hasHead",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 104,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for has shoulders",
+          "lineNumber" : 131,
+          "name" : "hasShoulders",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 89,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for has hips",
+          "lineNumber" : 132,
+          "name" : "hasHips",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 92,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for has knees",
+          "lineNumber" : 133,
+          "name" : "hasKnees",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 95,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for has ankles",
+          "lineNumber" : 134,
+          "name" : "hasAnkles",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 28,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a value that can change for shoulder width",
+          "lineNumber" : 137,
+          "name" : "shoulderWidth",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 25,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a value that can change for body height",
+          "lineNumber" : 138,
+          "name" : "bodyHeight",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 31,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a value that can change for lowest point",
+          "lineNumber" : 147,
+          "name" : "lowestPoint",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 28,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Holds a fixed value for distance",
+          "lineNumber" : 188,
+          "name" : "distance",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 126,
+          "children" : [
+
+          ],
+          "container" : "PersonDistanceEstimator.swift",
+          "description" : "Performs an action for distance",
+          "lineNumber" : 211,
+          "name" : "distance",
+          "type" : "function"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "PersonDistanceEstimator.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 5589,
+      "children" : [
+        {
+          "characterCount" : 13,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Brings in tools for additional capabilities",
+          "lineNumber" : 9,
+          "name" : "Vision",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 19,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Brings in tools for working with audio and video",
+          "lineNumber" : 10,
+          "name" : "AVFoundation",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 12,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Brings in tools for creating iOS screens and controls",
+          "lineNumber" : 11,
+          "name" : "UIKit",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 47,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a fixed value for trigger type",
+          "lineNumber" : 14,
+          "name" : "triggerType",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 155,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Stores information about is enabled",
+          "lineNumber" : 15,
+          "name" : "isEnabled",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 39,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a value that can change for status callback",
+          "lineNumber" : 26,
+          "name" : "statusCallback",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 58,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a value that can change for state callback",
+          "lineNumber" : 27,
+          "name" : "stateCallback",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 32,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a value that can change for is processing",
+          "lineNumber" : 30,
+          "name" : "isProcessing",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 49,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a fixed value for detection cooldown",
+          "lineNumber" : 31,
+          "name" : "detectionCooldown",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 54,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a value that can change for last detection time",
+          "lineNumber" : 32,
+          "name" : "lastDetectionTime",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 41,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a value that can change for consecutive thumbs up frames",
+          "lineNumber" : 35,
+          "name" : "consecutiveThumbsUpFrames",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 41,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a fixed value for required consecutive frames",
+          "lineNumber" : 36,
+          "name" : "requiredConsecutiveFrames",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 101,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Changes up hand pose request",
+          "lineNumber" : 43,
+          "name" : "setupHandPoseRequest",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 810,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Performs an action for process frame",
+          "lineNumber" : 59,
+          "name" : "processFrame",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 180,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Stores information about results",
+          "lineNumber" : 84,
+          "name" : "results",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 52,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a fixed value for thumb ip",
+          "lineNumber" : 122,
+          "name" : "thumbIP",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 54,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a fixed value for index tip",
+          "lineNumber" : 123,
+          "name" : "indexTip",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 56,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a fixed value for middle tip",
+          "lineNumber" : 124,
+          "name" : "middleTip",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 48,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a fixed value for wrist",
+          "lineNumber" : 125,
+          "name" : "wrist",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 62,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a fixed value for thumb pointing up",
+          "lineNumber" : 136,
+          "name" : "thumbPointingUp",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 73,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a fixed value for thumb distance",
+          "lineNumber" : 139,
+          "name" : "thumbDistance",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 74,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a fixed value for thumb ipdistance",
+          "lineNumber" : 140,
+          "name" : "thumbIPDistance",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 57,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a fixed value for thumb extended",
+          "lineNumber" : 141,
+          "name" : "thumbExtended",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 67,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a fixed value for other fingers down",
+          "lineNumber" : 144,
+          "name" : "otherFingersDown",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 35,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a fixed value for dx",
+          "lineNumber" : 155,
+          "name" : "dx",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 35,
+          "children" : [
+
+          ],
+          "container" : "HandDetectionTrigger.swift",
+          "description" : "Holds a fixed value for dy",
+          "lineNumber" : 156,
+          "name" : "dy",
+          "type" : "constant"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "HandDetectionTrigger.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 5771,
+      "children" : [
+        {
+          "characterCount" : 57,
+          "children" : [
+
+          ],
+          "container" : "MovieSettingsView.swift",
+          "description" : "Holds a value that can change for playback manager",
+          "lineNumber" : 11,
+          "name" : "playbackManager",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 43,
+          "children" : [
+
+          ],
+          "container" : "MovieSettingsView.swift",
+          "description" : "Holds a value that can change for dismiss",
+          "lineNumber" : 12,
+          "name" : "dismiss",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 40,
+          "children" : [
+
+          ],
+          "container" : "MovieSettingsView.swift",
+          "description" : "Holds a value that can change for is saving movie",
+          "lineNumber" : 13,
+          "name" : "isSavingMovie",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 43,
+          "children" : [
+
+          ],
+          "container" : "MovieSettingsView.swift",
+          "description" : "Holds a value that can change for showing save alert",
+          "lineNumber" : 14,
+          "name" : "showingSaveAlert",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 35,
+          "children" : [
+
+          ],
+          "container" : "MovieSettingsView.swift",
+          "description" : "Holds a value that can change for save message",
+          "lineNumber" : 15,
+          "name" : "saveMessage",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 42,
+          "children" : [
+
+          ],
+          "container" : "MovieSettingsView.swift",
+          "description" : "Holds a value that can change for show album picker",
+          "lineNumber" : 16,
+          "name" : "showAlbumPicker",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 748,
+          "children" : [
+
+          ],
+          "container" : "MovieSettingsView.swift",
+          "description" : "Saves movie to photos",
+          "lineNumber" : 129,
+          "name" : "saveMovieToPhotos",
+          "type" : "function"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "MovieSettingsView.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 580,
+      "children" : [
+        {
+          "characterCount" : 42,
+          "children" : [
+
+          ],
+          "container" : "TapTrigger.swift",
+          "description" : "Holds a fixed value for trigger type",
+          "lineNumber" : 11,
+          "name" : "triggerType",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 26,
+          "children" : [
+
+          ],
+          "container" : "TapTrigger.swift",
+          "description" : "Holds a value that can change for is enabled",
+          "lineNumber" : 12,
+          "name" : "isEnabled",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 42,
+          "children" : [
+
+          ],
+          "container" : "TapTrigger.swift",
+          "description" : "Holds a value that can change for delegate",
+          "lineNumber" : 13,
+          "name" : "delegate",
+          "type" : "variable"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "TapTrigger.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 11567,
+      "children" : [
+        {
+          "characterCount" : 12,
+          "children" : [
+
+          ],
+          "container" : "VideoTestView.swift",
+          "description" : "Brings in tools for additional capabilities",
+          "lineNumber" : 9,
+          "name" : "AVKit",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 58,
+          "children" : [
+
+          ],
+          "container" : "VideoTestView.swift",
+          "description" : "Holds a value that can change for manager",
+          "lineNumber" : 12,
+          "name" : "manager",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 42,
+          "children" : [
+
+          ],
+          "container" : "VideoTestView.swift",
+          "description" : "Holds a value that can change for showing playback",
+          "lineNumber" : 13,
+          "name" : "showingPlayback",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 43,
+          "children" : [
+
+          ],
+          "container" : "VideoTestView.swift",
+          "description" : "Holds a value that can change for showing save alert",
+          "lineNumber" : 14,
+          "name" : "showingSaveAlert",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 40,
+          "children" : [
+
+          ],
+          "container" : "VideoTestView.swift",
+          "description" : "Holds a value that can change for save alert message",
+          "lineNumber" : 15,
+          "name" : "saveAlertMessage",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 96,
+          "children" : [
+
+          ],
+          "container" : "VideoTestView.swift",
+          "description" : "Stores information about preview layer",
+          "lineNumber" : 22,
+          "name" : "previewLayer",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 469,
+          "children" : [
+
+          ],
+          "container" : "VideoTestView.swift",
+          "description" : "Stores information about last clip",
+          "lineNumber" : 64,
+          "name" : "lastClip",
+          "type" : "property"
+        },
+        {
+          "characterCount" : 44,
+          "children" : [
+
+          ],
+          "container" : "VideoTestView.swift",
+          "description" : "Holds a fixed value for clips",
+          "lineNumber" : 211,
+          "name" : "clips",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 43,
+          "children" : [
+
+          ],
+          "container" : "VideoTestView.swift",
+          "description" : "Holds a value that can change for dismiss",
+          "lineNumber" : 212,
+          "name" : "dismiss",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 35,
+          "children" : [
+
+          ],
+          "container" : "VideoTestView.swift",
+          "description" : "Holds a value that can change for current index",
+          "lineNumber" : 213,
+          "name" : "currentIndex",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 36,
+          "children" : [
+
+          ],
+          "container" : "VideoTestView.swift",
+          "description" : "Holds a value that can change for is playing",
+          "lineNumber" : 214,
+          "name" : "isPlaying",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 37,
+          "children" : [
+
+          ],
+          "container" : "VideoTestView.swift",
+          "description" : "Holds a value that can change for play forward",
+          "lineNumber" : 215,
+          "name" : "playForward",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 36,
+          "children" : [
+
+          ],
+          "container" : "VideoTestView.swift",
+          "description" : "Holds a value that can change for player",
+          "lineNumber" : 216,
+          "name" : "player",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 77,
+          "children" : [
+
+          ],
+          "container" : "VideoTestView.swift",
+          "description" : "Performs an action for play sequence",
+          "lineNumber" : 265,
+          "name" : "playSequence",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 30,
+          "children" : [
+
+          ],
+          "container" : "VideoTestView.swift",
+          "description" : "Holds a fixed value for clip",
+          "lineNumber" : 282,
+          "name" : "clip",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 79,
+          "children" : [
+
+          ],
+          "container" : "VideoTestView.swift",
+          "description" : "Holds a fixed value for url",
+          "lineNumber" : 283,
+          "name" : "url",
+          "type" : "constant"
+        },
+        {
+          "characterCount" : 48,
+          "children" : [
+
+          ],
+          "container" : "VideoTestView.swift",
+          "description" : "Holds a fixed value for new player",
+          "lineNumber" : 286,
+          "name" : "newPlayer",
+          "type" : "constant"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "VideoTestView.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 6297,
+      "children" : [
+        {
+          "characterCount" : 19,
+          "children" : [
+
+          ],
+          "container" : "ContentView.swift",
+          "description" : "Brings in tools for working with audio and video",
+          "lineNumber" : 9,
+          "name" : "AVFoundation",
+          "type" : "import"
+        },
+        {
+          "characterCount" : 56,
+          "children" : [
+
+          ],
+          "container" : "ContentView.swift",
+          "description" : "Holds a value that can change for camera manager",
+          "lineNumber" : 12,
+          "name" : "cameraManager",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 39,
+          "children" : [
+
+          ],
+          "container" : "ContentView.swift",
+          "description" : "Holds a value that can change for show settings",
+          "lineNumber" : 13,
+          "name" : "showSettings",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 73,
+          "children" : [
+
+          ],
+          "container" : "ContentView.swift",
+          "description" : "Holds a value that can change for audio level",
+          "lineNumber" : 14,
+          "name" : "audioLevel",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 42,
+          "children" : [
+
+          ],
+          "container" : "ContentView.swift",
+          "description" : "Holds a value that can change for show export alert",
+          "lineNumber" : 15,
+          "name" : "showExportAlert",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 41,
+          "children" : [
+
+          ],
+          "container" : "ContentView.swift",
+          "description" : "Holds a value that can change for show clear alert",
+          "lineNumber" : 16,
+          "name" : "showClearAlert",
+          "type" : "variable"
+        },
+        {
+          "characterCount" : 36,
+          "children" : [
+
+          ],
+          "container" : "ContentView.swift",
+          "description" : "Holds a value that can change for alert message",
+          "lineNumber" : 17,
+          "name" : "alertMessage",
+          "type" : "variable"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "ContentView.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 358,
+      "children" : [
+        {
+          "characterCount" : 131,
+          "children" : [
+
+          ],
+          "container" : "MainNavigationView.swift",
+          "description" : "Stores information about body",
+          "lineNumber" : 11,
+          "name" : "body",
+          "type" : "property"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "MainNavigationView.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 1419,
+      "children" : [
+        {
+          "characterCount" : 111,
+          "children" : [
+
+          ],
+          "container" : "HandShutterUITests.swift",
+          "description" : "Performs an action for tear down with error",
+          "lineNumber" : 21,
+          "name" : "tearDownWithError",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 218,
+          "children" : [
+
+          ],
+          "container" : "HandShutterUITests.swift",
+          "description" : "Performs an action for test example",
+          "lineNumber" : 26,
+          "name" : "testExample",
+          "type" : "function"
+        },
+        {
+          "characterCount" : 278,
+          "children" : [
+
+          ],
+          "container" : "HandShutterUITests.swift",
+          "description" : "Performs an action for test launch performance",
+          "lineNumber" : 35,
+          "name" : "testLaunchPerformance",
+          "type" : "function"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "HandShutterUITests.swift",
+      "type" : "file"
+    },
+    {
+      "characterCount" : 834,
+      "children" : [
+        {
+          "characterCount" : 406,
+          "children" : [
+
+          ],
+          "container" : "HandShutterUITestsLaunchTests.swift",
+          "description" : "Performs an action for test launch",
+          "lineNumber" : 21,
+          "name" : "testLaunch",
+          "type" : "function"
+        }
+      ],
+      "description" : "Contains the building blocks and instructions for part of the app",
+      "lineNumber" : 1,
+      "name" : "HandShutterUITestsLaunchTests.swift",
+      "type" : "file"
+    }
+  ],
+  "description" : "All parsed files",
+  "name" : "root",
+  "type" : "file"
+}
