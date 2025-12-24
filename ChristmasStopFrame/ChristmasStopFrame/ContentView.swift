@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Photos
 
 struct ContentView: View {
     @StateObject private var cameraManager = CameraManager()
@@ -34,22 +35,20 @@ struct ContentView: View {
                     .ignoresSafeArea()
 
                 if cameraManager.currentFrameIndex < cameraManager.capturedPhotos.count {
-                    Image(uiImage: cameraManager.capturedPhotos[cameraManager.currentFrameIndex])
+                    let img = cameraManager.capturedPhotos[cameraManager.currentFrameIndex]
+                    Image(uiImage: img)
                         .resizable()
-                        .scaledToFit()
+                        .aspectRatio(9/16, contentMode: .fit)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .ignoresSafeArea()
                         .scaleEffect(x: -1, y: 1)
+                        .onAppear {
+                            print("🖼️ Static frame - image size: \(img.size), aspect: \(img.size.width/img.size.height)")
+                        }
                 }
             }
 
-            // Flash overlay for Make mode
-            if shouldFlash && recognitionManager.currentMode == "Make" {
-                Color.white
-                    .ignoresSafeArea()
-                    .opacity(0.8)
-            }
-
-            // Playback overlay for Play mode
+            // Playback overlay for Play mode (must be BEFORE black frame overlay)
             if recognitionManager.currentMode == "Play" {
                 Color.black
                     .ignoresSafeArea()
@@ -57,10 +56,39 @@ struct ContentView: View {
                 if let currentFrame = playbackManager.currentFrame {
                     Image(uiImage: currentFrame)
                         .resizable()
-                        .scaledToFit()
+                        .aspectRatio(9/16, contentMode: .fit)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .offset(y: -5)  // Shift up 5px to align with live feed
                         .ignoresSafeArea()
                         .scaleEffect(x: -1, y: 1)
+                        .onAppear {
+                            print("🎬 Playback - image size: \(currentFrame.size), aspect: \(currentFrame.size.width/currentFrame.size.height)")
+                        }
                 }
+            }
+
+            // Black frame overlay (always present, on top of camera/playback, behind UI)
+            GeometryReader { geometry in
+                VStack(spacing: 0) {
+                    Rectangle()
+                        .fill(Color.black)
+                        .frame(height: settings.frameTopThickness)
+
+                    Spacer()
+
+                    Rectangle()
+                        .fill(Color.black)
+                        .frame(height: settings.frameBottomThickness)
+                }
+                .ignoresSafeArea()
+                .allowsHitTesting(false)  // Let touches pass through to elements below
+            }
+
+            // Flash overlay for Make mode
+            if shouldFlash && recognitionManager.currentMode == "Make" {
+                Color.white
+                    .ignoresSafeArea()
+                    .opacity(0.8)
             }
 
             // UI overlay (always present)
@@ -110,9 +138,16 @@ struct ContentView: View {
         .onAppear {
             cameraManager.startSession()
             setupRecognition()
+            saveAnyPreviousSession()
         }
         .onDisappear {
             cameraManager.stopSession()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("SaveToPhotos"))) { _ in
+            saveToPhotosAndResetSession()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
+            saveToPhotosOnAppClose()
         }
         .sheet(isPresented: $showSettings) {
             SettingsView()
@@ -131,13 +166,20 @@ struct ContentView: View {
         }
         .onChange(of: recognitionManager.currentMode) { newMode in
             if newMode == "Play" {
+                // Save to Documents directory (overwrites previous version)
                 if !cameraManager.capturedPhotos.isEmpty {
-                    print("📹 Exporting \(cameraManager.capturedPhotos.count) frames to Photos...")
-                    MovieExporter.exportToPhotos(frames: cameraManager.capturedPhotos, sessionID: sessionID, frameRate: 12.0) { success, error in
+                    print("📹 Saving \(cameraManager.capturedPhotos.count) frames to Documents (session: \(sessionID))...")
+                    MovieExporter.saveToDocuments(
+                        frames: cameraManager.capturedPhotos,
+                        sessionID: sessionID,
+                        frameRate: settings.frameRate,
+                        cropTop: settings.frameTopThickness,
+                        cropBottom: settings.frameBottomThickness
+                    ) { success, error in
                         if success {
-                            print("✅ Movie saved to Photos (session: \(sessionID))")
+                            print("✅ Movie saved to Documents (session: \(sessionID))")
                         } else {
-                            print("❌ Movie export failed: \(error?.localizedDescription ?? "Unknown error")")
+                            print("❌ Movie save failed: \(error?.localizedDescription ?? "Unknown error")")
                         }
                     }
                 }
@@ -159,6 +201,65 @@ struct ContentView: View {
             recognitionManager.processFrame(pixelBuffer)
         }
     }
+
+    private func saveToPhotosAndResetSession() {
+        print("💾 Save QR code detected - saving to Photos and starting new session")
+        MovieExporter.exportDocumentsFileToPhotos(sessionID: sessionID) { success, error in
+            if success {
+                print("✅ Session \(sessionID) saved to Photos")
+                // Start new session
+                DispatchQueue.main.async {
+                    sessionID = UUID().uuidString
+                    cameraManager.capturedPhotos.removeAll()
+                    cameraManager.currentFrameIndex = 0
+                    cameraManager.isViewingLiveFeed = true
+                    print("🆕 New session started: \(sessionID)")
+                }
+            } else {
+                print("❌ Save to Photos failed: \(error?.localizedDescription ?? "Unknown error")")
+            }
+        }
+    }
+
+    private func saveToPhotosOnAppClose() {
+        // Note: This is unreliable for force quits, so we save on next app launch instead
+        print("💾 App backgrounded - session will be saved on next launch")
+    }
+
+    private func saveAnyPreviousSession() {
+        // Find any existing session files in Documents and save them to Photos
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+
+        do {
+            let files = try FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
+            let sessionFiles = files.filter { $0.pathExtension == "mov" && $0.lastPathComponent.starts(with: "session_") }
+
+            for fileURL in sessionFiles {
+                // Extract session ID from filename
+                let filename = fileURL.deletingPathExtension().lastPathComponent
+                if let sessionID = filename.split(separator: "_").last {
+                    print("💾 Found previous session file: \(filename)")
+
+                    PHPhotoLibrary.requestAuthorization { status in
+                        guard status == .authorized else { return }
+
+                        PHPhotoLibrary.shared().performChanges({
+                            PHAssetCreationRequest.creationRequestForAssetFromVideo(atFileURL: fileURL)
+                        }, completionHandler: { success, error in
+                            if success {
+                                try? FileManager.default.removeItem(at: fileURL)
+                                print("✅ Previous session \(sessionID) saved to Photos and deleted")
+                            } else {
+                                print("❌ Failed to save previous session: \(error?.localizedDescription ?? "Unknown")")
+                            }
+                        })
+                    }
+                }
+            }
+        } catch {
+            print("⚠️ Error checking for previous sessions: \(error)")
+        }
+    }
 }
 
 extension CameraManager: RecognitionManagerDelegate {
@@ -176,5 +277,10 @@ extension CameraManager: RecognitionManagerDelegate {
 
     func didDeleteFrame() {
         deleteCurrentFrame()
+    }
+
+    func didRequestSave() {
+        // This will be handled in ContentView
+        NotificationCenter.default.post(name: NSNotification.Name("SaveToPhotos"), object: nil)
     }
 }

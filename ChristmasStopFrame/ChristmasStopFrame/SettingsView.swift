@@ -55,6 +55,41 @@ struct SettingsView: View {
                     }
                 }
 
+                Section(header: Text("Camera")) {
+                    HStack {
+                        Text("Zoom")
+                        Spacer()
+                        Text("\(settings.zoomFactor, specifier: "%.1f")x")
+                            .foregroundColor(.gray)
+                    }
+                    Slider(value: $settings.zoomFactor, in: 1.0...3.0, step: 0.1)
+                }
+
+                Section(header: Text("Frame Overlay")) {
+                    HStack {
+                        Text("Top Thickness")
+                        Spacer()
+                        Text("\(Int(settings.frameTopThickness))px")
+                            .foregroundColor(.gray)
+                    }
+                    Slider(value: $settings.frameTopThickness, in: 0...200, step: 10)
+
+                    HStack {
+                        Text("Bottom Thickness")
+                        Spacer()
+                        Text("\(Int(settings.frameBottomThickness))px")
+                            .foregroundColor(.gray)
+                    }
+                    Slider(value: $settings.frameBottomThickness, in: 0...200, step: 10)
+                }
+
+                Section(header: Text("Playback")) {
+                    Toggle("6 FPS (slower)", isOn: Binding(
+                        get: { settings.frameRate == 6.0 },
+                        set: { settings.frameRate = $0 ? 6.0 : 12.0 }
+                    ))
+                }
+
                 Section(header: Text("About")) {
                     HStack {
                         Text("App Name")
@@ -80,5 +115,6 @@ struct SettingsView: View {
                 }
             }
         }
+        .rotationEffect(.degrees(180))
     }
 }

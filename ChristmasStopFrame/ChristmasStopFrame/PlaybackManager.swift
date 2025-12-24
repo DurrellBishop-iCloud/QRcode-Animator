@@ -13,11 +13,11 @@ class PlaybackManager: ObservableObject {
     @Published var isPlaying = false
 
     private var playbackTimer: Timer?
-    private var framesPerSecond: Double = 12.0
     private var playbackFrameIndex = 0
 
     var frames: [UIImage] = []
     var currentFrameIndex: Int = 0
+    private let settings = SettingsManager.shared
 
     func setFrames(_ frames: [UIImage], startIndex: Int = 0) {
         self.frames = frames
@@ -40,7 +40,7 @@ class PlaybackManager: ObservableObject {
         isPlaying = true
         playbackTimer?.invalidate()
 
-        playbackTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / framesPerSecond, repeats: true) { [weak self] _ in
+        playbackTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / settings.frameRate, repeats: true) { [weak self] _ in
             guard let self = self else { return }
 
             self.playbackFrameIndex = (self.playbackFrameIndex + 1) % self.frames.count

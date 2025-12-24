@@ -21,12 +21,15 @@ class CameraManager: NSObject, ObservableObject {
     @Published var isViewingLiveFeed: Bool = true  // true = live feed, false = viewing static frame
 
     private let videoDataOutputQueue = DispatchQueue(label: "videoDataOutputQueue")
+    private let settings = SettingsManager.shared
+    private var cancellables = Set<AnyCancellable>()
 
     var frameProcessor: ((CVPixelBuffer) -> Void)?
 
     override init() {
         super.init()
         setupCamera()
+        observeSettings()
     }
 
     private func setupCamera() {
@@ -64,7 +67,7 @@ class CameraManager: NSObject, ObservableObject {
             }
 
             let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-            previewLayer.videoGravity = .resizeAspectFill
+            previewLayer.videoGravity = .resizeAspect
 
             self.captureSession = captureSession
             self.currentCamera = camera
@@ -72,10 +75,40 @@ class CameraManager: NSObject, ObservableObject {
             self.videoOutput = videoOutput
             self.previewLayer = previewLayer
 
+            // Set initial zoom factor
+            applyZoomFactor(settings.zoomFactor)
+
             print("✅ Camera setup complete - preview layer ready")
 
         } catch {
             print("Error setting up camera: \(error)")
+        }
+    }
+
+    private func observeSettings() {
+        settings.$zoomFactor
+            .sink { [weak self] zoomFactor in
+                self?.applyZoomFactor(zoomFactor)
+            }
+            .store(in: &cancellables)
+    }
+
+    private func applyZoomFactor(_ zoomFactor: Double) {
+        guard let camera = currentCamera else { return }
+
+        do {
+            try camera.lockForConfiguration()
+
+            // Clamp zoom factor to device capabilities
+            let maxZoom = min(camera.activeFormat.videoMaxZoomFactor, 5.0)
+            let clampedZoom = min(max(zoomFactor, 1.0), maxZoom)
+
+            camera.videoZoomFactor = clampedZoom
+            print("🔍 Zoom set to \(clampedZoom)x (max: \(maxZoom)x)")
+
+            camera.unlockForConfiguration()
+        } catch {
+            print("⚠️ Error setting zoom: \(error)")
         }
     }
 
@@ -142,10 +175,11 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
         }
 
         DispatchQueue.main.async {
+            print("📸 Photo captured - size: \(image.size.width)x\(image.size.height), aspect ratio: \(image.size.width/image.size.height)")
             self.capturedPhotos.append(image)
             self.currentFrameIndex = self.capturedPhotos.count - 1
             self.isViewingLiveFeed = true  // Always return to live feed after capture
-            print("📸 Photo captured - total: \(self.capturedPhotos.count), returned to live feed")
+            print("📸 Total frames: \(self.capturedPhotos.count), returned to live feed")
         }
     }
 }

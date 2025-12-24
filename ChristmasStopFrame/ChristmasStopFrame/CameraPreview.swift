@@ -16,11 +16,16 @@ struct CameraPreview: UIViewRepresentable {
         view.backgroundColor = .black
 
         previewLayer.frame = view.bounds
-        previewLayer.videoGravity = .resizeAspectFill
+        previewLayer.videoGravity = .resizeAspect
         view.layer.addSublayer(previewLayer)
 
-        print("📹 CameraPreview makeUIView - frame: \(view.bounds), layer frame: \(previewLayer.frame)")
-        print("📹 Preview layer connection: \(previewLayer.connection?.isEnabled ?? false), session running: \(previewLayer.session?.isRunning ?? false)")
+        print("📹 CameraPreview makeUIView:")
+        print("📹   - Initial frame: \(view.bounds)")
+        print("📹   - Layer frame: \(previewLayer.frame)")
+        print("📹   - VideoGravity: \(previewLayer.videoGravity)")
+        if let session = previewLayer.session {
+            print("📹   - Session preset: \(session.sessionPreset.rawValue)")
+        }
 
         return view
     }
@@ -28,12 +33,17 @@ struct CameraPreview: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: Context) {
         DispatchQueue.main.async {
             self.previewLayer.frame = uiView.bounds
-            print("📹 CameraPreview updateUIView - view bounds: \(uiView.bounds), layer frame: \(self.previewLayer.frame)")
-            print("📹 View isHidden: \(uiView.isHidden), alpha: \(uiView.alpha), superview: \(uiView.superview != nil)")
-            print("📹 Session running: \(self.previewLayer.session?.isRunning ?? false)")
 
             if let session = self.previewLayer.session {
-                print("📹 Session inputs: \(session.inputs.count), outputs: \(session.outputs.count)")
+                print("📹 CameraPreview updateUIView:")
+                print("📹   - View bounds: \(uiView.bounds)")
+                print("📹   - Layer frame: \(self.previewLayer.frame)")
+                print("📹   - VideoGravity: \(self.previewLayer.videoGravity)")
+                if let connection = self.previewLayer.connection {
+                    print("📹   - Video orientation: \(connection.videoOrientation.rawValue)")
+                }
+                print("📹   - Session preset: \(session.sessionPreset.rawValue)")
+                print("📹   - Session running: \(session.isRunning)")
             }
         }
     }

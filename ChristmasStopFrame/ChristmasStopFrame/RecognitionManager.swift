@@ -13,6 +13,7 @@ protocol RecognitionManagerDelegate: AnyObject {
     func didMoveBack()
     func didMoveForward()
     func didDeleteFrame()
+    func didRequestSave()
     var isViewingLiveFeed: Bool { get }
 }
 
@@ -48,13 +49,15 @@ class RecognitionManager: ObservableObject {
     }
 
     private func setupLookupTable() {
-        qrCodeLookup = [:]
+        qrCodeLookup = [
+            "save": "Saved - Start again"
+        ]
     }
 
     private func lookupDisplayText(for qrCode: String) -> String {
         let code = qrCode.lowercased()
 
-        // Hide system codes from display
+        // Hide system codes from display (except "save" which has custom text)
         if ["play", "back", "forward", "delete"].contains(code) {
             return ""
         }
@@ -162,6 +165,12 @@ extension RecognitionManager: RecognitionTechniqueDelegate {
                 }
             } else if code == "delete" {
                 self.delegate?.didDeleteFrame()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.detectedData = ""
+                    self.displayText = ""
+                }
+            } else if code == "save" {
+                self.delegate?.didRequestSave()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     self.detectedData = ""
                     self.displayText = ""

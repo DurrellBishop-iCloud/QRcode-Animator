@@ -10,38 +10,99 @@ import UIKit
 import Photos
 
 class MovieExporter {
-    static func exportToPhotos(frames: [UIImage], sessionID: String, frameRate: Double = 12.0, completion: @escaping (Bool, Error?) -> Void) {
+    static func saveToDocuments(frames: [UIImage], sessionID: String, frameRate: Double = 12.0, cropTop: Double = 0, cropBottom: Double = 0, completion: @escaping (Bool, Error?) -> Void) {
         guard !frames.isEmpty else {
             completion(false, NSError(domain: "MovieExporter", code: 1, userInfo: [NSLocalizedDescriptionKey: "No frames to export"]))
             return
         }
 
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let outputURL = documentsURL.appendingPathComponent("session_\(sessionID).mov")
+
+        createVideo(from: frames, outputURL: outputURL, frameRate: frameRate, cropTop: cropTop, cropBottom: cropBottom) { success, error in
+            completion(success, error)
+        }
+    }
+
+    static func exportDocumentsFileToPhotos(sessionID: String, completion: @escaping (Bool, Error?) -> Void) {
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let videoURL = documentsURL.appendingPathComponent("session_\(sessionID).mov")
+
+        guard FileManager.default.fileExists(atPath: videoURL.path) else {
+            completion(false, NSError(domain: "MovieExporter", code: 4, userInfo: [NSLocalizedDescriptionKey: "No session movie file found"]))
+            return
+        }
+
+        PHPhotoLibrary.requestAuthorization { status in
+            guard status == .authorized else {
+                completion(false, NSError(domain: "MovieExporter", code: 2, userInfo: [NSLocalizedDescriptionKey: "Photos permission denied"]))
+                return
+            }
+
+            PHPhotoLibrary.shared().performChanges({
+                PHAssetCreationRequest.creationRequestForAssetFromVideo(atFileURL: videoURL)
+            }, completionHandler: { success, error in
+                if success {
+                    // Delete the Documents file after successful save to Photos
+                    try? FileManager.default.removeItem(at: videoURL)
+                    print("💾 Saved session \(sessionID) to Photos and deleted local file")
+                }
+                completion(success, error)
+            })
+        }
+    }
+
+    static func exportToPhotos(frames: [UIImage], sessionID: String, frameRate: Double = 12.0, cropTop: Double = 0, cropBottom: Double = 0, replacingAsset: String? = nil, completion: @escaping (Bool, Error?, String?) -> Void) {
+        guard !frames.isEmpty else {
+            completion(false, NSError(domain: "MovieExporter", code: 1, userInfo: [NSLocalizedDescriptionKey: "No frames to export"]), nil)
+            return
+        }
+
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("temp_\(sessionID).mov")
 
-        createVideo(from: frames, outputURL: tempURL, frameRate: frameRate) { success, error in
+        createVideo(from: frames, outputURL: tempURL, frameRate: frameRate, cropTop: cropTop, cropBottom: cropBottom) { success, error in
             guard success, error == nil else {
-                completion(false, error)
+                completion(false, error, nil)
                 return
             }
 
             PHPhotoLibrary.requestAuthorization { status in
                 guard status == .authorized else {
-                    completion(false, NSError(domain: "MovieExporter", code: 2, userInfo: [NSLocalizedDescriptionKey: "Photos permission denied"]))
+                    completion(false, NSError(domain: "MovieExporter", code: 2, userInfo: [NSLocalizedDescriptionKey: "Photos permission denied"]), nil)
                     return
                 }
 
+                // Delete previous asset if it exists
+                if let assetID = replacingAsset {
+                    let fetchResult = PHAsset.fetchAssets(withLocalIdentifiers: [assetID], options: nil)
+                    if let assetToDelete = fetchResult.firstObject {
+                        PHPhotoLibrary.shared().performChanges({
+                            PHAssetChangeRequest.deleteAssets([assetToDelete] as NSArray)
+                        }, completionHandler: { success, error in
+                            if success {
+                                print("🗑️ Deleted previous movie (asset: \(assetID))")
+                            } else {
+                                print("⚠️ Failed to delete previous movie: \(error?.localizedDescription ?? "Unknown error")")
+                            }
+                        })
+                    }
+                }
+
+                // Save new asset
+                var newAssetIdentifier: String?
                 PHPhotoLibrary.shared().performChanges({
                     let request = PHAssetCreationRequest.forAsset()
                     request.addResource(with: .video, fileURL: tempURL, options: nil)
+                    newAssetIdentifier = request.placeholderForCreatedAsset?.localIdentifier
                 }, completionHandler: { success, error in
                     try? FileManager.default.removeItem(at: tempURL)
-                    completion(success, error)
+                    completion(success, error, newAssetIdentifier)
                 })
             }
         }
     }
 
-    private static func createVideo(from frames: [UIImage], outputURL: URL, frameRate: Double, completion: @escaping (Bool, Error?) -> Void) {
+    private static func createVideo(from frames: [UIImage], outputURL: URL, frameRate: Double, cropTop: Double, cropBottom: Double, completion: @escaping (Bool, Error?) -> Void) {
         try? FileManager.default.removeItem(at: outputURL)
 
         guard let firstFrame = frames.first else {
@@ -49,7 +110,14 @@ class MovieExporter {
             return
         }
 
-        let size = firstFrame.size
+        let originalSize = firstFrame.size
+        let croppedHeight = originalSize.height - cropTop - cropBottom
+        let size = CGSize(width: originalSize.width, height: croppedHeight)
+
+        print("🎬 Creating video:")
+        print("   - Original size: \(originalSize)")
+        print("   - Crop top: \(cropTop), bottom: \(cropBottom)")
+        print("   - Output size: \(size)")
         let videoWriter: AVAssetWriter
         do {
             videoWriter = try AVAssetWriter(outputURL: outputURL, fileType: .mov)
@@ -88,7 +156,7 @@ class MovieExporter {
             while videoWriterInput.isReadyForMoreMediaData && frameCount < frames.count {
                 let presentationTime = CMTime(value: Int64(frameCount), timescale: Int32(frameRate))
 
-                if let pixelBuffer = frames[frameCount].pixelBuffer() {
+                if let pixelBuffer = frames[frameCount].pixelBuffer(cropTop: cropTop, cropBottom: cropBottom) {
                     pixelBufferAdaptor.append(pixelBuffer, withPresentationTime: presentationTime)
                 }
 
@@ -110,9 +178,13 @@ class MovieExporter {
 }
 
 extension UIImage {
-    func pixelBuffer() -> CVPixelBuffer? {
-        let width = Int(size.width)
-        let height = Int(size.height)
+    func pixelBuffer(cropTop: Double = 0, cropBottom: Double = 0) -> CVPixelBuffer? {
+        let originalWidth = Int(size.width)
+        let originalHeight = Int(size.height)
+        let croppedHeight = originalHeight - Int(cropTop) - Int(cropBottom)
+
+        let width = originalWidth
+        let height = croppedHeight
 
         let attributes: [String: Any] = [
             kCVPixelBufferCGImageCompatibilityKey as String: true,
@@ -150,13 +222,18 @@ extension UIImage {
             return nil
         }
 
-        // Rotate 180 degrees and flip horizontal
+        // Flip horizontal to match on-screen display
         context.translateBy(x: CGFloat(width), y: 0)
         context.scaleBy(x: -1.0, y: 1.0)
 
         UIGraphicsPushContext(context)
-        draw(in: CGRect(x: 0, y: 0, width: width, height: height))
+        // Draw the image at offset to crop top portion
+        let drawRect = CGRect(x: 0, y: -cropTop, width: CGFloat(originalWidth), height: CGFloat(originalHeight))
+        draw(in: drawRect)
         UIGraphicsPopContext()
+
+        print("   - Drawing: offset y: \(-cropTop), rect: \(drawRect)")
+        print("   - Transform: translate(\(width), 0), scale(-1, 1)")
 
         CVPixelBufferUnlockBaseAddress(buffer, [])
 

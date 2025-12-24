@@ -17,6 +17,10 @@ class SettingsManager: ObservableObject {
         static let targetColorRed = "targetColorRed"
         static let targetColorGreen = "targetColorGreen"
         static let targetColorBlue = "targetColorBlue"
+        static let frameTopThickness = "frameTopThickness"
+        static let frameBottomThickness = "frameBottomThickness"
+        static let frameRate = "frameRate"
+        static let zoomFactor = "zoomFactor"
     }
 
     @Published var recognitionType: RecognitionType {
@@ -39,6 +43,30 @@ class SettingsManager: ObservableObject {
         }
     }
 
+    @Published var frameTopThickness: Double {
+        didSet {
+            UserDefaults.standard.set(frameTopThickness, forKey: Keys.frameTopThickness)
+        }
+    }
+
+    @Published var frameBottomThickness: Double {
+        didSet {
+            UserDefaults.standard.set(frameBottomThickness, forKey: Keys.frameBottomThickness)
+        }
+    }
+
+    @Published var frameRate: Double {
+        didSet {
+            UserDefaults.standard.set(frameRate, forKey: Keys.frameRate)
+        }
+    }
+
+    @Published var zoomFactor: Double {
+        didSet {
+            UserDefaults.standard.set(zoomFactor, forKey: Keys.zoomFactor)
+        }
+    }
+
     private init() {
         let savedTypeString = UserDefaults.standard.string(forKey: Keys.recognitionType) ?? RecognitionType.qrCode.rawValue
         self.recognitionType = RecognitionType(rawValue: savedTypeString) ?? .qrCode
@@ -49,5 +77,10 @@ class SettingsManager: ObservableObject {
         let green = UserDefaults.standard.object(forKey: Keys.targetColorGreen) as? Double ?? 0.0
         let blue = UserDefaults.standard.object(forKey: Keys.targetColorBlue) as? Double ?? 0.0
         self.targetColor = (red, green, blue)
+
+        self.frameTopThickness = UserDefaults.standard.object(forKey: Keys.frameTopThickness) as? Double ?? 80.0
+        self.frameBottomThickness = UserDefaults.standard.object(forKey: Keys.frameBottomThickness) as? Double ?? 80.0
+        self.frameRate = UserDefaults.standard.object(forKey: Keys.frameRate) as? Double ?? 12.0
+        self.zoomFactor = UserDefaults.standard.object(forKey: Keys.zoomFactor) as? Double ?? 1.0
     }
 }
