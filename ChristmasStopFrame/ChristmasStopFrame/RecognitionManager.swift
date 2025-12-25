@@ -10,6 +10,7 @@ import Combine
 
 protocol RecognitionManagerDelegate: AnyObject {
     func didCapturePhoto()
+    func didCaptureLongPhoto()
     func didMoveBack()
     func didMoveForward()
     func didDeleteFrame()
@@ -40,6 +41,8 @@ class RecognitionManager: ObservableObject {
     private let settings = SettingsManager.shared
 
     private var qrCodeLookup: [String: String] = [:]
+    private var longCaptureCount: Int = 0
+    private var longCaptureTimer: Timer?
 
     init() {
         setupLookupTable()
@@ -58,7 +61,7 @@ class RecognitionManager: ObservableObject {
         let code = qrCode.lowercased()
 
         // Hide system codes from display (except "save" which has custom text)
-        if ["play", "back", "forward", "delete"].contains(code) {
+        if ["play", "back", "forward", "delete", "kaleidoscope", "long"].contains(code) {
             return ""
         }
 
@@ -175,6 +178,22 @@ extension RecognitionManager: RecognitionTechniqueDelegate {
                     self.detectedData = ""
                     self.displayText = ""
                 }
+            } else if code == "kaleidoscope" {
+                self.settings.kaleidoscopeEnabled.toggle()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.detectedData = ""
+                    self.displayText = ""
+                }
+            } else if code == "long" {
+                // Use timer like normal capture
+                self.lostTargetTimer = Timer.scheduledTimer(withTimeInterval: self.settings.captureDelay, repeats: false) { [weak self] _ in
+                    guard let self = self else { return }
+                    self.startLongCapture()
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.detectedData = ""
+                    self.displayText = ""
+                }
             } else if self.currentMode == "Make" && (self.delegate?.isViewingLiveFeed ?? true) {
                 // Only capture when viewing live feed
                 self.lostTargetTimer = Timer.scheduledTimer(withTimeInterval: self.settings.captureDelay, repeats: false) { [weak self] _ in
@@ -217,6 +236,22 @@ extension RecognitionManager: RecognitionTechniqueDelegate {
             } else {
                 let lookupText = self.lookupDisplayText(for: data)
                 self.displayText = lookupText
+            }
+        }
+    }
+
+    private func startLongCapture() {
+        guard currentMode == "Make", delegate?.isViewingLiveFeed ?? true else { return }
+
+        // Capture one photo, then duplicate it 3 more times
+        self.shouldFlash = true
+        self.audioManager.playShutterSound()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.delegate?.didCaptureLongPhoto()
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.shouldFlash = false
             }
         }
     }

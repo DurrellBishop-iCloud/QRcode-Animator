@@ -21,6 +21,7 @@ class SettingsManager: ObservableObject {
         static let frameBottomThickness = "frameBottomThickness"
         static let frameRate = "frameRate"
         static let zoomFactor = "zoomFactor"
+        static let kaleidoscopeEnabled = "kaleidoscopeEnabled"
     }
 
     @Published var recognitionType: RecognitionType {
@@ -67,11 +68,17 @@ class SettingsManager: ObservableObject {
         }
     }
 
+    @Published var kaleidoscopeEnabled: Bool {
+        didSet {
+            UserDefaults.standard.set(kaleidoscopeEnabled, forKey: Keys.kaleidoscopeEnabled)
+        }
+    }
+
     private init() {
         let savedTypeString = UserDefaults.standard.string(forKey: Keys.recognitionType) ?? RecognitionType.qrCode.rawValue
         self.recognitionType = RecognitionType(rawValue: savedTypeString) ?? .qrCode
 
-        self.captureDelay = UserDefaults.standard.object(forKey: Keys.captureDelay) as? Double ?? 1.0
+        self.captureDelay = UserDefaults.standard.object(forKey: Keys.captureDelay) as? Double ?? 0.5
 
         let red = UserDefaults.standard.object(forKey: Keys.targetColorRed) as? Double ?? 1.0
         let green = UserDefaults.standard.object(forKey: Keys.targetColorGreen) as? Double ?? 0.0
@@ -82,5 +89,6 @@ class SettingsManager: ObservableObject {
         self.frameBottomThickness = UserDefaults.standard.object(forKey: Keys.frameBottomThickness) as? Double ?? 80.0
         self.frameRate = UserDefaults.standard.object(forKey: Keys.frameRate) as? Double ?? 12.0
         self.zoomFactor = UserDefaults.standard.object(forKey: Keys.zoomFactor) as? Double ?? 1.0
+        self.kaleidoscopeEnabled = UserDefaults.standard.bool(forKey: Keys.kaleidoscopeEnabled)
     }
 }

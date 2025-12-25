@@ -8,12 +8,13 @@
 import AVFoundation
 import UIKit
 import Combine
+import CoreImage
 
 class CameraManager: NSObject, ObservableObject {
     private var captureSession: AVCaptureSession?
     private var currentCamera: AVCaptureDevice?
     private var videoOutput: AVCaptureVideoDataOutput?
-    private var photoOutput: AVCapturePhotoOutput?
+    var photoOutput: AVCapturePhotoOutput?
 
     @Published var previewLayer: AVCaptureVideoPreviewLayer?
     @Published var capturedPhotos: [UIImage] = []
@@ -24,12 +25,33 @@ class CameraManager: NSObject, ObservableObject {
     private let settings = SettingsManager.shared
     private var cancellables = Set<AnyCancellable>()
 
+    private let ciContext = CIContext()
+    private var kaleidoscopeFilter: CIFilter?
+    @Published var filteredPreviewImage: UIImage?
+    private var currentKaleidoscopeRotation: Double = 0
+    var isLongCapture: Bool = false
+
     var frameProcessor: ((CVPixelBuffer) -> Void)?
 
     override init() {
         super.init()
+        setupKaleidoscopeFilter()
         setupCamera()
         observeSettings()
+    }
+
+    private func setupKaleidoscopeFilter() {
+        // Try different kaleidoscope filters - TriangleKaleidoscope uses more of the image
+        kaleidoscopeFilter = CIFilter(name: "CITriangleKaleidoscope")
+
+        if kaleidoscopeFilter == nil {
+            kaleidoscopeFilter = CIFilter(name: "CIKaleidoscope")
+            kaleidoscopeFilter?.setValue(NSNumber(value: 6), forKey: "inputCount")
+        } else {
+            // Triangle kaleidoscope uses size and decay parameters
+            kaleidoscopeFilter?.setValue(NSNumber(value: 700), forKey: "inputSize")
+            kaleidoscopeFilter?.setValue(NSNumber(value: 0.85), forKey: "inputDecay")
+        }
     }
 
     private func setupCamera() {
@@ -89,6 +111,15 @@ class CameraManager: NSObject, ObservableObject {
         settings.$zoomFactor
             .sink { [weak self] zoomFactor in
                 self?.applyZoomFactor(zoomFactor)
+            }
+            .store(in: &cancellables)
+
+        settings.$kaleidoscopeEnabled
+            .sink { [weak self] enabled in
+                if enabled {
+                    // Generate new random rotation when kaleidoscope is enabled
+                    self?.currentKaleidoscopeRotation = Double.random(in: 0...(2 * .pi))
+                }
             }
             .store(in: &cancellables)
     }
@@ -157,7 +188,46 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
             return
         }
 
+        // Process frame for QR code recognition (always use original)
         frameProcessor?(pixelBuffer)
+
+        // If kaleidoscope is enabled, process for preview display
+        if settings.kaleidoscopeEnabled {
+            let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+            if let filtered = applyKaleidoscopeFilter(to: ciImage) {
+                DispatchQueue.main.async {
+                    self.filteredPreviewImage = filtered
+                }
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.filteredPreviewImage = nil
+            }
+        }
+    }
+
+    private func applyKaleidoscopeFilter(to image: CIImage) -> UIImage? {
+        guard let filter = kaleidoscopeFilter else { return nil }
+
+        filter.setValue(image, forKey: kCIInputImageKey)
+
+        // Different parameters for different filter types
+        if filter.name == "CITriangleKaleidoscope" {
+            let center = CIVector(x: image.extent.width / 2, y: image.extent.height / 2)
+            filter.setValue(center, forKey: "inputPoint")
+            filter.setValue(NSNumber(value: currentKaleidoscopeRotation), forKey: "inputRotation")
+        } else {
+            let center = CIVector(x: image.extent.width / 2, y: image.extent.height / 2)
+            filter.setValue(center, forKey: "inputCenter")
+            filter.setValue(NSNumber(value: currentKaleidoscopeRotation), forKey: "inputAngle")
+        }
+
+        guard let outputImage = filter.outputImage,
+              let cgImage = ciContext.createCGImage(outputImage.cropped(to: image.extent), from: image.extent) else {
+            return nil
+        }
+
+        return UIImage(cgImage: cgImage)
     }
 }
 
@@ -169,14 +239,33 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
         }
 
         guard let imageData = photo.fileDataRepresentation(),
-              let image = UIImage(data: imageData) else {
+              var image = UIImage(data: imageData) else {
             print("Could not convert photo to image")
             return
         }
 
+        // Apply kaleidoscope filter if enabled
+        if settings.kaleidoscopeEnabled, let ciImage = CIImage(image: image) {
+            if let filtered = applyKaleidoscopeFilter(to: ciImage) {
+                image = filtered
+            }
+        }
+
         DispatchQueue.main.async {
             print("📸 Photo captured - size: \(image.size.width)x\(image.size.height), aspect ratio: \(image.size.width/image.size.height)")
-            self.capturedPhotos.append(image)
+
+            if self.isLongCapture {
+                // Add the same photo 4 times
+                for _ in 0..<4 {
+                    self.capturedPhotos.append(image)
+                }
+                print("📸 Long capture: added 4 identical frames")
+                self.isLongCapture = false
+            } else {
+                // Normal capture: add once
+                self.capturedPhotos.append(image)
+            }
+
             self.currentFrameIndex = self.capturedPhotos.count - 1
             self.isViewingLiveFeed = true  // Always return to live feed after capture
             print("📸 Total frames: \(self.capturedPhotos.count), returned to live feed")

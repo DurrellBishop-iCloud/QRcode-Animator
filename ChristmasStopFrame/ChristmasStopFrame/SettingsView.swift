@@ -56,6 +56,8 @@ struct SettingsView: View {
                 }
 
                 Section(header: Text("Camera")) {
+                    Toggle("Kaleidoscope Effect", isOn: $settings.kaleidoscopeEnabled)
+
                     HStack {
                         Text("Zoom")
                         Spacer()

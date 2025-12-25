@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 extension CameraManager {
     func moveBack() {
@@ -87,5 +88,16 @@ extension CameraManager {
             currentFrameIndex = capturedPhotos.count - 1
             isViewingLiveFeed = false
         }
+    }
+
+    func captureLongPhoto() {
+        guard let output = photoOutput else { return }
+
+        isLongCapture = true
+        let settings = AVCapturePhotoSettings()
+        settings.flashMode = .off
+
+        // Capture one photo, then the delegate will duplicate it 3 more times
+        output.capturePhoto(with: settings, delegate: self)
     }
 }

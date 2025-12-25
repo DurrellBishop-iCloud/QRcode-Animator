@@ -24,9 +24,29 @@ struct ContentView: View {
                 CameraPreview(previewLayer: previewLayer)
                     .id("camera-preview-stable")  // Stable ID prevents recreation
                     .ignoresSafeArea()
+                    .opacity(settings.kaleidoscopeEnabled ? 0 : 1)  // Hide when kaleidoscope active
                     .onTapGesture(count: 2) {
                         showSettings = true
                     }
+            }
+
+            // Kaleidoscope filtered preview overlay (when kaleidoscope is enabled and viewing live feed)
+            if settings.kaleidoscopeEnabled && recognitionManager.currentMode == "Make" && cameraManager.isViewingLiveFeed {
+                if let filteredImage = cameraManager.filteredPreviewImage {
+                    ZStack {
+                        Color.black
+                            .ignoresSafeArea()
+
+                        Image(uiImage: filteredImage)
+                            .resizable()
+                            .aspectRatio(9/16, contentMode: .fit)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .scaleEffect(x: -1, y: 1)
+                    }
+                    .onTapGesture(count: 2) {
+                        showSettings = true
+                    }
+                }
             }
 
             // Static frame overlay (when viewing old frames in Make mode)
@@ -173,8 +193,8 @@ struct ContentView: View {
                         frames: cameraManager.capturedPhotos,
                         sessionID: sessionID,
                         frameRate: settings.frameRate,
-                        cropTop: settings.frameTopThickness,
-                        cropBottom: settings.frameBottomThickness
+                        cropTop: settings.frameBottomThickness,
+                        cropBottom: settings.frameTopThickness
                     ) { success, error in
                         if success {
                             print("✅ Movie saved to Documents (session: \(sessionID))")
@@ -204,19 +224,44 @@ struct ContentView: View {
 
     private func saveToPhotosAndResetSession() {
         print("💾 Save QR code detected - saving to Photos and starting new session")
-        MovieExporter.exportDocumentsFileToPhotos(sessionID: sessionID) { success, error in
+
+        guard !cameraManager.capturedPhotos.isEmpty else {
+            print("⚠️ No frames to save")
+            return
+        }
+
+        // Capture current session ID before async operations
+        let currentSessionID = sessionID
+
+        // First, create the movie file in Documents
+        print("📹 Creating movie from \(cameraManager.capturedPhotos.count) frames...")
+        MovieExporter.saveToDocuments(
+            frames: cameraManager.capturedPhotos,
+            sessionID: currentSessionID,
+            frameRate: settings.frameRate,
+            cropTop: settings.frameBottomThickness,
+            cropBottom: settings.frameTopThickness
+        ) { success, error in
             if success {
-                print("✅ Session \(sessionID) saved to Photos")
-                // Start new session
-                DispatchQueue.main.async {
-                    sessionID = UUID().uuidString
-                    cameraManager.capturedPhotos.removeAll()
-                    cameraManager.currentFrameIndex = 0
-                    cameraManager.isViewingLiveFeed = true
-                    print("🆕 New session started: \(sessionID)")
+                print("✅ Movie created in Documents")
+                // Now export to Photos
+                MovieExporter.exportDocumentsFileToPhotos(sessionID: currentSessionID) { success, error in
+                    if success {
+                        print("✅ Session \(currentSessionID) saved to Photos")
+                        // Start new session
+                        DispatchQueue.main.async {
+                            self.sessionID = UUID().uuidString
+                            self.cameraManager.capturedPhotos.removeAll()
+                            self.cameraManager.currentFrameIndex = 0
+                            self.cameraManager.isViewingLiveFeed = true
+                            print("🆕 New session started: \(self.sessionID)")
+                        }
+                    } else {
+                        print("❌ Save to Photos failed: \(error?.localizedDescription ?? "Unknown error")")
+                    }
                 }
             } else {
-                print("❌ Save to Photos failed: \(error?.localizedDescription ?? "Unknown error")")
+                print("❌ Movie creation failed: \(error?.localizedDescription ?? "Unknown error")")
             }
         }
     }
@@ -265,6 +310,10 @@ struct ContentView: View {
 extension CameraManager: RecognitionManagerDelegate {
     func didCapturePhoto() {
         capturePhoto()
+    }
+
+    func didCaptureLongPhoto() {
+        captureLongPhoto()
     }
 
     func didMoveBack() {
