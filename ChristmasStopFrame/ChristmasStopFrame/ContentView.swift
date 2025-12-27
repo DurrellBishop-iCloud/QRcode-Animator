@@ -84,20 +84,22 @@ struct ContentView: View {
                 }
             }
 
-            // Black frame overlay (always present, on top of camera/playback, behind UI)
-            VStack(spacing: 0) {
-                Rectangle()
-                    .fill(Color.black)
-                    .frame(height: settings.frameTopThickness)
+            // Black frame overlay (hidden when settings open)
+            if !showSettings {
+                VStack(spacing: 0) {
+                    Rectangle()
+                        .fill(Color.black)
+                        .frame(height: settings.frameTopThickness)
 
-                Spacer()
+                    Spacer()
 
-                Rectangle()
-                    .fill(Color.black)
-                    .frame(height: settings.frameBottomThickness)
+                    Rectangle()
+                        .fill(Color.black)
+                        .frame(height: settings.frameBottomThickness)
+                }
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
             }
-            .ignoresSafeArea()
-            .allowsHitTesting(false)
 
             // Flash overlay for Make mode
             if shouldFlash && recognitionManager.currentMode == "Make" {
@@ -105,6 +107,31 @@ struct ContentView: View {
                     .ignoresSafeArea()
                     .opacity(0.8)
             }
+
+            // Test circles at screen corners (very front)
+            VStack {
+                HStack {
+                    Circle()
+                        .fill(Color.yellow)
+                        .frame(width: 20, height: 20)
+                    Spacer()
+                    Circle()
+                        .fill(Color.yellow)
+                        .frame(width: 20, height: 20)
+                }
+                Spacer()
+                HStack {
+                    Circle()
+                        .fill(Color.yellow)
+                        .frame(width: 20, height: 20)
+                    Spacer()
+                    Circle()
+                        .fill(Color.yellow)
+                        .frame(width: 20, height: 20)
+                }
+            }
+            .ignoresSafeArea()
+            .allowsHitTesting(false)
 
             // UI overlay (always present)
             VStack(alignment: .leading, spacing: 0) {
@@ -135,7 +162,7 @@ struct ContentView: View {
                             .padding(.trailing, 20)
                     }
                 }
-                .padding(.top, 10)  // Reduced padding moves text "up" on rotated screen, aligned for all elements
+                .padding(.top, 10)
 
                 Text(recognitionManager.displayText)
                     .font(.custom("Helvetica", size: 40))
@@ -144,6 +171,7 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
 
                 Spacer()
+                    .frame(minHeight: 370)
             }
             .rotationEffect(.degrees(180))
             .onAppear {
