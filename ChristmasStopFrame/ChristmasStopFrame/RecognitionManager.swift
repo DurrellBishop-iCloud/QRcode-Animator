@@ -44,6 +44,7 @@ class RecognitionManager: ObservableObject {
     private var qrCodeLookup: [String: String] = [:]
     private var longCaptureCount: Int = 0
     private var longCaptureTimer: Timer?
+    private var lastShareTime: Date = Date.distantPast
 
     init() {
         setupLookupTable()
@@ -54,15 +55,16 @@ class RecognitionManager: ObservableObject {
 
     private func setupLookupTable() {
         qrCodeLookup = [
-            "save": "Saved - Start again"
+            "save": "Saved - Start again",
+            "share": "Share"
         ]
     }
 
     private func lookupDisplayText(for qrCode: String) -> String {
         let code = qrCode.lowercased()
 
-        // Hide system codes from display (except "save" which has custom text)
-        if ["play", "back", "forward", "delete", "kaleidoscope", "long", "share"].contains(code) {
+        // Hide system codes from display (except "save" and "share" which have custom text)
+        if ["play", "back", "forward", "delete", "kaleidoscope", "long"].contains(code) {
             return ""
         }
 
@@ -180,7 +182,12 @@ extension RecognitionManager: RecognitionTechniqueDelegate {
                     self.displayText = ""
                 }
             } else if code == "share" {
-                self.delegate?.didRequestShare()
+                // Only share if at least 2 seconds have passed since last share
+                let timeSinceLastShare = Date().timeIntervalSince(self.lastShareTime)
+                if timeSinceLastShare > 2.0 {
+                    self.lastShareTime = Date()
+                    self.delegate?.didRequestShare()
+                }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     self.detectedData = ""
                     self.displayText = ""

@@ -77,17 +77,18 @@ class ImageBroadcaster: ObservableObject {
         request.timeoutInterval = 30.0  // Longer timeout for video files
 
         // Send video
-        print("📡 ImageBroadcaster: Starting upload task")
+        let uploadStart = Date()
+        print("📤 SEND: Starting upload of \(videoData.count) bytes to \(url)")
         let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
-            print("📡 ImageBroadcaster: Upload completed")
+            let uploadTime = Date().timeIntervalSince(uploadStart)
+
             if let error = error {
-                print("📡 ImageBroadcaster: Error - \(error.localizedDescription)")
-            }
-            if let httpResponse = response as? HTTPURLResponse {
-                print("📡 ImageBroadcaster: Response status: \(httpResponse.statusCode)")
-            }
-            if let data = data, let responseString = String(data: data, encoding: .utf8) {
-                print("📡 ImageBroadcaster: Response body: \(responseString)")
+                print("📤 RECV: Error after \(String(format: "%.2f", uploadTime))s - \(error.localizedDescription)")
+            } else if let httpResponse = response as? HTTPURLResponse {
+                print("📤 RECV: Status \(httpResponse.statusCode) after \(String(format: "%.2f", uploadTime))s")
+                if let data = data, let responseString = String(data: data, encoding: .utf8) {
+                    print("📤 RECV: Body - \(responseString)")
+                }
             }
 
             DispatchQueue.main.async {
@@ -98,7 +99,7 @@ class ImageBroadcaster: ObservableObject {
                     if httpResponse.statusCode == 200 {
                         self?.isConnected = true
                         self?.lastError = nil
-                        print("📡 ImageBroadcaster: Upload successful!")
+                        print("📤 DONE: Upload successful")
                     } else {
                         self?.lastError = "Server error: \(httpResponse.statusCode)"
                         self?.isConnected = false
@@ -107,7 +108,7 @@ class ImageBroadcaster: ObservableObject {
             }
         }
         task.resume()
-        print("📡 ImageBroadcaster: Task resumed")
+        print("📤 SEND: Task started")
     }
 
     func sendImage(_ image: UIImage) {

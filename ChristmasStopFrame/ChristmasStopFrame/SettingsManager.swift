@@ -23,6 +23,10 @@ class SettingsManager: ObservableObject {
         static let zoomFactor = "zoomFactor"
         static let kaleidoscopeEnabled = "kaleidoscopeEnabled"
         static let serverAddress = "serverAddress"
+        static let onionSkinEnabled = "onionSkinEnabled"
+        static let onionSkinOffsetX = "onionSkinOffsetX"
+        static let onionSkinOffsetY = "onionSkinOffsetY"
+        static let onionSkinOpacity = "onionSkinOpacity"
     }
 
     @Published var recognitionType: RecognitionType {
@@ -81,6 +85,30 @@ class SettingsManager: ObservableObject {
         }
     }
 
+    @Published var onionSkinEnabled: Bool {
+        didSet {
+            UserDefaults.standard.set(onionSkinEnabled, forKey: Keys.onionSkinEnabled)
+        }
+    }
+
+    @Published var onionSkinOffsetX: Double {
+        didSet {
+            UserDefaults.standard.set(onionSkinOffsetX, forKey: Keys.onionSkinOffsetX)
+        }
+    }
+
+    @Published var onionSkinOffsetY: Double {
+        didSet {
+            UserDefaults.standard.set(onionSkinOffsetY, forKey: Keys.onionSkinOffsetY)
+        }
+    }
+
+    @Published var onionSkinOpacity: Double {
+        didSet {
+            UserDefaults.standard.set(onionSkinOpacity, forKey: Keys.onionSkinOpacity)
+        }
+    }
+
     private init() {
         let savedTypeString = UserDefaults.standard.string(forKey: Keys.recognitionType) ?? RecognitionType.qrCode.rawValue
         self.recognitionType = RecognitionType(rawValue: savedTypeString) ?? .qrCode
@@ -98,5 +126,9 @@ class SettingsManager: ObservableObject {
         self.zoomFactor = UserDefaults.standard.object(forKey: Keys.zoomFactor) as? Double ?? 1.3
         self.kaleidoscopeEnabled = UserDefaults.standard.bool(forKey: Keys.kaleidoscopeEnabled)
         self.serverAddress = UserDefaults.standard.string(forKey: Keys.serverAddress) ?? "192.168.1.198:8080"
+        self.onionSkinEnabled = UserDefaults.standard.object(forKey: Keys.onionSkinEnabled) as? Bool ?? true
+        self.onionSkinOffsetX = UserDefaults.standard.object(forKey: Keys.onionSkinOffsetX) as? Double ?? 0.0
+        self.onionSkinOffsetY = UserDefaults.standard.object(forKey: Keys.onionSkinOffsetY) as? Double ?? 0.0
+        self.onionSkinOpacity = UserDefaults.standard.object(forKey: Keys.onionSkinOpacity) as? Double ?? 0.5
     }
 }

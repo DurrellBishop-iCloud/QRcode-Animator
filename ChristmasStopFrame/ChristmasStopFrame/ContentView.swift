@@ -22,12 +22,30 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
+                // Onion skin layer (last captured photo as reference)
+                if settings.onionSkinEnabled && recognitionManager.currentMode == "Make" && cameraManager.isViewingLiveFeed && !cameraManager.capturedPhotos.isEmpty {
+                    if let lastPhoto = cameraManager.capturedPhotos.last {
+                        ZStack {
+                            Color.black
+                                .ignoresSafeArea()
+
+                            Image(uiImage: lastPhoto)
+                                .resizable()
+                                .aspectRatio(9/16, contentMode: .fit)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .ignoresSafeArea()
+                                .scaleEffect(x: -1, y: 1)
+                                .offset(x: settings.onionSkinOffsetX, y: settings.onionSkinOffsetY)
+                        }
+                    }
+                }
+
                 // Camera preview ALWAYS present (never remove from hierarchy)
                 if let previewLayer = cameraManager.previewLayer {
                     CameraPreview(previewLayer: previewLayer)
                         .id("camera-preview-stable")
                         .ignoresSafeArea()
-                        .opacity(settings.kaleidoscopeEnabled ? 0 : 1)
+                        .opacity(settings.kaleidoscopeEnabled ? 0 : (settings.onionSkinEnabled && recognitionManager.currentMode == "Make" && cameraManager.isViewingLiveFeed ? settings.onionSkinOpacity : 1))
                         .onTapGesture(count: 2) {
                             showSettings = true
                         }
@@ -108,31 +126,6 @@ struct ContentView: View {
                     .opacity(0.8)
             }
 
-            // Test circles at screen corners (very front)
-            VStack {
-                HStack {
-                    Circle()
-                        .fill(Color.yellow)
-                        .frame(width: 20, height: 20)
-                    Spacer()
-                    Circle()
-                        .fill(Color.yellow)
-                        .frame(width: 20, height: 20)
-                }
-                Spacer()
-                HStack {
-                    Circle()
-                        .fill(Color.yellow)
-                        .frame(width: 20, height: 20)
-                    Spacer()
-                    Circle()
-                        .fill(Color.yellow)
-                        .frame(width: 20, height: 20)
-                }
-            }
-            .ignoresSafeArea()
-            .allowsHitTesting(false)
-
             // UI overlay (always present)
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .center) {
@@ -171,7 +164,7 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
 
                 Spacer()
-                    .frame(minHeight: 370)
+                    .frame(minHeight: 380)
             }
             .rotationEffect(.degrees(180))
             .onAppear {
@@ -179,6 +172,7 @@ struct ContentView: View {
                 print("📐 Captured screen size: \(screenSize)")
             }
             }
+            .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .onAppear {
             cameraManager.startSession()
@@ -283,12 +277,18 @@ struct ContentView: View {
     private func shareToServer() {
         guard !cameraManager.capturedPhotos.isEmpty else { return }
 
+        let shareStartTime = Date()
+        print("📤 SHARE: Starting share process with \(cameraManager.capturedPhotos.count) frames")
+
         let currentSessionID = sessionID
         let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let videoURL = documentsURL.appendingPathComponent("session_\(currentSessionID).mov")
 
         // Always regenerate video to apply current frame overlay settings
         try? FileManager.default.removeItem(at: videoURL)
+
+        let exportStartTime = Date()
+        print("📤 SHARE: Starting video export...")
 
         MovieExporter.saveToDocuments(
             frames: cameraManager.capturedPhotos,
@@ -298,8 +298,18 @@ struct ContentView: View {
             cropBottom: settings.frameBottomThickness,
             screenSize: screenSize
         ) { success, _ in
+            let exportDuration = Date().timeIntervalSince(exportStartTime)
+            print("📤 SHARE: Video export completed in \(String(format: "%.2f", exportDuration))s")
+
             if success {
+                let uploadStartTime = Date()
+                print("📤 SHARE: Starting upload to server...")
                 self.imageBroadcaster.sendVideo(fileURL: videoURL)
+
+                // Note: We can't measure upload completion time here since sendVideo is async
+                // But we can see the export time vs total time
+                let totalDuration = Date().timeIntervalSince(shareStartTime)
+                print("📤 SHARE: Upload initiated. Total time so far: \(String(format: "%.2f", totalDuration))s")
             }
         }
     }
