@@ -10,22 +10,9 @@
 		704BF3412EF851990045CC22 /* ChristmasStopFrame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChristmasStopFrame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		704BF3532EF8519A0045CC22 /* Exceptions for "ChristmasStopFrame" folder in "ChristmasStopFrame" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 704BF3402EF851990045CC22 /* ChristmasStopFrame */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		704BF3432EF851990045CC22 /* ChristmasStopFrame */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				704BF3532EF8519A0045CC22 /* Exceptions for "ChristmasStopFrame" folder in "ChristmasStopFrame" target */,
-			);
 			path = ChristmasStopFrame;
 			sourceTree = "<group>";
 		};
@@ -148,17 +135,12 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QSRLWD7WK6;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ChristmasStopFrame/Info.plist;
+				INFOPLIST_KEY_NSBonjourServices = _http._tcp;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Christmas Stop Frame needs camera access to capture stop-motion frames";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "This app needs local network access to broadcast animation frames to the Mac server for display.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Christmas Stop Frame needs to save your animations to Photos";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Christmas Stop Frame needs to access Photos to save your animations";
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UIRequiresFullScreen = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -188,17 +170,12 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QSRLWD7WK6;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ChristmasStopFrame/Info.plist;
+				INFOPLIST_KEY_NSBonjourServices = _http._tcp;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Christmas Stop Frame needs camera access to capture stop-motion frames";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "This app needs local network access to broadcast animation frames to the Mac server for display.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Christmas Stop Frame needs to save your animations to Photos";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Christmas Stop Frame needs to access Photos to save your animations";
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UIRequiresFullScreen = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

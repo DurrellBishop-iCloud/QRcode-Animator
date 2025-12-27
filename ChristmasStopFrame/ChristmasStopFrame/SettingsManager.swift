@@ -22,6 +22,7 @@ class SettingsManager: ObservableObject {
         static let frameRate = "frameRate"
         static let zoomFactor = "zoomFactor"
         static let kaleidoscopeEnabled = "kaleidoscopeEnabled"
+        static let serverAddress = "serverAddress"
     }
 
     @Published var recognitionType: RecognitionType {
@@ -74,6 +75,12 @@ class SettingsManager: ObservableObject {
         }
     }
 
+    @Published var serverAddress: String {
+        didSet {
+            UserDefaults.standard.set(serverAddress, forKey: Keys.serverAddress)
+        }
+    }
+
     private init() {
         let savedTypeString = UserDefaults.standard.string(forKey: Keys.recognitionType) ?? RecognitionType.qrCode.rawValue
         self.recognitionType = RecognitionType(rawValue: savedTypeString) ?? .qrCode
@@ -88,7 +95,8 @@ class SettingsManager: ObservableObject {
         self.frameTopThickness = UserDefaults.standard.object(forKey: Keys.frameTopThickness) as? Double ?? 80.0
         self.frameBottomThickness = UserDefaults.standard.object(forKey: Keys.frameBottomThickness) as? Double ?? 80.0
         self.frameRate = UserDefaults.standard.object(forKey: Keys.frameRate) as? Double ?? 12.0
-        self.zoomFactor = UserDefaults.standard.object(forKey: Keys.zoomFactor) as? Double ?? 1.0
+        self.zoomFactor = UserDefaults.standard.object(forKey: Keys.zoomFactor) as? Double ?? 1.3
         self.kaleidoscopeEnabled = UserDefaults.standard.bool(forKey: Keys.kaleidoscopeEnabled)
+        self.serverAddress = UserDefaults.standard.string(forKey: Keys.serverAddress) ?? "192.168.1.198:8080"
     }
 }

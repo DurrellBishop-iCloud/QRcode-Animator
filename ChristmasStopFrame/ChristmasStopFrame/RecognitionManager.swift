@@ -15,6 +15,7 @@ protocol RecognitionManagerDelegate: AnyObject {
     func didMoveForward()
     func didDeleteFrame()
     func didRequestSave()
+    func didRequestShare()
     var isViewingLiveFeed: Bool { get }
 }
 
@@ -61,7 +62,7 @@ class RecognitionManager: ObservableObject {
         let code = qrCode.lowercased()
 
         // Hide system codes from display (except "save" which has custom text)
-        if ["play", "back", "forward", "delete", "kaleidoscope", "long"].contains(code) {
+        if ["play", "back", "forward", "delete", "kaleidoscope", "long", "share"].contains(code) {
             return ""
         }
 
@@ -174,6 +175,12 @@ extension RecognitionManager: RecognitionTechniqueDelegate {
                 }
             } else if code == "save" {
                 self.delegate?.didRequestSave()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.detectedData = ""
+                    self.displayText = ""
+                }
+            } else if code == "share" {
+                self.delegate?.didRequestShare()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     self.detectedData = ""
                     self.displayText = ""

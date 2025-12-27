@@ -10,7 +10,7 @@ import UIKit
 import Photos
 
 class MovieExporter {
-    static func saveToDocuments(frames: [UIImage], sessionID: String, frameRate: Double = 12.0, cropTop: Double = 0, cropBottom: Double = 0, completion: @escaping (Bool, Error?) -> Void) {
+    static func saveToDocuments(frames: [UIImage], sessionID: String, frameRate: Double = 12.0, cropTop: Double = 0, cropBottom: Double = 0, screenSize: CGSize, completion: @escaping (Bool, Error?) -> Void) {
         guard !frames.isEmpty else {
             completion(false, NSError(domain: "MovieExporter", code: 1, userInfo: [NSLocalizedDescriptionKey: "No frames to export"]))
             return
@@ -19,7 +19,40 @@ class MovieExporter {
         let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let outputURL = documentsURL.appendingPathComponent("session_\(sessionID).mov")
 
-        createVideo(from: frames, outputURL: outputURL, frameRate: frameRate, cropTop: cropTop, cropBottom: cropBottom) { success, error in
+        // Calculate crop based on frame overlay masks only
+        // The camera preview maintains its native 9:16 aspect ratio on screen
+        // Frame overlays hide portions of the camera feed (in screen pixels)
+        // We need to convert screen pixels to camera pixels
+
+        guard let firstFrame = frames.first else {
+            completion(false, NSError(domain: "MovieExporter", code: 1, userInfo: [NSLocalizedDescriptionKey: "No frames to export"]))
+            return
+        }
+        let photoWidth = firstFrame.size.width
+        let photoHeight = firstFrame.size.height
+        let photoAspectRatio = photoWidth / photoHeight
+
+        // Camera preview fills screen height, calculate scale factor
+        let screenHeight = screenSize.height
+        let baseScaleRatio = photoHeight / screenHeight
+
+        // Apply calibration: reduce scale ratio slightly since large values crop too much
+        let scaleRatio = baseScaleRatio * 0.80  // Calibration multiplier
+
+        // Convert frame overlay pixels to camera pixels
+        let calculatedCropTop = cropTop * scaleRatio
+        let calculatedCropBottom = cropBottom * scaleRatio
+
+        print("📐 CROP: UI values - top=\(cropTop), bottom=\(cropBottom)")
+        print("📐 CROP: Base ratio=\(String(format: "%.2f", baseScaleRatio)), Adjusted ratio=\(String(format: "%.2f", scaleRatio))")
+
+        let finalHeight = photoHeight - calculatedCropTop - calculatedCropBottom
+        let finalAspectRatio = photoWidth / finalHeight
+
+        print("📐 EXPORT: Photo=\(photoWidth)x\(photoHeight), Crop (camera px): top=\(Int(calculatedCropTop)), bottom=\(Int(calculatedCropBottom))")
+        print("📐 EXPORT: Final video=\(Int(photoWidth))x\(Int(finalHeight)), Aspect=\(String(format: "%.3f", finalAspectRatio))")
+
+        createVideo(from: frames, outputURL: outputURL, frameRate: frameRate, cropTop: calculatedCropTop, cropBottom: calculatedCropBottom) { success, error in
             completion(success, error)
         }
     }
@@ -43,16 +76,14 @@ class MovieExporter {
                 PHAssetCreationRequest.creationRequestForAssetFromVideo(atFileURL: videoURL)
             }, completionHandler: { success, error in
                 if success {
-                    // Delete the Documents file after successful save to Photos
                     try? FileManager.default.removeItem(at: videoURL)
-                    print("💾 Saved session \(sessionID) to Photos and deleted local file")
                 }
                 completion(success, error)
             })
         }
     }
 
-    static func exportToPhotos(frames: [UIImage], sessionID: String, frameRate: Double = 12.0, cropTop: Double = 0, cropBottom: Double = 0, replacingAsset: String? = nil, completion: @escaping (Bool, Error?, String?) -> Void) {
+    static func exportToPhotos(frames: [UIImage], sessionID: String, frameRate: Double = 12.0, cropTop: Double = 0, cropBottom: Double = 0, screenSize: CGSize, replacingAsset: String? = nil, completion: @escaping (Bool, Error?, String?) -> Void) {
         guard !frames.isEmpty else {
             completion(false, NSError(domain: "MovieExporter", code: 1, userInfo: [NSLocalizedDescriptionKey: "No frames to export"]), nil)
             return
@@ -60,7 +91,29 @@ class MovieExporter {
 
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("temp_\(sessionID).mov")
 
-        createVideo(from: frames, outputURL: tempURL, frameRate: frameRate, cropTop: cropTop, cropBottom: cropBottom) { success, error in
+        // Calculate crop based on frame overlay masks only
+        guard let firstFrame = frames.first else {
+            completion(false, NSError(domain: "MovieExporter", code: 1, userInfo: [NSLocalizedDescriptionKey: "No frames to export"]), nil)
+            return
+        }
+        let photoWidth = firstFrame.size.width
+        let photoHeight = firstFrame.size.height
+
+        // Camera preview fills screen height, calculate scale factor
+        let screenHeight = screenSize.height
+        let baseScaleRatio = photoHeight / screenHeight
+
+        // Apply calibration: reduce scale ratio slightly since large values crop too much
+        let scaleRatio = baseScaleRatio * 0.80  // Calibration multiplier
+
+        // Convert frame overlay pixels to camera pixels
+        let calculatedCropTop = cropTop * scaleRatio
+        let calculatedCropBottom = cropBottom * scaleRatio
+
+        print("📐 CROP: UI values - top=\(cropTop), bottom=\(cropBottom)")
+        print("📐 CROP: Base ratio=\(String(format: "%.2f", baseScaleRatio)), Adjusted ratio=\(String(format: "%.2f", scaleRatio))")
+
+        createVideo(from: frames, outputURL: tempURL, frameRate: frameRate, cropTop: calculatedCropTop, cropBottom: calculatedCropBottom) { success, error in
             guard success, error == nil else {
                 completion(false, error, nil)
                 return
@@ -78,13 +131,7 @@ class MovieExporter {
                     if let assetToDelete = fetchResult.firstObject {
                         PHPhotoLibrary.shared().performChanges({
                             PHAssetChangeRequest.deleteAssets([assetToDelete] as NSArray)
-                        }, completionHandler: { success, error in
-                            if success {
-                                print("🗑️ Deleted previous movie (asset: \(assetID))")
-                            } else {
-                                print("⚠️ Failed to delete previous movie: \(error?.localizedDescription ?? "Unknown error")")
-                            }
-                        })
+                        }, completionHandler: { _, _ in })
                     }
                 }
 
@@ -114,10 +161,6 @@ class MovieExporter {
         let croppedHeight = originalSize.height - cropTop - cropBottom
         let size = CGSize(width: originalSize.width, height: croppedHeight)
 
-        print("🎬 Creating video:")
-        print("   - Original size: \(originalSize)")
-        print("   - Crop top: \(cropTop), bottom: \(cropBottom)")
-        print("   - Output size: \(size)")
         let videoWriter: AVAssetWriter
         do {
             videoWriter = try AVAssetWriter(outputURL: outputURL, fileType: .mov)
@@ -222,18 +265,11 @@ extension UIImage {
             return nil
         }
 
-        // Flip horizontal to match on-screen display
-        context.translateBy(x: CGFloat(width), y: 0)
-        context.scaleBy(x: -1.0, y: 1.0)
-
         UIGraphicsPushContext(context)
         // Draw the image at offset to crop top portion
         let drawRect = CGRect(x: 0, y: -cropTop, width: CGFloat(originalWidth), height: CGFloat(originalHeight))
         draw(in: drawRect)
         UIGraphicsPopContext()
-
-        print("   - Drawing: offset y: \(-cropTop), rect: \(drawRect)")
-        print("   - Transform: translate(\(width), 0), scale(-1, 1)")
 
         CVPixelBufferUnlockBaseAddress(buffer, [])
 

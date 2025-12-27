@@ -67,22 +67,36 @@ struct SettingsView: View {
                     Slider(value: $settings.zoomFactor, in: 1.0...3.0, step: 0.1)
                 }
 
+                Section(header: Text("Network Broadcasting")) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Server Address")
+                        TextField("e.g. 192.168.1.10:8080", text: $settings.serverAddress)
+                            .textFieldStyle(.roundedBorder)
+                            .autocapitalization(.none)
+                            .keyboardType(.URL)
+                    }
+
+                    Text("Enter the IP:port shown on the Mac server app")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+
                 Section(header: Text("Frame Overlay")) {
                     HStack {
                         Text("Top Thickness")
-                        Spacer()
-                        Text("\(Int(settings.frameTopThickness))px")
-                            .foregroundColor(.gray)
-                    }
-                    Slider(value: $settings.frameTopThickness, in: 0...200, step: 10)
-
-                    HStack {
-                        Text("Bottom Thickness")
                         Spacer()
                         Text("\(Int(settings.frameBottomThickness))px")
                             .foregroundColor(.gray)
                     }
                     Slider(value: $settings.frameBottomThickness, in: 0...200, step: 10)
+
+                    HStack {
+                        Text("Bottom Thickness")
+                        Spacer()
+                        Text("\(Int(settings.frameTopThickness))px")
+                            .foregroundColor(.gray)
+                    }
+                    Slider(value: $settings.frameTopThickness, in: 0...200, step: 10)
                 }
 
                 Section(header: Text("Playback")) {

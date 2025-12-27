@@ -13,14 +13,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        guard let windowScene = (scene as? UIWindowScene) else { return }
-
+        print("🚀 SceneDelegate: scene willConnectTo called")
+        guard let windowScene = (scene as? UIWindowScene) else {
+            print("❌ SceneDelegate: Failed to cast scene to UIWindowScene")
+            return
+        }
+        print("🚀 SceneDelegate: Creating ContentView")
         let contentView = ContentView()
 
+        print("🚀 SceneDelegate: Creating window and setting root view controller")
         let window = UIWindow(windowScene: windowScene)
         window.rootViewController = UIHostingController(rootView: contentView)
         self.window = window
         window.makeKeyAndVisible()
+        print("🚀 SceneDelegate: Window made key and visible")
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
