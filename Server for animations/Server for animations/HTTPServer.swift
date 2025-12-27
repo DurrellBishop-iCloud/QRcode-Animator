@@ -69,61 +69,49 @@ class HTTPServer: ObservableObject {
     }
 
     private func handleConnection(_ connection: NWConnection) {
-        print("🔌 handleConnection called")
-
         // Add state update handler to track connection lifecycle
         connection.stateUpdateHandler = { [weak self] state in
-            print("🔌 Connection state: \(state)")
             switch state {
             case .ready:
-                print("🔌 Connection ready, calling receiveRequest")
+                print("🔌 CONN: Ready")
                 DispatchQueue.main.async {
                     self?.connectionCount += 1
                 }
                 self?.receiveRequest(on: connection)
             case .failed(let error):
-                print("❌ Connection failed: \(error)")
+                print("🔌 CONN: Failed - \(error)")
                 DispatchQueue.main.async {
                     self?.connectionCount -= 1
                 }
             case .cancelled:
-                print("🔌 Connection cancelled")
+                print("🔌 CONN: Cancelled")
                 DispatchQueue.main.async {
                     self?.connectionCount -= 1
                 }
             default:
-                print("🔌 Connection state: \(state)")
+                break
             }
         }
 
         connection.start(queue: .global(qos: .userInitiated))
-        print("🔌 Connection started")
     }
 
     private func receiveRequest(on connection: NWConnection) {
-        print("📨 receiveRequest called")
         connection.receive(minimumIncompleteLength: 1, maximumLength: 65536) { [weak self] data, _, isComplete, error in
-            print("📨 Receive callback fired!")
-            print("📨   - data: \(data?.count ?? 0) bytes")
-            print("📨   - isComplete: \(isComplete)")
-            print("📨   - error: \(String(describing: error))")
-
             if let error = error {
-                print("❌ Receive error: \(error)")
+                print("📨 REQ: Error - \(error)")
                 connection.cancel()
                 return
             }
 
             guard let data = data, !data.isEmpty else {
-                print("📨 No data received")
                 if isComplete {
-                    print("📨 Connection complete, cancelling")
                     connection.cancel()
                 }
                 return
             }
 
-            print("📨 Processing request data (\(data.count) bytes)")
+            print("📨 REQ: Received \(data.count) bytes")
 
             // Try to find the header/body boundary in the raw data
             // Headers end with \r\n\r\n (bytes: 13, 10, 13, 10)
@@ -135,91 +123,120 @@ class HTTPServer: ObservableObject {
                 let bodyStartIndex = separatorRange.upperBound
                 let bodyData = data.subdata(in: bodyStartIndex..<data.count)
 
-                print("📨 Split: \(headerData.count) bytes headers, \(bodyData.count) bytes body")
+                print("📨 REQ: Headers=\(headerData.count)B, Body=\(bodyData.count)B")
 
                 // Parse headers as UTF-8
                 if let headerString = String(data: headerData, encoding: .utf8) {
-                    print("📨 Headers: \(headerString.prefix(200))")
-
                     if headerString.contains("POST /upload") {
-                        print("📨 Detected POST /upload - starting video receive")
-                        self?.receiveVideoData(on: connection, existingData: bodyData)
+                        // Extract Content-Length from headers
+                        var contentLength: Int?
+                        let lines = headerString.components(separatedBy: "\r\n")
+                        for line in lines {
+                            if line.lowercased().hasPrefix("content-length:") {
+                                let value = line.components(separatedBy: ":")[1].trimmingCharacters(in: .whitespaces)
+                                contentLength = Int(value)
+                                break
+                            }
+                        }
+
+                        if let expectedLength = contentLength {
+                            print("📨 REQ: POST /upload, Content-Length=\(expectedLength)")
+                            self?.receiveVideoData(on: connection, existingData: bodyData, expectedLength: expectedLength)
+                        } else {
+                            print("📨 REQ: POST /upload (no Content-Length)")
+                            self?.receiveVideoData(on: connection, existingData: bodyData, expectedLength: nil)
+                        }
                     } else if headerString.contains("GET /") {
-                        print("📨 Detected GET request, sending HTML response")
+                        print("📨 REQ: GET / detected")
                         self?.sendHTMLResponse(on: connection)
-                    } else {
-                        print("⚠️ Unknown request type")
                     }
-                } else {
-                    print("❌ Could not parse headers as UTF-8")
                 }
             } else {
                 // No separator found yet - might need to receive more data
-                // Try parsing as UTF-8 to detect GET requests
                 if let requestString = String(data: data, encoding: .utf8) {
-                    print("📨 No separator, but parseable as UTF-8: \(requestString.prefix(100))")
                     if requestString.contains("GET /") {
-                        print("📨 Detected GET request, sending HTML response")
                         self?.sendHTMLResponse(on: connection)
                     } else {
-                        print("📨 Headers incomplete, continuing to receive")
-                        self?.receiveVideoData(on: connection, existingData: data)
+                        self?.receiveVideoData(on: connection, existingData: data, expectedLength: nil)
                     }
                 } else {
-                    print("📨 Binary data without separator - continuing to receive")
-                    self?.receiveVideoData(on: connection, existingData: data)
+                    self?.receiveVideoData(on: connection, existingData: data, expectedLength: nil)
                 }
             }
         }
     }
 
-    private func receiveVideoData(on connection: NWConnection, existingData: Data) {
+    private func receiveVideoData(on connection: NWConnection, existingData: Data, expectedLength: Int?) {
+        // Check if we already have all the data
+        if let expected = expectedLength, existingData.count >= expected {
+            print("📥 RECV: Complete! Got \(existingData.count)/\(expected) bytes")
+            self.saveAndRespondWithVideo(data: existingData, on: connection)
+            return
+        }
+
+        let receiveStart = Date()
         connection.receive(minimumIncompleteLength: 1, maximumLength: 1024 * 1024) { [weak self] data, _, isComplete, error in
             guard let self = self else { return }
 
+            let receiveTime = Date().timeIntervalSince(receiveStart)
             var fullData = existingData
+            let chunkSize = data?.count ?? 0
             if let data = data {
                 fullData.append(data)
             }
 
-            print("📥 Received \(fullData.count) bytes total, isComplete: \(isComplete)")
+            print("📥 RECV: Chunk=\(chunkSize)B, Total=\(fullData.count)B, Complete=\(isComplete), Time=\(String(format: "%.2f", receiveTime))s")
 
-            if isComplete || error != nil {
-                print("📥 Processing video data (\(fullData.count) bytes total)")
-
-                // Headers should already be stripped by receiveRequest
-                // This is pure video data
-                let videoData = fullData
-
-                // Save video file
-                let filename = "animation_\(Date().timeIntervalSince1970).mov"
-                let fileURL = self.videoDirectory.appendingPathComponent(filename)
-
-                do {
-                    try videoData.write(to: fileURL)
-                    print("✅ Video saved: \(fileURL.path)")
-
-                    DispatchQueue.main.async {
-                        self.receivedVideoURL = fileURL
-                    }
-
-                    // Send success response
-                    let response = "HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nOK"
-                    connection.send(content: response.data(using: .utf8), completion: .contentProcessed { _ in
-                        connection.cancel()
-                    })
-                } catch {
-                    print("❌ Failed to save video: \(error)")
-                    // Send error response
-                    let response = "HTTP/1.1 500 Internal Server Error\r\nContent-Length: 5\r\n\r\nError"
-                    connection.send(content: response.data(using: .utf8), completion: .contentProcessed { _ in
-                        connection.cancel()
-                    })
-                }
+            // Check if we have all expected data
+            if let expected = expectedLength, fullData.count >= expected {
+                print("📥 RECV: Complete! Got \(fullData.count)/\(expected) bytes")
+                self.saveAndRespondWithVideo(data: fullData, on: connection)
+            } else if isComplete || error != nil {
+                print("📥 RECV: Stream ended")
+                self.saveAndRespondWithVideo(data: fullData, on: connection)
             } else {
                 // Continue receiving
-                self.receiveVideoData(on: connection, existingData: fullData)
+                print("📥 RECV: Continuing... (\(fullData.count)/\(expectedLength ?? 0))")
+                self.receiveVideoData(on: connection, existingData: fullData, expectedLength: expectedLength)
             }
+        }
+    }
+
+    private func saveAndRespondWithVideo(data: Data, on connection: NWConnection) {
+        print("📥 SAVE: Processing \(data.count) bytes")
+
+        // Save video file
+        let filename = "animation_\(Date().timeIntervalSince1970).mov"
+        let fileURL = self.videoDirectory.appendingPathComponent(filename)
+
+        let saveStart = Date()
+        do {
+            try data.write(to: fileURL)
+            let saveTime = Date().timeIntervalSince(saveStart)
+            print("📥 SAVE: Success in \(String(format: "%.2f", saveTime))s - \(fileURL.lastPathComponent)")
+
+            DispatchQueue.main.async {
+                self.receivedVideoURL = fileURL
+            }
+
+            // Send success response
+            let response = "HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nOK"
+            print("📥 RESP: Sending 200 OK")
+            connection.send(content: response.data(using: .utf8), completion: .contentProcessed { error in
+                if let error = error {
+                    print("📥 RESP: Send failed - \(error)")
+                } else {
+                    print("📥 RESP: Send complete")
+                }
+                connection.cancel()
+            })
+        } catch {
+            print("📥 SAVE: Failed - \(error)")
+            // Send error response
+            let response = "HTTP/1.1 500 Internal Server Error\r\nContent-Length: 5\r\n\r\nError"
+            connection.send(content: response.data(using: .utf8), completion: .contentProcessed { _ in
+                connection.cancel()
+            })
         }
     }
 
