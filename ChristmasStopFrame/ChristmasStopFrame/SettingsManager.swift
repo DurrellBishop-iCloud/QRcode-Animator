@@ -129,6 +129,6 @@ class SettingsManager: ObservableObject {
         self.onionSkinEnabled = UserDefaults.standard.object(forKey: Keys.onionSkinEnabled) as? Bool ?? true
         self.onionSkinOffsetX = UserDefaults.standard.object(forKey: Keys.onionSkinOffsetX) as? Double ?? 0.0
         self.onionSkinOffsetY = UserDefaults.standard.object(forKey: Keys.onionSkinOffsetY) as? Double ?? 0.0
-        self.onionSkinOpacity = UserDefaults.standard.object(forKey: Keys.onionSkinOpacity) as? Double ?? 0.5
+        self.onionSkinOpacity = UserDefaults.standard.object(forKey: Keys.onionSkinOpacity) as? Double ?? 0.6
     }
 }
