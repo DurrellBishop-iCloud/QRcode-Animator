@@ -43,7 +43,6 @@ struct ContentView: View {
                 // Camera preview ALWAYS present (never remove from hierarchy)
                 if let previewLayer = cameraManager.previewLayer {
                     CameraPreview(previewLayer: previewLayer)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .id("camera-preview-stable")
                         .ignoresSafeArea()
                         .opacity(settings.kaleidoscopeEnabled ? 0 : (settings.onionSkinEnabled && recognitionManager.currentMode == "Make" && cameraManager.isViewingLiveFeed ? settings.onionSkinOpacity : 1))
@@ -169,11 +168,32 @@ struct ContentView: View {
             }
             .rotationEffect(.degrees(180))
             .onAppear {
-                screenSize = geometry.size
-                print("📐 Captured screen size: \(screenSize)")
+                // Use full window size (not safe area) since black frames use .ignoresSafeArea()
+                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let window = windowScene.windows.first {
+                    screenSize = window.bounds.size
+                } else {
+                    screenSize = geometry.size
+                }
+                print("📐 Captured screen size: \(screenSize) (full window)")
+                print("🟡 HELLO DEBUG - ContentView loaded")
+                print("🟡 Frame top: \(settings.frameTopThickness), bottom: \(settings.frameBottomThickness)")
             }
+
+            // DEBUG: Yellow rect showing the cropped area between black frames
+            VStack(spacing: 0) {
+                Color.clear
+                    .frame(height: settings.frameTopThickness)
+
+                Rectangle()
+                    .stroke(Color.yellow, lineWidth: 4)
+
+                Color.clear
+                    .frame(height: settings.frameBottomThickness)
             }
-            .frame(width: geometry.size.width, height: geometry.size.height)
+            .ignoresSafeArea()
+            .allowsHitTesting(false)
+            }
         }
         .onAppear {
             cameraManager.startSession()
@@ -373,5 +393,12 @@ extension CameraManager: RecognitionManagerDelegate {
     func didRequestShare() {
         // This will be handled in ContentView
         NotificationCenter.default.post(name: NSNotification.Name("ShareToServer"), object: nil)
+    }
+
+    func didSetBackground() {
+        // Set flag to capture next photo as background
+        isCapturingBackground = true
+        // Trigger photo capture
+        capturePhoto()
     }
 }
