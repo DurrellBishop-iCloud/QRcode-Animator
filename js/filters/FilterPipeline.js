@@ -3,6 +3,7 @@
  * Port of Swift CameraManager filter application
  */
 import { settings } from '../managers/SettingsManager.js';
+import { BrightnessFilter } from './BrightnessFilter.js';
 import { ContrastFilter } from './ContrastFilter.js';
 import { SaturationFilter } from './SaturationFilter.js';
 import { InvertFilter } from './InvertFilter.js';
@@ -11,6 +12,7 @@ import { KaleidoscopeFilter } from './KaleidoscopeFilter.js';
 
 export class FilterPipeline {
     constructor() {
+        this.brightnessFilter = new BrightnessFilter();
         this.contrastFilter = new ContrastFilter();
         this.saturationFilter = new SaturationFilter();
         this.invertFilter = new InvertFilter();
@@ -80,12 +82,17 @@ export class FilterPipeline {
             return result;
         }
 
-        // 3. Contrast adjustment
+        // 3. Brightness adjustment
+        if (settings.brightness !== 1.0) {
+            result = this.brightnessFilter.apply(result, settings.brightness);
+        }
+
+        // 4. Contrast adjustment
         if (settings.contrast !== 1.0) {
             result = this.contrastFilter.apply(result, settings.contrast);
         }
 
-        // 4. Saturation adjustment
+        // 5. Saturation adjustment
         if (settings.saturation !== 1.0) {
             result = this.saturationFilter.apply(result, settings.saturation);
         }

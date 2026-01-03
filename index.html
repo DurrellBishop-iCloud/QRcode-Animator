@@ -121,6 +121,27 @@
                     <section class="settings-section">
                         <h3>Image Quality</h3>
 
+                        <div class="form-group">
+                            <label for="brightness">
+                                Brightness: <span id="brightness-value">1.0</span>
+                            </label>
+                            <input type="range" id="brightness" min="0.5" max="1.5" step="0.05" value="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contrast">
+                                Contrast: <span id="contrast-value">1.0</span>
+                            </label>
+                            <input type="range" id="contrast" min="0.5" max="2" step="0.1" value="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="saturation">
+                                Saturation: <span id="saturation-value">1.0</span>
+                            </label>
+                            <input type="range" id="saturation" min="0" max="2" step="0.1" value="1">
+                        </div>
+
                         <div class="form-group toggle">
                             <label for="invert-toggle">Invert Colors</label>
                             <input type="checkbox" id="invert-toggle">
@@ -136,20 +157,6 @@
                                 Transparency Adjust: <span id="transparency-value">0.00</span>
                             </label>
                             <input type="range" id="transparency-adjust" min="-0.2" max="0.2" step="0.01" value="0">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="contrast">
-                                Contrast: <span id="contrast-value">1.0</span>
-                            </label>
-                            <input type="range" id="contrast" min="0.5" max="2" step="0.1" value="1">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="saturation">
-                                Saturation: <span id="saturation-value">1.0</span>
-                            </label>
-                            <input type="range" id="saturation" min="0" max="2" step="0.1" value="1">
                         </div>
                     </section>
 

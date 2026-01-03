@@ -36,6 +36,7 @@ const DEFAULT_SETTINGS = {
     onionSkinOffsetY: 0,
 
     // Image adjustments
+    brightness: 1.0,
     contrast: 1.0,
     saturation: 1.0,
     invertColors: false,
@@ -192,6 +193,9 @@ class SettingsManagerClass {
 
     get onionSkinOffsetY() { return this._settings.onionSkinOffsetY; }
     set onionSkinOffsetY(v) { this.set('onionSkinOffsetY', v); }
+
+    get brightness() { return this._settings.brightness; }
+    set brightness(v) { this.set('brightness', v); }
 
     get contrast() { return this._settings.contrast; }
     set contrast(v) { this.set('contrast', v); }

@@ -35,14 +35,16 @@ export class SettingsPanel {
             onionOpacityValue: document.getElementById('onion-opacity-value'),
 
             // Image quality
-            invertToggle: document.getElementById('invert-toggle'),
-            transparentToggle: document.getElementById('transparent-toggle'),
-            transparencyAdjust: document.getElementById('transparency-adjust'),
-            transparencyValue: document.getElementById('transparency-value'),
+            brightness: document.getElementById('brightness'),
+            brightnessValue: document.getElementById('brightness-value'),
             contrast: document.getElementById('contrast'),
             contrastValue: document.getElementById('contrast-value'),
             saturation: document.getElementById('saturation'),
             saturationValue: document.getElementById('saturation-value'),
+            invertToggle: document.getElementById('invert-toggle'),
+            transparentToggle: document.getElementById('transparent-toggle'),
+            transparencyAdjust: document.getElementById('transparency-adjust'),
+            transparencyValue: document.getElementById('transparency-value'),
 
             // Frame overlay
             frameTop: document.getElementById('frame-top'),
@@ -112,6 +114,13 @@ export class SettingsPanel {
             const value = parseFloat(e.target.value);
             settings.onionSkinOpacity = value;
             elements.onionOpacityValue.textContent = value.toFixed(2);
+        });
+
+        // Brightness
+        elements.brightness?.addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            settings.brightness = value;
+            elements.brightnessValue.textContent = value.toFixed(2);
         });
 
         // Invert
@@ -222,6 +231,18 @@ export class SettingsPanel {
         }
 
         // Image quality
+        if (elements.brightness) {
+            elements.brightness.value = settings.brightness;
+            elements.brightnessValue.textContent = settings.brightness.toFixed(2);
+        }
+        if (elements.contrast) {
+            elements.contrast.value = settings.contrast;
+            elements.contrastValue.textContent = settings.contrast.toFixed(1);
+        }
+        if (elements.saturation) {
+            elements.saturation.value = settings.saturation;
+            elements.saturationValue.textContent = settings.saturation.toFixed(1);
+        }
         if (elements.invertToggle) {
             elements.invertToggle.checked = settings.invertColors;
         }
@@ -231,14 +252,6 @@ export class SettingsPanel {
         if (elements.transparencyAdjust) {
             elements.transparencyAdjust.value = settings.transparencyAdjust;
             elements.transparencyValue.textContent = settings.transparencyAdjust.toFixed(2);
-        }
-        if (elements.contrast) {
-            elements.contrast.value = settings.contrast;
-            elements.contrastValue.textContent = settings.contrast.toFixed(1);
-        }
-        if (elements.saturation) {
-            elements.saturation.value = settings.saturation;
-            elements.saturationValue.textContent = settings.saturation.toFixed(1);
         }
 
         // Frame overlays
