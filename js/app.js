@@ -453,29 +453,40 @@ class App {
 
         const channelName = settings.broadcastChannel;
         if (!channelName) {
-            this.uiController.updateDisplayText('No channel set');
+            this.uiController.updateDisplayText('No channel');
             setTimeout(() => this.uiController.updateDisplayText(''), 2000);
             return;
         }
 
-        this.uiController.updateDisplayText('Sending...');
+        this.uiController.updateDisplayText('Exporting...');
 
+        let blob;
         try {
-            const blob = await this.movieExporter.exportToBlob(
+            blob = await this.movieExporter.exportToBlob(
                 this.frameManager.getAllFrames(),
                 {
                     screenSize: this.uiController.getScreenSize()
                 }
             );
+            console.log('Export done, size:', blob.size);
+        } catch (error) {
+            console.error('Export failed:', error);
+            this.uiController.updateDisplayText('Export fail');
+            setTimeout(() => this.uiController.updateDisplayText(''), 2000);
+            return;
+        }
 
+        this.uiController.updateDisplayText('Connecting...');
+
+        try {
             await this.broadcastManager.sendVideo(blob, channelName);
 
             this.uiController.updateDisplayText('Sent!');
             setTimeout(() => this.uiController.updateDisplayText(''), 2000);
 
         } catch (error) {
-            console.error('Broadcast failed:', error);
-            this.uiController.updateDisplayText('Send failed');
+            console.error('Send failed:', error);
+            this.uiController.updateDisplayText('Connect fail');
             setTimeout(() => this.uiController.updateDisplayText(''), 2000);
         }
     }
