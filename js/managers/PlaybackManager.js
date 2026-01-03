@@ -12,6 +12,36 @@ export class PlaybackManager {
         this.currentFrame = null;
         this.isPlaying = false;
         this.timer = null;
+
+        // Subscribe to frame rate changes for real-time updates
+        settings.subscribe('frameRate', () => {
+            if (this.isPlaying) {
+                this.restartTimer();
+            }
+        });
+    }
+
+    /**
+     * Restart timer with current frame rate
+     */
+    restartTimer() {
+        if (this.timer) {
+            clearInterval(this.timer);
+        }
+
+        const interval = 1000 / settings.frameRate;
+        this.timer = setInterval(() => {
+            this.currentFrameIndex = (this.currentFrameIndex + 1) % this.frames.length;
+            this.currentFrame = this.frames[this.currentFrameIndex];
+
+            eventBus.publish(Events.PLAYBACK_FRAME, {
+                index: this.currentFrameIndex,
+                total: this.frames.length,
+                frame: this.currentFrame
+            });
+        }, interval);
+
+        console.log(`Playback restarted at ${settings.frameRate} fps`);
     }
 
     /**
