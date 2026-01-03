@@ -165,7 +165,7 @@ html, body {
 
 .debug-rect {
     position: absolute;
-    border: 4px solid white;
+    border: 1px solid black;
     left: 0;
     right: 0;
 }
