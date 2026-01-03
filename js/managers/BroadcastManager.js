@@ -131,71 +131,102 @@ export class BroadcastManager {
      * @returns {Promise<boolean>} Success
      */
     async sendVideo(videoBlob, channelName) {
-        if (!this.peer) {
-            // Create peer for sending
-            this.peer = new Peer({
-                debug: 1
-            });
-
-            await new Promise((resolve, reject) => {
-                this.peer.on('open', resolve);
-                this.peer.on('error', reject);
-            });
+        // Always create fresh peer for sending (avoids stale connection issues)
+        if (this.peer && !this.isViewer) {
+            this.peer.destroy();
+            this.peer = null;
         }
 
+        // Check if PeerJS is loaded
+        if (typeof Peer === 'undefined') {
+            console.error('PeerJS not loaded!');
+            throw new Error('PeerJS library not loaded');
+        }
+
+        console.log('Creating sender peer...');
+
+        // Create new peer for this send
+        const senderPeer = new Peer({
+            debug: 2
+        });
+
         return new Promise((resolve, reject) => {
-            console.log(`Connecting to channel: ${channelName}`);
+            let connected = false;
+            let timeoutId;
 
-            const conn = this.peer.connect(channelName, {
-                reliable: true
-            });
+            senderPeer.on('open', (id) => {
+                console.log('Sender peer ready:', id);
+                console.log('Connecting to channel:', channelName);
 
-            conn.on('open', async () => {
-                console.log('Connected to viewer, sending video...');
-
-                eventBus.publish(Events.BROADCAST_STATUS, {
-                    status: 'sending'
+                const conn = senderPeer.connect(channelName, {
+                    reliable: true
                 });
 
-                try {
-                    // Convert blob to array buffer for transfer
-                    const buffer = await videoBlob.arrayBuffer();
-
-                    conn.send({
-                        type: 'video',
-                        buffer: buffer,
-                        mimeType: videoBlob.type,
-                        size: videoBlob.size
-                    });
-
-                    console.log('Video sent:', videoBlob.size, 'bytes');
+                conn.on('open', async () => {
+                    connected = true;
+                    clearTimeout(timeoutId);
+                    console.log('Connected to viewer, sending video...');
 
                     eventBus.publish(Events.BROADCAST_STATUS, {
-                        status: 'sent'
+                        status: 'sending'
                     });
 
-                    resolve(true);
-                } catch (err) {
-                    console.error('Send error:', err);
+                    try {
+                        // Convert blob to array buffer for transfer
+                        const buffer = await videoBlob.arrayBuffer();
+
+                        conn.send({
+                            type: 'video',
+                            buffer: buffer,
+                            mimeType: videoBlob.type,
+                            size: videoBlob.size
+                        });
+
+                        console.log('Video sent:', videoBlob.size, 'bytes');
+
+                        eventBus.publish(Events.BROADCAST_STATUS, {
+                            status: 'sent'
+                        });
+
+                        // Clean up after short delay
+                        setTimeout(() => {
+                            conn.close();
+                            senderPeer.destroy();
+                        }, 1000);
+
+                        resolve(true);
+                    } catch (err) {
+                        console.error('Send error:', err);
+                        senderPeer.destroy();
+                        reject(err);
+                    }
+                });
+
+                conn.on('error', (err) => {
+                    console.error('Connection error:', err);
+                    eventBus.publish(Events.BROADCAST_STATUS, {
+                        status: 'error',
+                        message: 'Could not connect to viewer'
+                    });
+                    senderPeer.destroy();
                     reject(err);
-                }
+                });
             });
 
-            conn.on('error', (err) => {
-                console.error('Connection error:', err);
-                eventBus.publish(Events.BROADCAST_STATUS, {
-                    status: 'error',
-                    message: 'Could not connect to viewer'
-                });
+            senderPeer.on('error', (err) => {
+                console.error('Sender peer error:', err);
+                senderPeer.destroy();
                 reject(err);
             });
 
-            // Timeout if connection doesn't open
-            setTimeout(() => {
-                if (!conn.open) {
+            // Timeout if connection doesn't complete
+            timeoutId = setTimeout(() => {
+                if (!connected) {
+                    console.error('Connection timeout');
+                    senderPeer.destroy();
                     reject(new Error('Connection timeout - is viewer online?'));
                 }
-            }, 10000);
+            }, 15000);
         });
     }
 
