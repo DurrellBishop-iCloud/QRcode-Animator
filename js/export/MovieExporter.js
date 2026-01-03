@@ -56,7 +56,7 @@ export class MovieExporter {
             const mimeType = this.getSupportedMimeType();
             const recorder = new MediaRecorder(stream, {
                 mimeType,
-                videoBitsPerSecond: 5000000 // 5 Mbps
+                videoBitsPerSecond: 10000000 // 10 Mbps for better quality
             });
 
             const chunks = [];
@@ -114,7 +114,7 @@ export class MovieExporter {
     }
 
     /**
-     * Draw cropped frame to canvas
+     * Draw cropped frame to canvas (rotated 180 degrees for upside-down phone)
      * @param {CanvasRenderingContext2D} ctx
      * @param {ImageData} frame
      * @param {Object} crop
@@ -129,7 +129,15 @@ export class MovieExporter {
         const tempCtx = tempCanvas.getContext('2d');
         tempCtx.putImageData(frame, 0, 0);
 
-        // Draw cropped region
+        // Save context state
+        ctx.save();
+
+        // Rotate 180 degrees around center
+        ctx.translate(destWidth / 2, destHeight / 2);
+        ctx.rotate(Math.PI);
+        ctx.translate(-destWidth / 2, -destHeight / 2);
+
+        // Draw cropped region (rotated)
         ctx.drawImage(
             tempCanvas,
             0, crop.top,                              // Source x, y
@@ -137,6 +145,9 @@ export class MovieExporter {
             0, 0,                                     // Dest x, y
             destWidth, destHeight                     // Dest w, h
         );
+
+        // Restore context state
+        ctx.restore();
     }
 
     /**
