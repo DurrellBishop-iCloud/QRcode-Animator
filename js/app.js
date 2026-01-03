@@ -389,12 +389,21 @@ class App {
     async saveAndReset() {
         if (this.frameManager.count === 0) return;
 
+        // Get frames before clearing
+        const framesToExport = this.frameManager.getAllFrames();
+        const screenSize = this.uiController.getScreenSize();
+
+        // Clear everything immediately so user sees fresh view
+        this.frameManager.clear();
+        this.filterPipeline.reset();
+        this.uiController.clearMainCanvas();
+        this.uiController.clearOnionSkin();
+        this.updateUI();
+
         try {
             const blob = await this.movieExporter.exportToBlob(
-                this.frameManager.getAllFrames(),
-                {
-                    screenSize: this.uiController.getScreenSize()
-                }
+                framesToExport,
+                { screenSize }
             );
 
             // Download file
@@ -403,21 +412,11 @@ class App {
             // Upload to server
             this.serverUploader.uploadVideo(blob);
 
-            // Reset session
-            this.frameManager.clear();
-            this.filterPipeline.reset();
-
-            // Clear canvases for fresh start
-            this.uiController.clearMainCanvas();
-            this.uiController.clearOnionSkin();
-
             this.uiController.updateDisplayText('Saved!');
 
             setTimeout(() => {
                 this.uiController.updateDisplayText('');
             }, 2000);
-
-            this.updateUI();
 
         } catch (error) {
             console.error('Save failed:', error);
