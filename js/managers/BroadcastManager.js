@@ -39,7 +39,13 @@ export class BroadcastManager {
             // Create peer with channel name as ID (viewer claims the channel)
             try {
                 this.peer = new Peer(channelName, {
-                    debug: 2
+                    debug: 2,
+                    config: {
+                        iceServers: [
+                            { urls: 'stun:stun.l.google.com:19302' },
+                            { urls: 'stun:stun1.l.google.com:19302' }
+                        ]
+                    }
                 });
             } catch (e) {
                 console.error('Failed to create Peer:', e);
@@ -153,9 +159,15 @@ export class BroadcastManager {
 
         console.log('Creating sender peer...');
 
-        // Create new peer for this send
+        // Create new peer for this send with explicit config for Safari compatibility
         const senderPeer = new Peer({
-            debug: 2
+            debug: 2,
+            config: {
+                iceServers: [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'stun:stun1.l.google.com:19302' }
+                ]
+            }
         });
 
         return new Promise((resolve, reject) => {
@@ -167,7 +179,8 @@ export class BroadcastManager {
                 console.log('Connecting to channel:', channelName);
 
                 const conn = senderPeer.connect(channelName, {
-                    reliable: true
+                    reliable: true,
+                    serialization: 'json'
                 });
 
                 conn.on('open', async () => {
