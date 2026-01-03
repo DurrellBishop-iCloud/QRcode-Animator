@@ -56,7 +56,7 @@ export class MovieExporter {
             const mimeType = this.getSupportedMimeType();
             const recorder = new MediaRecorder(stream, {
                 mimeType,
-                videoBitsPerSecond: 10000000 // 10 Mbps for better quality
+                videoBitsPerSecond: 5000000 // 5 Mbps
             });
 
             const chunks = [];

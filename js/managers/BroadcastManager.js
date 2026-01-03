@@ -102,8 +102,16 @@ export class BroadcastManager {
             console.log('Received data, type:', data.type);
 
             if (data.type === 'video') {
-                // Reconstruct blob from array buffer
-                const blob = new Blob([data.buffer], { type: data.mimeType });
+                // Convert base64 data URL back to blob
+                const base64Data = data.data;
+                const byteString = atob(base64Data.split(',')[1]);
+                const mimeType = data.mimeType || base64Data.split(',')[0].split(':')[1].split(';')[0];
+                const ab = new ArrayBuffer(byteString.length);
+                const ia = new Uint8Array(ab);
+                for (let i = 0; i < byteString.length; i++) {
+                    ia[i] = byteString.charCodeAt(i);
+                }
+                const blob = new Blob([ab], { type: mimeType });
                 console.log('Received video:', blob.size, 'bytes');
 
                 eventBus.publish(Events.VIDEO_RECEIVED, { blob });
@@ -172,12 +180,18 @@ export class BroadcastManager {
                     });
 
                     try {
-                        // Convert blob to array buffer for transfer
-                        const buffer = await videoBlob.arrayBuffer();
+                        // Convert blob to base64 string (more compatible than ArrayBuffer)
+                        const reader = new FileReader();
+                        const base64Promise = new Promise((res, rej) => {
+                            reader.onload = () => res(reader.result);
+                            reader.onerror = rej;
+                        });
+                        reader.readAsDataURL(videoBlob);
+                        const base64Data = await base64Promise;
 
                         conn.send({
                             type: 'video',
-                            buffer: buffer,
+                            data: base64Data,
                             mimeType: videoBlob.type,
                             size: videoBlob.size
                         });
