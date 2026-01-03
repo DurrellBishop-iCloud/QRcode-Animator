@@ -22,14 +22,9 @@ export class UIController {
      * Setup event listeners
      */
     setupEventListeners() {
-        // Double-tap to open settings
-        let lastTap = 0;
-        this.elements.video.addEventListener('click', (e) => {
-            const now = Date.now();
-            if (now - lastTap < 300) {
-                this.showSettings();
-            }
-            lastTap = now;
+        // Single tap to open settings
+        this.elements.video.addEventListener('click', () => {
+            this.showSettings();
         });
 
         // Close settings button
