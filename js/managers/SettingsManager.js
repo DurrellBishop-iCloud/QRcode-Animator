@@ -48,7 +48,11 @@ const DEFAULT_SETTINGS = {
     useBackground: false,
 
     // Network
-    serverAddress: '192.168.1.198:8080'
+    serverAddress: '192.168.1.198:8080',
+
+    // Broadcast (WebRTC viewer mode)
+    viewerModeEnabled: false,
+    broadcastChannel: ''
 };
 
 class SettingsManagerClass {
@@ -220,6 +224,12 @@ class SettingsManagerClass {
 
     get serverAddress() { return this._settings.serverAddress; }
     set serverAddress(v) { this.set('serverAddress', v); }
+
+    get viewerModeEnabled() { return this._settings.viewerModeEnabled; }
+    set viewerModeEnabled(v) { this.set('viewerModeEnabled', v); }
+
+    get broadcastChannel() { return this._settings.broadcastChannel; }
+    set broadcastChannel(v) { this.set('broadcastChannel', v); }
 }
 
 // Singleton instance

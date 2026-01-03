@@ -9,6 +9,7 @@ import { FrameManager } from './managers/FrameManager.js';
 import { PlaybackManager } from './managers/PlaybackManager.js';
 import { AudioManager } from './managers/AudioManager.js';
 import { RecognitionManager } from './managers/RecognitionManager.js';
+import { BroadcastManager } from './managers/BroadcastManager.js';
 import { UIController } from './ui/UIController.js';
 import { SettingsPanel } from './ui/SettingsPanel.js';
 import { FilterPipeline } from './filters/FilterPipeline.js';
@@ -31,7 +32,15 @@ class App {
             displayText: document.getElementById('display-text'),
             settingsModal: document.getElementById('settings-modal'),
             closeSettings: document.getElementById('close-settings'),
-            debugRect: document.getElementById('debug-rect')
+            debugRect: document.getElementById('debug-rect'),
+            // Viewer mode elements
+            viewerOverlay: document.getElementById('viewer-overlay'),
+            receivedVideo: document.getElementById('received-video'),
+            viewerWaiting: document.getElementById('viewer-waiting'),
+            viewerChannelDisplay: document.getElementById('viewer-channel-display'),
+            viewerModeToggle: document.getElementById('viewer-mode-toggle'),
+            broadcastChannel: document.getElementById('broadcast-channel'),
+            viewerStatus: document.getElementById('viewer-status')
         };
 
         // Hidden capture canvas
@@ -48,6 +57,9 @@ class App {
 
         // Recognition (needs audio manager)
         this.recognitionManager = new RecognitionManager(this.audioManager);
+
+        // Broadcast (WebRTC peer-to-peer)
+        this.broadcastManager = new BroadcastManager();
 
         // UI
         this.uiController = new UIController(this.elements);
@@ -66,6 +78,7 @@ class App {
 
         // Setup event handlers
         this.setupEventHandlers();
+        this.setupViewerMode();
     }
 
     /**
@@ -142,9 +155,9 @@ class App {
             this.saveAndReset();
         });
 
-        // Share command
+        // Share command - broadcast to viewers
         eventBus.subscribe(Events.COMMAND_SHARE, () => {
-            this.shareToServer();
+            this.broadcastVideo();
         });
 
         // Background capture
@@ -429,10 +442,23 @@ class App {
     }
 
     /**
-     * Share to server (without reset)
+     * Broadcast video to viewers via WebRTC
      */
-    async shareToServer() {
-        if (this.frameManager.count === 0) return;
+    async broadcastVideo() {
+        if (this.frameManager.count === 0) {
+            this.uiController.updateDisplayText('No frames');
+            setTimeout(() => this.uiController.updateDisplayText(''), 2000);
+            return;
+        }
+
+        const channelName = settings.broadcastChannel;
+        if (!channelName) {
+            this.uiController.updateDisplayText('No channel set');
+            setTimeout(() => this.uiController.updateDisplayText(''), 2000);
+            return;
+        }
+
+        this.uiController.updateDisplayText('Sending...');
 
         try {
             const blob = await this.movieExporter.exportToBlob(
@@ -442,11 +468,129 @@ class App {
                 }
             );
 
-            await this.serverUploader.uploadVideo(blob);
+            await this.broadcastManager.sendVideo(blob, channelName);
+
+            this.uiController.updateDisplayText('Sent!');
+            setTimeout(() => this.uiController.updateDisplayText(''), 2000);
 
         } catch (error) {
-            console.error('Share failed:', error);
+            console.error('Broadcast failed:', error);
+            this.uiController.updateDisplayText('Send failed');
+            setTimeout(() => this.uiController.updateDisplayText(''), 2000);
         }
+    }
+
+    /**
+     * Setup viewer mode UI and handlers
+     */
+    setupViewerMode() {
+        const { viewerModeToggle, broadcastChannel, viewerStatus } = this.elements;
+
+        // Load saved channel name
+        if (settings.broadcastChannel) {
+            broadcastChannel.value = settings.broadcastChannel;
+        }
+
+        // Channel name input
+        broadcastChannel.addEventListener('change', (e) => {
+            settings.broadcastChannel = e.target.value.trim();
+        });
+
+        broadcastChannel.addEventListener('input', (e) => {
+            settings.broadcastChannel = e.target.value.trim();
+        });
+
+        // Viewer mode toggle
+        viewerModeToggle.addEventListener('change', async (e) => {
+            const enabled = e.target.checked;
+            const channel = settings.broadcastChannel;
+
+            if (enabled) {
+                if (!channel) {
+                    viewerStatus.textContent = 'Enter a channel name first';
+                    viewerModeToggle.checked = false;
+                    return;
+                }
+
+                viewerStatus.textContent = 'Connecting...';
+
+                try {
+                    await this.broadcastManager.startViewer(channel);
+                    this.enterViewerMode(channel);
+                    viewerStatus.textContent = 'Listening on: ' + channel;
+                } catch (error) {
+                    viewerStatus.textContent = 'Error: ' + error.message;
+                    viewerModeToggle.checked = false;
+                }
+            } else {
+                this.exitViewerMode();
+                viewerStatus.textContent = '';
+            }
+        });
+
+        // Handle received videos
+        eventBus.subscribe(Events.VIDEO_RECEIVED, ({ blob }) => {
+            this.playReceivedVideo(blob);
+        });
+
+        // Handle broadcast status
+        eventBus.subscribe(Events.BROADCAST_STATUS, ({ status, message }) => {
+            if (status === 'error') {
+                this.elements.viewerStatus.textContent = 'Error: ' + message;
+            }
+        });
+    }
+
+    /**
+     * Enter viewer mode - show viewer overlay
+     */
+    enterViewerMode(channel) {
+        this.isRunning = false; // Stop recognition loop
+        this.elements.viewerOverlay.classList.remove('hidden');
+        this.elements.viewerChannelDisplay.textContent = channel;
+        this.elements.viewerWaiting.classList.remove('hidden');
+        this.elements.settingsModal.classList.add('hidden');
+
+        // Tap to exit viewer mode
+        this.elements.viewerOverlay.onclick = () => {
+            this.elements.viewerModeToggle.checked = false;
+            this.exitViewerMode();
+        };
+    }
+
+    /**
+     * Exit viewer mode
+     */
+    exitViewerMode() {
+        this.broadcastManager.stop();
+        this.elements.viewerOverlay.classList.add('hidden');
+        this.elements.viewerStatus.textContent = '';
+        this.isRunning = true;
+        requestAnimationFrame(this.loop); // Restart recognition loop
+    }
+
+    /**
+     * Play a received video
+     */
+    playReceivedVideo(blob) {
+        const video = this.elements.receivedVideo;
+        const waiting = this.elements.viewerWaiting;
+
+        // Hide waiting message
+        waiting.classList.add('hidden');
+
+        // Create object URL and play
+        const url = URL.createObjectURL(blob);
+        video.src = url;
+        video.play();
+
+        // Loop playback
+        video.loop = true;
+
+        // Clean up old URL when new one loads
+        video.onloadeddata = () => {
+            console.log('Video loaded, playing...');
+        };
     }
 
     /**

@@ -121,7 +121,11 @@ export const Events = {
 
     // UI events
     FLASH_TRIGGER: 'ui:flash',
-    DISPLAY_TEXT: 'ui:displayText'
+    DISPLAY_TEXT: 'ui:displayText',
+
+    // Broadcast events (WebRTC)
+    BROADCAST_STATUS: 'broadcast:status',
+    VIDEO_RECEIVED: 'broadcast:videoReceived'
 };
 
 // Singleton instance
