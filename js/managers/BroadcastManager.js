@@ -38,7 +38,7 @@ export class BroadcastManager {
         return new Promise((resolve, reject) => {
             // Create peer with channel name as ID (viewer claims the channel)
             try {
-                this.peer = new Peer(channelName);
+                this.peer = new Peer(channelName, { debug: 1 });
             } catch (e) {
                 console.error('Failed to create Peer:', e);
                 reject(e);
@@ -152,7 +152,7 @@ export class BroadcastManager {
         console.log('Creating sender peer...');
 
         // Create new peer for this send
-        const senderPeer = new Peer();
+        const senderPeer = new Peer(undefined, { debug: 1 });
 
         return new Promise((resolve, reject) => {
             let connected = false;
