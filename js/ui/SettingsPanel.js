@@ -153,16 +153,16 @@ export class SettingsPanel {
             elements.saturationValue.textContent = value.toFixed(1);
         });
 
-        // Frame overlays
+        // Frame overlays (swapped because phone is upside down)
         elements.frameTop?.addEventListener('input', (e) => {
             const value = parseInt(e.target.value);
-            settings.frameTopThickness = value;
+            settings.frameBottomThickness = value;
             elements.frameTopValue.textContent = `${value}px`;
         });
 
         elements.frameBottom?.addEventListener('input', (e) => {
             const value = parseInt(e.target.value);
-            settings.frameBottomThickness = value;
+            settings.frameTopThickness = value;
             elements.frameBottomValue.textContent = `${value}px`;
         });
 
@@ -254,14 +254,14 @@ export class SettingsPanel {
             elements.transparencyValue.textContent = settings.transparencyAdjust.toFixed(2);
         }
 
-        // Frame overlays
+        // Frame overlays (swapped because phone is upside down)
         if (elements.frameTop) {
-            elements.frameTop.value = settings.frameTopThickness;
-            elements.frameTopValue.textContent = `${settings.frameTopThickness}px`;
+            elements.frameTop.value = settings.frameBottomThickness;
+            elements.frameTopValue.textContent = `${settings.frameBottomThickness}px`;
         }
         if (elements.frameBottom) {
-            elements.frameBottom.value = settings.frameBottomThickness;
-            elements.frameBottomValue.textContent = `${settings.frameBottomThickness}px`;
+            elements.frameBottom.value = settings.frameTopThickness;
+            elements.frameBottomValue.textContent = `${settings.frameTopThickness}px`;
         }
 
         // Playback
