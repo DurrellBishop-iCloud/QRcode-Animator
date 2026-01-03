@@ -516,17 +516,20 @@ class App {
         // Viewer mode toggle
         viewerModeToggle.addEventListener('change', async (e) => {
             const enabled = e.target.checked;
-            const channel = settings.broadcastChannel;
+            const channel = broadcastChannel.value.trim(); // Read directly from input
 
             console.log('Viewer toggle:', enabled, 'channel:', channel);
+            alert('Toggle: ' + enabled + ', channel: ' + channel); // Debug alert
 
             if (enabled) {
                 if (!channel) {
                     viewerStatus.textContent = 'Enter a channel name first';
+                    alert('No channel name');
                     viewerModeToggle.checked = false;
                     return;
                 }
 
+                settings.broadcastChannel = channel; // Save it
                 viewerStatus.textContent = 'Connecting...';
 
                 try {
@@ -537,6 +540,7 @@ class App {
                     viewerStatus.textContent = 'Listening on: ' + channel;
                 } catch (error) {
                     console.error('Viewer mode failed:', error);
+                    alert('Error: ' + (error.message || error));
                     viewerStatus.textContent = 'Error: ' + (error.message || error);
                     viewerModeToggle.checked = false;
                 }
