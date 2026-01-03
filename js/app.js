@@ -406,6 +406,11 @@ class App {
             // Reset session
             this.frameManager.clear();
             this.filterPipeline.reset();
+
+            // Clear canvases for fresh start
+            this.uiController.clearMainCanvas();
+            this.uiController.clearOnionSkin();
+
             this.uiController.updateDisplayText('Saved!');
 
             setTimeout(() => {
