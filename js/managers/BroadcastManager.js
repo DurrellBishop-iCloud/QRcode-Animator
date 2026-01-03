@@ -24,14 +24,28 @@ export class BroadcastManager {
             this.stop();
         }
 
+        // Check if PeerJS is loaded
+        if (typeof Peer === 'undefined') {
+            console.error('PeerJS not loaded!');
+            throw new Error('PeerJS library not loaded');
+        }
+
         this.channelName = channelName;
         this.isViewer = true;
 
+        console.log('Starting viewer on channel:', channelName);
+
         return new Promise((resolve, reject) => {
             // Create peer with channel name as ID (viewer claims the channel)
-            this.peer = new Peer(channelName, {
-                debug: 1
-            });
+            try {
+                this.peer = new Peer(channelName, {
+                    debug: 2
+                });
+            } catch (e) {
+                console.error('Failed to create Peer:', e);
+                reject(e);
+                return;
+            }
 
             this.peer.on('open', (id) => {
                 console.log(`Viewer registered on channel: ${id}`);

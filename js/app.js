@@ -505,6 +505,8 @@ class App {
             const enabled = e.target.checked;
             const channel = settings.broadcastChannel;
 
+            console.log('Viewer toggle:', enabled, 'channel:', channel);
+
             if (enabled) {
                 if (!channel) {
                     viewerStatus.textContent = 'Enter a channel name first';
@@ -515,11 +517,14 @@ class App {
                 viewerStatus.textContent = 'Connecting...';
 
                 try {
+                    console.log('Starting viewer...');
                     await this.broadcastManager.startViewer(channel);
+                    console.log('Viewer started successfully');
                     this.enterViewerMode(channel);
                     viewerStatus.textContent = 'Listening on: ' + channel;
                 } catch (error) {
-                    viewerStatus.textContent = 'Error: ' + error.message;
+                    console.error('Viewer mode failed:', error);
+                    viewerStatus.textContent = 'Error: ' + (error.message || error);
                     viewerModeToggle.checked = false;
                 }
             } else {
