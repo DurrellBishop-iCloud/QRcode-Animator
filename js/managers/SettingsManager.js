@@ -15,15 +15,15 @@ const DEFAULT_SETTINGS = {
     targetColor: { r: 1.0, g: 0.0, b: 0.0 }, // RGB 0-1
 
     // Frame overlay
-    frameTopThickness: 80, // pixels
-    frameBottomThickness: 80, // pixels
+    frameTopThickness: 20, // pixels
+    frameBottomThickness: 100, // pixels
 
     // Playback
     frameRate: 12, // fps
     reverseMovie: false,
 
     // Camera (limited in web)
-    zoomFactor: 1.3,
+    zoomFactor: 1.7,
 
     // Effects
     kaleidoscopeEnabled: false,
@@ -36,7 +36,7 @@ const DEFAULT_SETTINGS = {
     onionSkinOffsetY: 0,
 
     // Image adjustments
-    brightness: 1.0,
+    brightness: 1.1,
     contrast: 1.0,
     saturation: 1.0,
     invertColors: false,
