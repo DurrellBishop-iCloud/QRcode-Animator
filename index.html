@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Stop Motion Studio</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="app" class="app-container">
+        <!-- Video preview layer (always present) -->
+        <video id="camera-preview" autoplay playsinline muted></video>
+
+        <!-- Canvas stack for rendering -->
+        <div class="canvas-stack">
+            <!-- Onion skin layer (previous frame reference) -->
+            <canvas id="onion-canvas" class="layer onion-layer"></canvas>
+
+            <!-- Main display canvas (filtered preview / static frames) -->
+            <canvas id="main-canvas" class="layer main-layer"></canvas>
+
+            <!-- Overlay canvas (frame borders, debug rects) -->
+            <canvas id="overlay-canvas" class="layer overlay-layer"></canvas>
+        </div>
+
+        <!-- Frame overlay masks (black bars) -->
+        <div class="frame-overlay">
+            <div id="top-frame" class="frame-bar top"></div>
+            <div id="bottom-frame" class="frame-bar bottom"></div>
+        </div>
+
+        <!-- Flash overlay for capture feedback -->
+        <div id="flash-overlay" class="flash-overlay hidden"></div>
+
+        <!-- UI overlay (rotated 180deg like Swift) -->
+        <div class="ui-overlay">
+            <header class="status-bar">
+                <span id="mode-text" class="mode">Make</span>
+                <span id="frame-count" class="frame-info">0 frames</span>
+            </header>
+
+            <div id="display-text" class="display-text"></div>
+        </div>
+
+        <!-- Debug overlay -->
+        <div id="debug-overlay" class="debug-overlay">
+            <div id="debug-rect" class="debug-rect"></div>
+        </div>
+
+        <!-- Settings panel (modal) -->
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-content">
+                <header class="modal-header">
+                    <h2>Settings</h2>
+                    <button id="close-settings" class="btn-close">Done</button>
+                </header>
+
+                <div class="settings-form">
+                    <!-- Recognition Section -->
+                    <section class="settings-section">
+                        <h3>Recognition</h3>
+
+                        <div class="form-group">
+                            <label for="recognition-type">Recognition Type</label>
+                            <select id="recognition-type">
+                                <option value="qrCode">QR Code</option>
+                                <option value="barcode">Barcode</option>
+                                <option value="colorSample">Color Sample</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="capture-delay">
+                                Capture Delay: <span id="capture-delay-value">0.5s</span>
+                            </label>
+                            <input type="range" id="capture-delay" min="0.1" max="3" step="0.1" value="0.5">
+                        </div>
+                    </section>
+
+                    <!-- Color Target Section -->
+                    <section id="color-target-section" class="settings-section hidden">
+                        <h3>Color Target</h3>
+                        <div class="form-group">
+                            <label for="target-color">Target Color</label>
+                            <input type="color" id="target-color" value="#ff0000">
+                        </div>
+                    </section>
+
+                    <!-- Camera Section -->
+                    <section class="settings-section">
+                        <h3>Camera</h3>
+
+                        <div class="form-group toggle">
+                            <label for="kaleidoscope-toggle">Kaleidoscope Effect</label>
+                            <input type="checkbox" id="kaleidoscope-toggle">
+                        </div>
+
+                        <div class="form-group toggle">
+                            <label for="onion-skin-toggle">Onion Skin</label>
+                            <input type="checkbox" id="onion-skin-toggle" checked>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="onion-opacity">
+                                Onion Skin Opacity: <span id="onion-opacity-value">0.60</span>
+                            </label>
+                            <input type="range" id="onion-opacity" min="0" max="1" step="0.05" value="0.6">
+                        </div>
+                    </section>
+
+                    <!-- Image Quality Section -->
+                    <section class="settings-section">
+                        <h3>Image Quality</h3>
+
+                        <div class="form-group toggle">
+                            <label for="invert-toggle">Invert Colors</label>
+                            <input type="checkbox" id="invert-toggle">
+                        </div>
+
+                        <div class="form-group toggle">
+                            <label for="transparent-toggle">Transparent Background</label>
+                            <input type="checkbox" id="transparent-toggle">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="transparency-adjust">
+                                Transparency Adjust: <span id="transparency-value">0.00</span>
+                            </label>
+                            <input type="range" id="transparency-adjust" min="-0.2" max="0.2" step="0.01" value="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contrast">
+                                Contrast: <span id="contrast-value">1.0</span>
+                            </label>
+                            <input type="range" id="contrast" min="0.5" max="2" step="0.1" value="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="saturation">
+                                Saturation: <span id="saturation-value">1.0</span>
+                            </label>
+                            <input type="range" id="saturation" min="0" max="2" step="0.1" value="1">
+                        </div>
+                    </section>
+
+                    <!-- Frame Overlay Section -->
+                    <section class="settings-section">
+                        <h3>Frame Overlay</h3>
+
+                        <div class="form-group">
+                            <label for="frame-top">
+                                Top Thickness: <span id="frame-top-value">80px</span>
+                            </label>
+                            <input type="range" id="frame-top" min="0" max="200" step="10" value="80">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="frame-bottom">
+                                Bottom Thickness: <span id="frame-bottom-value">80px</span>
+                            </label>
+                            <input type="range" id="frame-bottom" min="0" max="200" step="10" value="80">
+                        </div>
+                    </section>
+
+                    <!-- Playback Section -->
+                    <section class="settings-section">
+                        <h3>Playback</h3>
+
+                        <div class="form-group">
+                            <label for="frame-rate">
+                                Frame Rate: <span id="frame-rate-value">12 fps</span>
+                            </label>
+                            <input type="range" id="frame-rate" min="6" max="24" step="1" value="12">
+                        </div>
+
+                        <div class="form-group toggle">
+                            <label for="reverse-toggle">Reverse Movie</label>
+                            <input type="checkbox" id="reverse-toggle">
+                        </div>
+                    </section>
+
+                    <!-- Network Section -->
+                    <section class="settings-section">
+                        <h3>Network Broadcasting</h3>
+
+                        <div class="form-group">
+                            <label for="server-address">Server Address</label>
+                            <input type="text" id="server-address" placeholder="192.168.1.198:8080">
+                            <p class="hint">Enter the IP:port of your server</p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="lib/jsqr.min.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
