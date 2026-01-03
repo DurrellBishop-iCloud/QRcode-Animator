@@ -14,9 +14,9 @@ const DEFAULT_SETTINGS = {
     // Color targeting
     targetColor: { r: 1.0, g: 0.0, b: 0.0 }, // RGB 0-1
 
-    // Frame overlay
-    frameTopThickness: 20, // pixels
-    frameBottomThickness: 100, // pixels
+    // Frame overlay (swapped labels because phone is upside down)
+    frameTopThickness: 100, // pixels - shows as "Bottom" on screen
+    frameBottomThickness: 20, // pixels - shows as "Top" on screen
 
     // Playback
     frameRate: 12, // fps
