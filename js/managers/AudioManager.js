@@ -25,74 +25,28 @@ export class AudioManager {
     }
 
     /**
-     * Play shutter sound - realistic camera shutter using noise + resonance
+     * Play simple click sound for capture confirmation
      */
     playShutterSound() {
         this.init();
         const ctx = this.audioContext;
         const now = ctx.currentTime;
 
-        // Create white noise buffer for mechanical click
-        const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.08, ctx.sampleRate);
-        const noiseData = noiseBuffer.getChannelData(0);
-        for (let i = 0; i < noiseData.length; i++) {
-            noiseData[i] = Math.random() * 2 - 1;
-        }
+        // Simple short click
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
 
-        // Noise source (mechanical click)
-        const noise = ctx.createBufferSource();
-        noise.buffer = noiseBuffer;
+        osc.type = 'sine';
+        osc.frequency.value = 1000;
 
-        // Bandpass filter to shape the click
-        const clickFilter = ctx.createBiquadFilter();
-        clickFilter.type = 'bandpass';
-        clickFilter.frequency.value = 4000;
-        clickFilter.Q.value = 1.5;
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
 
-        // Click envelope
-        const clickGain = ctx.createGain();
-        clickGain.gain.setValueAtTime(0.4, now);
-        clickGain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
 
-        noise.connect(clickFilter);
-        clickFilter.connect(clickGain);
-        clickGain.connect(ctx.destination);
-
-        // Low thump for body resonance
-        const thump = ctx.createOscillator();
-        thump.type = 'sine';
-        thump.frequency.setValueAtTime(150, now);
-        thump.frequency.exponentialRampToValueAtTime(60, now + 0.05);
-
-        const thumpGain = ctx.createGain();
-        thumpGain.gain.setValueAtTime(0.3, now);
-        thumpGain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
-
-        thump.connect(thumpGain);
-        thumpGain.connect(ctx.destination);
-
-        // Second click (mirror slap)
-        const noise2 = ctx.createBufferSource();
-        noise2.buffer = noiseBuffer;
-        const click2Filter = ctx.createBiquadFilter();
-        click2Filter.type = 'highpass';
-        click2Filter.frequency.value = 2000;
-        const click2Gain = ctx.createGain();
-        click2Gain.gain.setValueAtTime(0, now);
-        click2Gain.gain.setValueAtTime(0.15, now + 0.03);
-        click2Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
-
-        noise2.connect(click2Filter);
-        click2Filter.connect(click2Gain);
-        click2Gain.connect(ctx.destination);
-
-        // Start all
-        noise.start(now);
-        noise.stop(now + 0.08);
-        thump.start(now);
-        thump.stop(now + 0.1);
-        noise2.start(now);
-        noise2.stop(now + 0.1);
+        osc.start(now);
+        osc.stop(now + 0.05);
     }
 
     /**
