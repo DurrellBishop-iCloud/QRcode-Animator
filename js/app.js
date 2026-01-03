@@ -57,7 +57,9 @@ class App {
         this.isRunning = false;
         this.currentMode = 'Make';
         this.lastFrameTime = 0;
-        this.targetFps = 30; // Recognition processing rate
+        this.targetFps = 30; // Display processing rate
+        this.frameCounter = 0;
+        this.recognitionSkip = 3; // Only scan every Nth frame for QR (reduces CPU heat)
 
         // Bind methods
         this.loop = this.loop.bind(this);
@@ -181,13 +183,16 @@ class App {
 
         if (elapsed >= frameInterval) {
             this.lastFrameTime = timestamp;
+            this.frameCounter++;
 
-            // Always capture frame for recognition (even in Play mode)
-            // This allows detecting when "play" QR is removed to exit Play mode
-            const imageData = this.cameraManager.captureFrame();
+            // Only run QR recognition every Nth frame to reduce CPU/heat
+            const shouldScanQR = (this.frameCounter % this.recognitionSkip) === 0;
+
+            // Capture frame (needed for both recognition and preview)
+            const imageData = shouldScanQR ? this.cameraManager.captureFrame() : null;
 
             if (imageData) {
-                // Process for recognition (always - to detect mode changes)
+                // Process for recognition (throttled to reduce heat)
                 this.recognitionManager.processFrame(imageData);
 
                 // Only render preview in Make mode when viewing live feed
