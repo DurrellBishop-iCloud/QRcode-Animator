@@ -106,22 +106,6 @@ export class CameraManager {
             this.applyZoom(value);
         });
 
-        // Subscribe to image adjustment changes for live preview
-        this.applyImageFilters();
-        settings.subscribe('brightness', () => this.applyImageFilters());
-        settings.subscribe('contrast', () => this.applyImageFilters());
-        settings.subscribe('saturation', () => this.applyImageFilters());
-    }
-
-    /**
-     * Apply CSS filters to video element for real-time preview
-     */
-    applyImageFilters() {
-        const brightness = settings.brightness;
-        const contrast = settings.contrast;
-        const saturation = settings.saturation;
-
-        this.video.style.filter = `brightness(${brightness}) contrast(${contrast}) saturate(${saturation})`;
     }
 
     /**
