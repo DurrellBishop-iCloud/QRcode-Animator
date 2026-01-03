@@ -16,6 +16,10 @@ export class CameraManager {
         this.videoWidth = 0;
         this.videoHeight = 0;
 
+        // Zoomed capture canvas (stores cropped/zoomed frames)
+        this.zoomedCanvas = document.createElement('canvas');
+        this.zoomedCtx = this.zoomedCanvas.getContext('2d', { willReadFrequently: true });
+
         // Bind methods
         this.onVideoReady = this.onVideoReady.bind(this);
     }
@@ -96,6 +100,11 @@ export class CameraManager {
 
         // Apply initial zoom
         this.applyZoom(settings.zoomFactor);
+
+        // Subscribe to zoom changes so display updates in real-time
+        settings.subscribe('zoomFactor', (value) => {
+            this.applyZoom(value);
+        });
     }
 
     /**
@@ -120,26 +129,53 @@ export class CameraManager {
     }
 
     /**
-     * Capture current video frame as ImageData
-     * @returns {ImageData|null} Captured frame
+     * Capture current video frame as ImageData (with zoom applied)
+     * Zoom works by cropping a centered region from the full frame,
+     * simulating the camera hardware zoom in the Swift app.
+     * @returns {ImageData|null} Captured frame (zoomed)
      */
     captureFrame() {
         if (!this.isRunning || this.videoWidth === 0) {
             return null;
         }
 
-        // Draw video to canvas (flip horizontally to match mirror view)
+        const zoomFactor = Math.max(1, settings.zoomFactor);
+
+        // Draw full video to capture canvas (flip horizontally to match mirror view)
         this.captureCtx.save();
         this.captureCtx.translate(this.videoWidth, 0);
         this.captureCtx.scale(-1, 1);
         this.captureCtx.drawImage(this.video, 0, 0, this.videoWidth, this.videoHeight);
         this.captureCtx.restore();
 
-        return this.captureCtx.getImageData(0, 0, this.videoWidth, this.videoHeight);
+        // If zoom is 1, return the full frame
+        if (zoomFactor <= 1) {
+            return this.captureCtx.getImageData(0, 0, this.videoWidth, this.videoHeight);
+        }
+
+        // Apply zoom by cropping a centered region
+        // Zoom 1.3 means we see 1/1.3 = 76.9% of the original image
+        const cropWidth = this.videoWidth / zoomFactor;
+        const cropHeight = this.videoHeight / zoomFactor;
+        const cropX = (this.videoWidth - cropWidth) / 2;
+        const cropY = (this.videoHeight - cropHeight) / 2;
+
+        // Set zoomed canvas to match video dimensions (zoomed frame fills same size)
+        this.zoomedCanvas.width = this.videoWidth;
+        this.zoomedCanvas.height = this.videoHeight;
+
+        // Draw the cropped center region scaled up to fill the canvas
+        this.zoomedCtx.drawImage(
+            this.captureCanvas,
+            cropX, cropY, cropWidth, cropHeight,  // Source: cropped center
+            0, 0, this.videoWidth, this.videoHeight  // Dest: full canvas
+        );
+
+        return this.zoomedCtx.getImageData(0, 0, this.videoWidth, this.videoHeight);
     }
 
     /**
-     * Capture frame as canvas (for filter processing)
+     * Capture frame as canvas (for filter processing, with zoom applied)
      * @returns {HTMLCanvasElement|null} Canvas with frame
      */
     captureFrameAsCanvas() {
@@ -147,6 +183,7 @@ export class CameraManager {
             return null;
         }
 
+        const zoomFactor = Math.max(1, settings.zoomFactor);
         const canvas = document.createElement('canvas');
         canvas.width = this.videoWidth;
         canvas.height = this.videoHeight;
@@ -159,7 +196,29 @@ export class CameraManager {
         ctx.drawImage(this.video, 0, 0, this.videoWidth, this.videoHeight);
         ctx.restore();
 
-        return canvas;
+        // If no zoom, return as-is
+        if (zoomFactor <= 1) {
+            return canvas;
+        }
+
+        // Apply zoom by cropping center and scaling up
+        const cropWidth = this.videoWidth / zoomFactor;
+        const cropHeight = this.videoHeight / zoomFactor;
+        const cropX = (this.videoWidth - cropWidth) / 2;
+        const cropY = (this.videoHeight - cropHeight) / 2;
+
+        const zoomedCanvas = document.createElement('canvas');
+        zoomedCanvas.width = this.videoWidth;
+        zoomedCanvas.height = this.videoHeight;
+        const zoomedCtx = zoomedCanvas.getContext('2d');
+
+        zoomedCtx.drawImage(
+            canvas,
+            cropX, cropY, cropWidth, cropHeight,
+            0, 0, this.videoWidth, this.videoHeight
+        );
+
+        return zoomedCanvas;
     }
 
     /**

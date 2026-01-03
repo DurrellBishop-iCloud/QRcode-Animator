@@ -27,6 +27,8 @@ export class SettingsPanel {
             targetColor: document.getElementById('target-color'),
 
             // Camera
+            zoomFactor: document.getElementById('zoom-factor'),
+            zoomFactorValue: document.getElementById('zoom-factor-value'),
             kaleidoscopeToggle: document.getElementById('kaleidoscope-toggle'),
             onionSkinToggle: document.getElementById('onion-skin-toggle'),
             onionOpacity: document.getElementById('onion-opacity'),
@@ -84,6 +86,13 @@ export class SettingsPanel {
             const g = parseInt(hex.slice(3, 5), 16) / 255;
             const b = parseInt(hex.slice(5, 7), 16) / 255;
             settings.targetColor = { r, g, b };
+        });
+
+        // Zoom factor
+        elements.zoomFactor?.addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            settings.zoomFactor = value;
+            elements.zoomFactorValue.textContent = `${value.toFixed(1)}x`;
         });
 
         // Kaleidoscope
@@ -191,6 +200,12 @@ export class SettingsPanel {
             elements.targetColor.value = hex;
         }
         this.updateColorTargetVisibility();
+
+        // Zoom factor
+        if (elements.zoomFactor) {
+            elements.zoomFactor.value = settings.zoomFactor;
+            elements.zoomFactorValue.textContent = `${settings.zoomFactor.toFixed(1)}x`;
+        }
 
         // Kaleidoscope
         if (elements.kaleidoscopeToggle) {
