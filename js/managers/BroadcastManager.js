@@ -236,14 +236,14 @@ export class BroadcastManager {
                         message: 'Could not connect to viewer'
                     });
                     senderPeer.destroy();
-                    reject(err);
+                    reject(new Error('Conn error: ' + (err.type || err.message || err)));
                 });
             });
 
             senderPeer.on('error', (err) => {
                 console.error('Sender peer error:', err);
                 senderPeer.destroy();
-                reject(err);
+                reject(new Error('Peer error: ' + (err.type || err.message || err)));
             });
 
             // Timeout if connection doesn't complete

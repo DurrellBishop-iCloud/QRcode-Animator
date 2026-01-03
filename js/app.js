@@ -486,8 +486,10 @@ class App {
 
         } catch (error) {
             console.error('Send failed:', error);
-            this.uiController.updateDisplayText('Connect fail');
-            setTimeout(() => this.uiController.updateDisplayText(''), 2000);
+            // Show specific error
+            const msg = error.message || String(error);
+            this.uiController.updateDisplayText(msg.substring(0, 20));
+            setTimeout(() => this.uiController.updateDisplayText(''), 4000);
         }
     }
 
