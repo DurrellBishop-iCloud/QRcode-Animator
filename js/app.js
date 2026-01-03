@@ -269,6 +269,9 @@ class App {
         // Flash effect
         eventBus.publish(Events.FLASH_TRIGGER, {});
 
+        // Clear main canvas to show live feed (frame is stored, not displayed)
+        this.uiController.clearMainCanvas();
+
         // Update UI
         this.updateUI();
     }
@@ -292,6 +295,9 @@ class App {
 
         // Flash effect
         eventBus.publish(Events.FLASH_TRIGGER, {});
+
+        // Clear main canvas to show live feed
+        this.uiController.clearMainCanvas();
 
         this.updateUI();
     }
