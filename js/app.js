@@ -542,53 +542,74 @@ class App {
     }
 
     /**
+     * Debug log helper - appends to display text
+     */
+    debugLog(msg) {
+        const el = this.elements.displayText;
+        if (el) {
+            el.textContent += msg + '\n';
+            el.scrollTop = el.scrollHeight;
+        }
+        console.log('[DEBUG]', msg);
+    }
+
+    /**
      * Broadcast video to viewers via WebRTC
      */
     async broadcastVideo() {
-        if (this.frameManager.count === 0) {
-            this.uiController.updateDisplayText('No frames');
-            setTimeout(() => this.uiController.updateDisplayText(''), 2000);
+        // Clear debug area
+        this.elements.displayText.textContent = '';
+
+        const frameCount = this.frameManager.count;
+        this.debugLog(`Frames: ${frameCount}`);
+        this.debugLog(`Bounce: ${settings.bounceEnabled}`);
+        this.debugLog(`Reverse: ${settings.reverseMovie}`);
+
+        if (frameCount === 0) {
+            this.debugLog('ERROR: No frames');
             return;
         }
 
         const channelName = settings.broadcastChannel;
+        this.debugLog(`Channel: ${channelName || '(none)'}`);
+
         if (!channelName) {
-            this.uiController.updateDisplayText('No channel');
-            setTimeout(() => this.uiController.updateDisplayText(''), 2000);
+            this.debugLog('ERROR: No channel set');
             return;
         }
 
-        this.uiController.updateDisplayText('Exporting...');
+        this.debugLog('Exporting...');
 
         let blob;
         try {
+            const allFrames = this.frameManager.getAllFrames();
+            this.debugLog(`Raw frames: ${allFrames.length}`);
+
             blob = await this.movieExporter.exportToBlob(
-                this.frameManager.getAllFrames(),
+                allFrames,
                 {
                     screenSize: this.uiController.getScreenSize()
                 }
             );
+
+            this.debugLog(`Blob size: ${blob.size} bytes`);
+            this.debugLog(`Blob type: ${blob.type}`);
         } catch (error) {
             console.error('Export failed:', error);
-            this.uiController.updateDisplayText('Export fail');
-            setTimeout(() => this.uiController.updateDisplayText(''), 2000);
+            this.debugLog(`EXPORT ERROR: ${error.message}`);
             return;
         }
 
-        this.uiController.updateDisplayText('Connecting...');
+        this.debugLog('Connecting...');
 
         try {
-            await this.broadcastManager.sendVideo(blob, channelName);
+            await this.broadcastManager.sendVideo(blob, channelName, (msg) => this.debugLog(msg));
 
-            this.uiController.updateDisplayText('Sent!');
-            setTimeout(() => this.uiController.updateDisplayText(''), 2000);
+            this.debugLog('SUCCESS: Sent!');
 
         } catch (error) {
             console.error('Send failed:', error);
-            // Show specific error
-            const msg = error.message || String(error);
-            this.uiController.updateDisplayText(msg.substring(0, 20));
-            setTimeout(() => this.uiController.updateDisplayText(''), 4000);
+            this.debugLog(`SEND ERROR: ${error.message}`);
         }
     }
 

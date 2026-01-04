@@ -239,8 +239,11 @@ export class FirebaseSignaling {
     /**
      * Send video to viewer
      */
-    async sendVideo(videoBlob, channelName) {
+    async sendVideo(videoBlob, channelName, debugLog = () => {}) {
+        this.debugLog = debugLog;
+        this.debugLog('Firebase init...');
         await this.init();
+        this.debugLog('Firebase ready');
 
         this.channelName = channelName;
         this.channelRef = this.db.ref('channels/' + channelName);
@@ -259,12 +262,15 @@ export class FirebaseSignaling {
         this.channelRef.child('viewerCandidates').off();
 
         // Check if viewer is active
+        this.debugLog('Checking viewer...');
         const viewerSnapshot = await this.channelRef.child('viewer').once('value');
         const viewer = viewerSnapshot.val();
 
         if (!viewer || !viewer.active) {
+            this.debugLog('No viewer found!');
             throw new Error('No viewer on channel');
         }
+        this.debugLog('Viewer found');
 
         // Create new peer connection
         this.peerConnection = new RTCPeerConnection(RTC_CONFIG);
@@ -325,15 +331,18 @@ export class FirebaseSignaling {
 
                     // Wait for data channel to open, then send
                     this.dataChannel.onopen = async () => {
+                        this.debugLog('Data channel open');
                         try {
                             await this.sendVideoData(blobToSend);
                             resolve(true);
                         } catch (e) {
+                            this.debugLog(`sendVideoData error: ${e.message}`);
                             reject(e);
                         }
                     };
 
                     this.dataChannel.onerror = (e) => {
+                        this.debugLog(`Data channel error: ${e}`);
                         reject(new Error('Data channel error'));
                     };
                 }
@@ -347,6 +356,8 @@ export class FirebaseSignaling {
      * Send video data over data channel
      */
     async sendVideoData(videoBlob) {
+        this.debugLog('Converting to base64...');
+
         // Convert to base64
         const reader = new FileReader();
         const base64Promise = new Promise((resolve, reject) => {
@@ -361,18 +372,29 @@ export class FirebaseSignaling {
         const base64Only = base64Data.split(',')[1]; // Remove data URL prefix
         const mimeType = videoBlob.type;
 
+        this.debugLog(`Base64 len: ${base64Only.length}`);
+
         if (base64Only.length < CHUNK_SIZE) {
             // Small enough to send in one message
+            this.debugLog('Sending single message');
             const message = JSON.stringify({
                 type: 'video',
                 data: base64Data,
                 mimeType: mimeType,
                 size: videoBlob.size
             });
-            this.dataChannel.send(message);
+            this.debugLog(`Msg len: ${message.length}`);
+            try {
+                this.dataChannel.send(message);
+                this.debugLog('Sent OK');
+            } catch (e) {
+                this.debugLog(`Send error: ${e.message}`);
+                throw e;
+            }
         } else {
             // Split into chunks
             const totalChunks = Math.ceil(base64Only.length / CHUNK_SIZE);
+            this.debugLog(`Chunking: ${totalChunks} chunks`);
 
             for (let i = 0; i < totalChunks; i++) {
                 const start = i * CHUNK_SIZE;
@@ -387,13 +409,22 @@ export class FirebaseSignaling {
                     mimeType: mimeType
                 });
 
-                this.dataChannel.send(chunk);
+                try {
+                    this.dataChannel.send(chunk);
+                    if (i % 10 === 0) {
+                        this.debugLog(`Chunk ${i}/${totalChunks}`);
+                    }
+                } catch (e) {
+                    this.debugLog(`Chunk ${i} error: ${e.message}`);
+                    throw e;
+                }
 
                 // Small delay to prevent buffer overflow
                 if (i < totalChunks - 1) {
                     await new Promise(r => setTimeout(r, 5));
                 }
             }
+            this.debugLog('All chunks sent');
         }
 
         eventBus.publish(Events.BROADCAST_STATUS, { status: 'sent' });

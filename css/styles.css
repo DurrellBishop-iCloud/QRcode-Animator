@@ -174,11 +174,19 @@ html, body {
 }
 
 .display-text {
-    font-size: 40px;
-    color: #fff;
-    text-align: center;
-    padding-top: 20px;
+    font-size: 14px;
+    color: #0f0;
+    text-align: left;
+    padding: 10px;
     word-break: break-word;
+    white-space: pre-wrap;
+    font-family: monospace;
+    background: rgba(0, 0, 0, 0.8);
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #0f0;
+    margin: 10px;
+    border-radius: 4px;
 }
 
 /* ===== Debug Overlay ===== */
