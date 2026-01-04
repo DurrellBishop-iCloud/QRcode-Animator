@@ -369,7 +369,12 @@ export class FirebaseSignaling {
 
         // Chunk size (keep well under typical WebRTC limits)
         const CHUNK_SIZE = 16000;
-        const base64Only = base64Data.split(',')[1]; // Remove data URL prefix
+        // Find base64 data after ";base64," (handles mimetypes with commas)
+        const base64Marker = ';base64,';
+        const markerIndex = base64Data.indexOf(base64Marker);
+        const base64Only = markerIndex >= 0
+            ? base64Data.substring(markerIndex + base64Marker.length)
+            : base64Data.split(',')[1];
         const mimeType = videoBlob.type;
 
         this.debugLog(`Base64 len: ${base64Only.length}`);
