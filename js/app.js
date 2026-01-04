@@ -493,27 +493,50 @@ class App {
         this.uiController.clearOnionSkin();
         this.updateUI();
 
+        this.uiController.updateDisplayText('Exporting...');
+
         try {
             const blob = await this.movieExporter.exportToBlob(
                 framesToExport,
                 { screenSize }
             );
 
-            // Save file (shows share sheet on iOS, downloads on desktop)
-            await this.movieExporter.saveToFile(blob, `animation_${Date.now()}.webm`);
-
-            // Upload to server
+            // Upload to server in background
             this.serverUploader.uploadVideo(blob);
 
-            this.uiController.updateDisplayText('Saved!');
-
-            setTimeout(() => {
-                this.uiController.updateDisplayText('');
-            }, 2000);
+            // Show save prompt (user tap required for share API on iOS)
+            this.showSavePrompt(blob);
 
         } catch (error) {
             console.error('Save failed:', error);
+            this.uiController.updateDisplayText('Export failed');
+            setTimeout(() => this.uiController.updateDisplayText(''), 2000);
         }
+    }
+
+    /**
+     * Show save prompt overlay - requires user tap for share API
+     */
+    showSavePrompt(blob) {
+        const prompt = document.getElementById('save-prompt');
+        const button = document.getElementById('save-button');
+
+        this.uiController.updateDisplayText('');
+        prompt.classList.remove('hidden');
+
+        // Handle tap (user gesture required for share API)
+        const handleTap = async () => {
+            button.removeEventListener('click', handleTap);
+            prompt.classList.add('hidden');
+
+            const filename = `animation_${Date.now()}.webm`;
+            await this.movieExporter.saveToFile(blob, filename);
+
+            this.uiController.updateDisplayText('Saved!');
+            setTimeout(() => this.uiController.updateDisplayText(''), 2000);
+        };
+
+        button.addEventListener('click', handleTap);
     }
 
     /**
