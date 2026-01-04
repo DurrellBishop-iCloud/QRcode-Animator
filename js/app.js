@@ -87,6 +87,9 @@ class App {
     async init() {
         console.log('Starting Stop Motion Web App...');
 
+        // Show version in debug area
+        this.elements.displayText.textContent = 'v32 ready';
+
         // Start camera
         const cameraStarted = await this.cameraManager.startSession();
 
@@ -558,7 +561,7 @@ class App {
      */
     async broadcastVideo() {
         // Clear debug area and show version
-        this.elements.displayText.textContent = 'v31\n';
+        this.elements.displayText.textContent = 'v32\n';
 
         const frameCount = this.frameManager.count;
         this.debugLog(`Frames: ${frameCount}`);
