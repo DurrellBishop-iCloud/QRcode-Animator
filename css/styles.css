@@ -402,6 +402,23 @@ html, body {
     line-height: 1.4;
 }
 
+/* Display section yellow centered hint */
+.display-hint {
+    color: #fed309;
+    font-size: 17px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.4;
+    margin-bottom: 24px;
+    padding: 0 10px;
+}
+
+.display-section {
+    border-bottom: 1px solid #49494b;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
 /* ===== Viewer Mode Overlay ===== */
 .viewer-overlay {
     position: fixed;

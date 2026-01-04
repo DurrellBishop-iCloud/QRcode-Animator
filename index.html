@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Stop Motion Studio</title>
-    <link rel="stylesheet" href="css/styles.css?v=20260104d">
+    <link rel="stylesheet" href="css/styles.css?v=20260104e">
 </head>
 <body>
     <div id="app" class="app-container">
@@ -71,23 +71,22 @@
         <div id="settings-modal" class="modal hidden">
             <div class="modal-content">
                 <header class="modal-header">
-                    <h2>Settings <span style="color:#666;font-size:12px;">v40</span></h2>
+                    <h2>Settings</h2>
                     <button id="close-settings" class="btn-close">Done</button>
                 </header>
 
                 <div class="settings-form">
-                    <!-- Viewer Mode Section (first for easy access) -->
-                    <section class="settings-section">
-                        <h3>Viewer Mode</h3>
-                        <p class="hint">Receive videos from others. Enter a channel name, enable viewer mode, then tap Done.</p>
+                    <!-- Display Mode Section (first for easy access) -->
+                    <section class="settings-section display-section">
+                        <p class="display-hint">You can make this device a display for other animators give it a group name and turn on.</p>
 
                         <div class="form-group">
-                            <label for="broadcast-channel">Channel Name</label>
+                            <label for="broadcast-channel">Group Name</label>
                             <input type="text" id="broadcast-channel" placeholder="FamilyName">
                         </div>
 
                         <div class="form-group toggle">
-                            <label for="viewer-mode-toggle">Enable Viewer Mode</label>
+                            <label for="viewer-mode-toggle">Display for Animations</label>
                             <input type="checkbox" id="viewer-mode-toggle">
                         </div>
 
@@ -206,6 +205,6 @@
     <script src="lib/jsqr.min.js?v=20250103x"></script>
     <script src="lib/peerjs.min.js?v=20250103x"></script>
     <script src="lib/qrcode-generator.min.js?v=20250104"></script>
-    <script type="module" src="js/app.js?v=40"></script>
+    <script type="module" src="js/app.js?v=41"></script>
 </body>
 </html>
