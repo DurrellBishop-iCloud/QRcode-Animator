@@ -727,15 +727,13 @@ class App {
         dbg('Object URL: ' + url.substring(0, 50) + '...');
         newVideo.src = url;
 
-        // Try to play after load
-        newVideo.onloadeddata = () => {
-            dbg('Video loaded, attempting play...');
-            newVideo.play().then(() => {
-                dbg('Video playing successfully');
-            }).catch(e => {
-                dbg('Play ERROR: ' + e.message);
-            });
-        };
+        // Try to play immediately
+        dbg('Attempting play...');
+        newVideo.play().then(() => {
+            dbg('Video playing successfully');
+        }).catch(e => {
+            dbg('Play ERROR: ' + e.message);
+        });
     }
 
     /**
