@@ -118,6 +118,8 @@ export class FirebaseSignaling {
      * Handle incoming offer from sender
      */
     async handleOffer(offer) {
+        if (window.dbg) window.dbg('handleOffer called - cleaning up old connection');
+
         // Clean up any existing connection first
         if (this.dataChannel) {
             this.dataChannel.close();
@@ -133,6 +135,7 @@ export class FirebaseSignaling {
         // Reset chunk buffer
         this.receivedChunks = [];
         this.expectedChunks = 0;
+        if (window.dbg) window.dbg('Chunks reset: array length=' + this.receivedChunks.length);
 
         // Create fresh peer connection
         this.peerConnection = new RTCPeerConnection(RTC_CONFIG);
@@ -192,7 +195,7 @@ export class FirebaseSignaling {
 
                 if (message.type === 'chunk') {
                     // Chunked transfer
-                    console.log(`Received chunk ${message.index + 1}/${message.total}`);
+                    if (window.dbg) window.dbg('Chunk ' + (message.index + 1) + '/' + message.total + ' len=' + message.data.length);
                     this.receivedChunks[message.index] = message.data;
                     this.expectedChunks = message.total;
 
