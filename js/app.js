@@ -699,6 +699,11 @@ class App {
             oldVideo.remove();
         }
 
+        // Check for any remaining video elements
+        const existingVideos = overlay.querySelectorAll('video');
+        dbg('Existing videos in overlay: ' + existingVideos.length);
+        existingVideos.forEach(v => v.remove());
+
         // Create a FRESH video element
         dbg('Creating new video element');
         const newVideo = document.createElement('video');
