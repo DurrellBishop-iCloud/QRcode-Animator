@@ -529,7 +529,9 @@ class App {
             button.removeEventListener('click', handleTap);
             prompt.classList.add('hidden');
 
-            const filename = `animation_${Date.now()}.webm`;
+            // Use correct extension based on blob type (mp4 for iOS, webm for others)
+            const ext = this.movieExporter.getFileExtension(blob.type);
+            const filename = `animation_${Date.now()}.${ext}`;
             await this.movieExporter.saveToFile(blob, filename);
 
             this.uiController.updateDisplayText('Saved!');

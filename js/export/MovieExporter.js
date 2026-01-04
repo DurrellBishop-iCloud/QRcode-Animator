@@ -192,23 +192,49 @@ export class MovieExporter {
 
     /**
      * Get supported MIME type for video recording
+     * Safari/iOS uses MP4, Chrome/Firefox use WebM
      * @returns {string} MIME type
      */
     getSupportedMimeType() {
-        const types = [
-            'video/webm;codecs=vp9',
-            'video/webm;codecs=vp8',
-            'video/webm',
+        // Check MP4 first (Safari/iOS) - needed for "Save to Photos" on iOS
+        const mp4Types = [
+            'video/mp4;codecs=avc1.424028,mp4a.40.2',
+            'video/mp4;codecs=avc1',
             'video/mp4'
         ];
 
-        for (const type of types) {
+        for (const type of mp4Types) {
             if (MediaRecorder.isTypeSupported(type)) {
                 return type;
             }
         }
 
-        return 'video/webm'; // Fallback
+        // Fall back to WebM (Chrome/Firefox)
+        const webmTypes = [
+            'video/webm;codecs=vp9',
+            'video/webm;codecs=vp8',
+            'video/webm'
+        ];
+
+        for (const type of webmTypes) {
+            if (MediaRecorder.isTypeSupported(type)) {
+                return type;
+            }
+        }
+
+        return 'video/mp4'; // Final fallback
+    }
+
+    /**
+     * Get file extension for a MIME type
+     * @param {string} mimeType
+     * @returns {string} File extension
+     */
+    getFileExtension(mimeType) {
+        if (mimeType.startsWith('video/mp4')) {
+            return 'mp4';
+        }
+        return 'webm';
     }
 
     /**
