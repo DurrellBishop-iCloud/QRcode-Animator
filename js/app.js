@@ -677,26 +677,13 @@ class App {
         // Hide waiting message
         waiting.classList.add('hidden');
 
-        // Revoke old URL if exists
-        if (video.currentUrl) {
-            URL.revokeObjectURL(video.currentUrl);
-        }
-
-        // Stop current playback
-        video.pause();
-
-        // Create new object URL
+        // Create object URL and play
         const url = URL.createObjectURL(blob);
-        video.currentUrl = url;
-
-        // Set source and play when ready
         video.src = url;
         video.loop = true;
+        video.play();
 
-        video.onloadeddata = () => {
-            console.log('Video loaded, playing...');
-            video.play();
-        };
+        console.log('Playing received video');
     }
 
     /**
