@@ -88,7 +88,19 @@ class App {
         console.log('Starting Stop Motion Web App...');
 
         // Show version in debug area
-        this.elements.displayText.textContent = 'v32 ready';
+        this.elements.displayText.textContent = 'v33 ready';
+
+        // Tap to copy debug text
+        this.elements.displayText.addEventListener('click', () => {
+            const text = this.elements.displayText.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const original = this.elements.displayText.style.borderColor;
+                this.elements.displayText.style.borderColor = '#fff';
+                setTimeout(() => {
+                    this.elements.displayText.style.borderColor = original;
+                }, 200);
+            });
+        });
 
         // Start camera
         const cameraStarted = await this.cameraManager.startSession();
@@ -561,7 +573,7 @@ class App {
      */
     async broadcastVideo() {
         // Clear debug area and show version
-        this.elements.displayText.textContent = 'v32\n';
+        this.elements.displayText.textContent = 'v33\n';
 
         const frameCount = this.frameManager.count;
         this.debugLog(`Frames: ${frameCount}`);
