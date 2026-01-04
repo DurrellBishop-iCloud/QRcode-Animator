@@ -16,6 +16,17 @@ import { FilterPipeline } from './filters/FilterPipeline.js';
 import { MovieExporter } from './export/MovieExporter.js';
 import { ServerUploader } from './export/ServerUploader.js';
 
+// TEMP DEBUG - remove later
+function dbg(msg) {
+    const box = document.getElementById('debug-box');
+    if (box) {
+        box.innerHTML += '<br>' + msg;
+        box.scrollTop = box.scrollHeight;
+    }
+    console.log('[DBG]', msg);
+}
+window.dbg = dbg; // Make available globally
+
 class App {
     constructor() {
         // DOM elements
@@ -671,6 +682,8 @@ class App {
      * Play a received video
      */
     playReceivedVideo(blob) {
+        dbg('playReceivedVideo called, blob size: ' + blob.size);
+
         const overlay = this.elements.viewerOverlay;
         const waiting = this.elements.viewerWaiting;
         const oldVideo = this.elements.receivedVideo;
@@ -680,12 +693,14 @@ class App {
 
         // DELETE the old video element completely
         if (oldVideo) {
+            dbg('Removing old video element');
             oldVideo.pause();
             oldVideo.src = '';
             oldVideo.remove();
         }
 
         // Create a FRESH video element
+        dbg('Creating new video element');
         const newVideo = document.createElement('video');
         newVideo.id = 'received-video';
         newVideo.playsinline = true;
@@ -694,6 +709,7 @@ class App {
 
         // Create object URL and set source
         const url = URL.createObjectURL(blob);
+        dbg('Object URL: ' + url.substring(0, 50) + '...');
         newVideo.src = url;
 
         // Insert into overlay
@@ -703,9 +719,11 @@ class App {
         this.elements.receivedVideo = newVideo;
 
         // Play
-        newVideo.play();
-
-        console.log('Created new video element:', blob.size, 'bytes');
+        newVideo.play().then(() => {
+            dbg('Video playing successfully');
+        }).catch(e => {
+            dbg('Play ERROR: ' + e.message);
+        });
     }
 
     /**

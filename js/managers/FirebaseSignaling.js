@@ -199,10 +199,10 @@ export class FirebaseSignaling {
                     // Check if we have all chunks
                     const received = this.receivedChunks.filter(c => c !== undefined).length;
                     if (received === this.expectedChunks) {
-                        console.log('All chunks received, reassembling...');
+                        if (window.dbg) window.dbg('All chunks received, reassembling...');
                         const fullData = this.receivedChunks.join('');
                         const blob = this.base64ToBlob(fullData, message.mimeType);
-                        console.log('Video blob created:', blob.size, 'bytes');
+                        if (window.dbg) window.dbg('Blob created: ' + blob.size + ' bytes');
                         eventBus.publish(Events.VIDEO_RECEIVED, { blob });
 
                         // Reset for next transfer
@@ -211,9 +211,9 @@ export class FirebaseSignaling {
                     }
                 } else if (message.type === 'video') {
                     // Single message (small video)
-                    console.log('Received complete video');
+                    if (window.dbg) window.dbg('Received complete video (single msg)');
                     const blob = this.base64ToBlob(message.data, message.mimeType);
-                    console.log('Video blob created:', blob.size, 'bytes');
+                    if (window.dbg) window.dbg('Blob created: ' + blob.size + ' bytes');
                     eventBus.publish(Events.VIDEO_RECEIVED, { blob });
                 }
             } catch (e) {
