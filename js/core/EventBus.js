@@ -118,6 +118,7 @@ export const Events = {
 
     // Settings events
     SETTINGS_CHANGED: 'settings:changed',
+    SETTINGS_CLOSED: 'settings:closed',
 
     // UI events
     FLASH_TRIGGER: 'ui:flash',

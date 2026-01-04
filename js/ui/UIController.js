@@ -29,6 +29,7 @@ export class UIController {
 
         // Close settings button
         this.elements.closeSettings.addEventListener('click', () => {
+            eventBus.publish(Events.SETTINGS_CLOSED, {});
             this.hideSettings();
         });
 

@@ -581,13 +581,9 @@ class App {
             broadcastChannel.value = settings.broadcastChannel;
         }
 
-        // Channel name input
-        broadcastChannel.addEventListener('change', (e) => {
-            settings.broadcastChannel = e.target.value.trim();
-        });
-
-        broadcastChannel.addEventListener('input', (e) => {
-            settings.broadcastChannel = e.target.value.trim();
+        // Save channel when settings close (Done button)
+        eventBus.subscribe(Events.SETTINGS_CLOSED, () => {
+            settings.broadcastChannel = broadcastChannel.value.trim();
         });
 
         // Viewer mode toggle
