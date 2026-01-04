@@ -106,7 +106,82 @@ class App {
         // Update initial UI
         this.updateUI();
 
+        // Setup orientation detection
+        this.setupOrientationDetection();
+
         console.log('App started successfully');
+    }
+
+    /**
+     * Setup device orientation detection for real-time UI rotation
+     */
+    setupOrientationDetection() {
+        // Check if DeviceOrientationEvent is available
+        if (!window.DeviceOrientationEvent) {
+            console.log('DeviceOrientation not supported');
+            return;
+        }
+
+        this.orientationPermissionGranted = false;
+        this.isUpsideDown = true; // Assume upside down initially
+
+        // iOS 13+ requires permission from user gesture
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+            // Request on first tap anywhere
+            const requestOnTap = async () => {
+                if (this.orientationPermissionGranted) return;
+
+                try {
+                    const permission = await DeviceOrientationEvent.requestPermission();
+                    if (permission === 'granted') {
+                        this.orientationPermissionGranted = true;
+                        this.startOrientationListener();
+                    }
+                } catch (e) {
+                    console.log('Motion permission error:', e);
+                }
+                // Remove listener after first attempt
+                document.removeEventListener('click', requestOnTap);
+            };
+            document.addEventListener('click', requestOnTap);
+        } else {
+            // Non-iOS, start directly
+            this.orientationPermissionGranted = true;
+            this.startOrientationListener();
+        }
+    }
+
+    /**
+     * Start listening for orientation changes
+     */
+    startOrientationListener() {
+        window.addEventListener('deviceorientation', (event) => {
+            const beta = event.beta;
+            if (beta === null) return;
+
+            // Normal portrait: beta around 90
+            // Upside down portrait: beta around -90
+            const nowUpsideDown = beta < 0;
+
+            if (nowUpsideDown !== this.isUpsideDown) {
+                this.isUpsideDown = nowUpsideDown;
+                this.applyOrientationRotation(nowUpsideDown);
+            }
+        });
+    }
+
+    /**
+     * Apply rotation to UI elements based on orientation
+     */
+    applyOrientationRotation(upsideDown) {
+        const rotation = upsideDown ? '180deg' : '0deg';
+
+        // Rotate the UI overlay and settings modal
+        document.querySelector('.ui-overlay').style.transform = `rotate(${rotation})`;
+        document.querySelector('.modal').style.transform = `rotate(${rotation})`;
+        document.querySelector('.viewer-overlay').style.transform = `rotate(${rotation})`;
+
+        console.log('Orientation changed, upside down:', upsideDown);
     }
 
     /**
