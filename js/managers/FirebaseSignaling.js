@@ -255,8 +255,25 @@ export class FirebaseSignaling {
     async sendVideo(videoBlob, channelName) {
         await this.init();
 
+        if (window.dbg) window.dbg('SENDER: sendVideo called, blob=' + videoBlob.size);
+
         this.channelName = channelName;
         this.channelRef = this.db.ref('channels/' + channelName);
+
+        // CRITICAL: Clean up any existing connection first
+        if (this.dataChannel) {
+            if (window.dbg) window.dbg('SENDER: Closing old data channel');
+            this.dataChannel.close();
+            this.dataChannel = null;
+        }
+        if (this.peerConnection) {
+            if (window.dbg) window.dbg('SENDER: Closing old peer connection');
+            this.peerConnection.close();
+            this.peerConnection = null;
+        }
+        // Remove old Firebase listeners
+        this.channelRef.child('answer').off();
+        this.channelRef.child('viewerCandidates').off();
 
         // Check if viewer is active
         const viewerSnapshot = await this.channelRef.child('viewer').once('value');
@@ -266,7 +283,8 @@ export class FirebaseSignaling {
             throw new Error('No viewer on channel');
         }
 
-        // Create peer connection
+        // Create NEW peer connection
+        if (window.dbg) window.dbg('SENDER: Creating new RTCPeerConnection');
         this.peerConnection = new RTCPeerConnection(RTC_CONFIG);
 
         // Create data channel
@@ -291,22 +309,30 @@ export class FirebaseSignaling {
         await this.channelRef.child('senderCandidates').remove();
         await this.channelRef.child('viewerCandidates').remove();
 
+        if (window.dbg) window.dbg('SENDER: Sending offer to Firebase');
         await this.channelRef.child('offer').set({
             type: offer.type,
             sdp: offer.sdp
         });
 
-        // Wait for answer
+        // Store blob reference for use in callback
+        const blobToSend = videoBlob;
+
+        // Wait for answer - use .once() to avoid listener accumulation
         return new Promise((resolve, reject) => {
             const timeout = setTimeout(() => {
+                this.channelRef.child('answer').off();
                 reject(new Error('Connection timeout'));
             }, 15000);
 
-            this.channelRef.child('answer').on('value', async (snapshot) => {
+            // Use a one-time listener approach
+            const answerHandler = async (snapshot) => {
                 const answer = snapshot.val();
                 if (answer && answer.sdp) {
-                    console.log('Received answer');
+                    if (window.dbg) window.dbg('SENDER: Received answer');
                     clearTimeout(timeout);
+                    // Remove this listener immediately
+                    this.channelRef.child('answer').off('value', answerHandler);
 
                     await this.peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
 
@@ -320,9 +346,10 @@ export class FirebaseSignaling {
 
                     // Wait for data channel to open, then send
                     this.dataChannel.onopen = async () => {
-                        console.log('Data channel open, sending video...');
+                        if (window.dbg) window.dbg('SENDER: Data channel open, sending ' + blobToSend.size + ' bytes');
                         try {
-                            await this.sendVideoData(videoBlob);
+                            await this.sendVideoData(blobToSend);
+                            if (window.dbg) window.dbg('SENDER: Send complete!');
                             resolve(true);
                         } catch (e) {
                             reject(e);
@@ -333,7 +360,9 @@ export class FirebaseSignaling {
                         reject(new Error('Data channel error'));
                     };
                 }
-            });
+            };
+
+            this.channelRef.child('answer').on('value', answerHandler);
         });
     }
 
@@ -341,6 +370,8 @@ export class FirebaseSignaling {
      * Send video data over data channel
      */
     async sendVideoData(videoBlob) {
+        if (window.dbg) window.dbg('SENDER: sendVideoData blob=' + videoBlob.size);
+
         // Convert to base64
         const reader = new FileReader();
         const base64Promise = new Promise((resolve, reject) => {
@@ -355,6 +386,8 @@ export class FirebaseSignaling {
         const base64Only = base64Data.split(',')[1]; // Remove data URL prefix
         const mimeType = videoBlob.type;
 
+        if (window.dbg) window.dbg('SENDER: base64 length=' + base64Only.length);
+
         if (base64Only.length < CHUNK_SIZE) {
             // Small enough to send in one message
             const message = JSON.stringify({
@@ -364,11 +397,11 @@ export class FirebaseSignaling {
                 size: videoBlob.size
             });
             this.dataChannel.send(message);
-            console.log('Video sent in single message:', videoBlob.size, 'bytes');
+            if (window.dbg) window.dbg('SENDER: Sent single message');
         } else {
             // Split into chunks
             const totalChunks = Math.ceil(base64Only.length / CHUNK_SIZE);
-            console.log(`Sending video in ${totalChunks} chunks...`);
+            if (window.dbg) window.dbg('SENDER: Sending ' + totalChunks + ' chunks');
 
             for (let i = 0; i < totalChunks; i++) {
                 const start = i * CHUNK_SIZE;
@@ -390,10 +423,9 @@ export class FirebaseSignaling {
                     await new Promise(r => setTimeout(r, 5));
                 }
             }
-            console.log('All chunks sent');
+            if (window.dbg) window.dbg('SENDER: All ' + totalChunks + ' chunks sent');
         }
 
-        console.log('Video sent:', videoBlob.size, 'bytes');
         eventBus.publish(Events.BROADCAST_STATUS, { status: 'sent' });
     }
 
