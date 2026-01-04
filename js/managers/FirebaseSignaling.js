@@ -118,7 +118,23 @@ export class FirebaseSignaling {
      * Handle incoming offer from sender
      */
     async handleOffer(offer) {
-        // Create peer connection
+        // Clean up any existing connection first
+        if (this.dataChannel) {
+            this.dataChannel.close();
+            this.dataChannel = null;
+        }
+        if (this.peerConnection) {
+            this.peerConnection.close();
+            this.peerConnection = null;
+        }
+        // Remove old ICE candidate listener
+        this.channelRef.child('senderCandidates').off();
+
+        // Reset chunk buffer
+        this.receivedChunks = [];
+        this.expectedChunks = 0;
+
+        // Create fresh peer connection
         this.peerConnection = new RTCPeerConnection(RTC_CONFIG);
 
         // Handle ICE candidates
