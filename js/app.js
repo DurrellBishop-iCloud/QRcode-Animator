@@ -684,52 +684,24 @@ class App {
     playReceivedVideo(blob) {
         dbg('playReceivedVideo called, blob size: ' + blob.size);
 
-        const overlay = this.elements.viewerOverlay;
+        const video = this.elements.receivedVideo;
         const waiting = this.elements.viewerWaiting;
-        const oldVideo = this.elements.receivedVideo;
 
         // Hide waiting message
         waiting.classList.add('hidden');
 
-        // DELETE the old video element completely
-        if (oldVideo) {
-            dbg('Removing old video element');
-            oldVideo.pause();
-            oldVideo.src = '';
-            oldVideo.remove();
-        }
-
-        // Check for any remaining video elements
-        const existingVideos = overlay.querySelectorAll('video');
-        dbg('Existing videos in overlay: ' + existingVideos.length);
-        existingVideos.forEach(v => v.remove());
-
-        // Create a FRESH video element
-        dbg('Creating new video element');
-        const newVideo = document.createElement('video');
-        newVideo.id = 'received-video';
-        newVideo.setAttribute('playsinline', '');
-        newVideo.setAttribute('muted', '');
-        newVideo.setAttribute('autoplay', '');
-        newVideo.loop = true;
-        newVideo.muted = true;
-        newVideo.playsInline = true;
-        newVideo.style.cssText = 'width:100%;height:100%;object-fit:contain;';
-
-        // Insert into overlay FIRST (must be in DOM for autoplay)
-        overlay.insertBefore(newVideo, waiting);
-
-        // Update reference
-        this.elements.receivedVideo = newVideo;
-
-        // Create object URL and set source
+        // Create object URL
         const url = URL.createObjectURL(blob);
         dbg('Object URL: ' + url.substring(0, 50) + '...');
-        newVideo.src = url;
 
-        // Try to play immediately
+        // Update video source
+        video.muted = true;
+        video.loop = true;
+        video.src = url;
+
+        // Try to play
         dbg('Attempting play...');
-        newVideo.play().then(() => {
+        video.play().then(() => {
             dbg('Video playing successfully');
         }).catch(e => {
             dbg('Play ERROR: ' + e.message);
