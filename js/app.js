@@ -646,10 +646,9 @@ class App {
         this.elements.viewerWaiting.classList.remove('hidden');
         this.elements.settingsModal.classList.add('hidden');
 
-        // Tap to exit viewer mode
+        // Tap to show settings menu (stays in viewer mode)
         this.elements.viewerOverlay.onclick = () => {
-            this.elements.viewerModeToggle.checked = false;
-            this.exitViewerMode();
+            this.elements.settingsModal.classList.remove('hidden');
         };
     }
 
