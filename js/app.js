@@ -531,7 +531,10 @@ class App {
      * Broadcast video to viewers via WebRTC
      */
     async broadcastVideo() {
-        if (this.frameManager.count === 0) {
+        const frameCount = this.frameManager.count;
+        dbg('SENDER: broadcastVideo called, frames=' + frameCount);
+
+        if (frameCount === 0) {
             this.uiController.updateDisplayText('No frames');
             setTimeout(() => this.uiController.updateDisplayText(''), 2000);
             return;
@@ -548,13 +551,15 @@ class App {
 
         let blob;
         try {
+            const frames = this.frameManager.getAllFrames();
+            dbg('SENDER: Exporting ' + frames.length + ' frames');
             blob = await this.movieExporter.exportToBlob(
-                this.frameManager.getAllFrames(),
+                frames,
                 {
                     screenSize: this.uiController.getScreenSize()
                 }
             );
-            console.log('Export done, size:', blob.size);
+            dbg('SENDER: Export done, blob size=' + blob.size);
         } catch (error) {
             console.error('Export failed:', error);
             this.uiController.updateDisplayText('Export fail');
@@ -681,8 +686,15 @@ class App {
     /**
      * Play a received video
      */
-    playReceivedVideo(blob) {
-        dbg('playReceivedVideo called, blob size: ' + blob.size);
+    async playReceivedVideo(blob) {
+        dbg('VIEWER: playReceivedVideo, size=' + blob.size);
+
+        // Compute simple checksum of first 100 bytes to verify content differs
+        const firstBytes = await blob.slice(0, 100).arrayBuffer();
+        const arr = new Uint8Array(firstBytes);
+        let checksum = 0;
+        for (let i = 0; i < arr.length; i++) checksum += arr[i];
+        dbg('VIEWER: blob checksum=' + checksum);
 
         const video = this.elements.receivedVideo;
         const waiting = this.elements.viewerWaiting;
@@ -690,22 +702,53 @@ class App {
         // Hide waiting message
         waiting.classList.add('hidden');
 
-        // Create object URL
-        const url = URL.createObjectURL(blob);
-        dbg('Object URL: ' + url.substring(0, 50) + '...');
+        // Clean up old video URL
+        if (this.currentVideoUrl) {
+            dbg('VIEWER: Revoking old URL');
+            URL.revokeObjectURL(this.currentVideoUrl);
+        }
 
-        // Update video source
+        // Pause current playback
+        video.pause();
+        video.removeAttribute('src');
+        video.load(); // Clear buffer
+
+        // Create new object URL
+        const url = URL.createObjectURL(blob);
+        this.currentVideoUrl = url;
+        dbg('VIEWER: New URL=' + url.substring(0, 50) + '...');
+
+        // Set attributes
         video.muted = true;
         video.loop = true;
-        video.src = url;
+        video.playsInline = true;
 
-        // Try to play
-        dbg('Attempting play...');
-        video.play().then(() => {
-            dbg('Video playing successfully');
-        }).catch(e => {
-            dbg('Play ERROR: ' + e.message);
-        });
+        // Use loadeddata event to know when ready
+        const playWhenReady = () => {
+            dbg('VIEWER: loadeddata fired, playing...');
+            video.play().then(() => {
+                dbg('VIEWER: Playing!');
+            }).catch(e => {
+                dbg('VIEWER: Play error=' + e.message);
+            });
+            video.removeEventListener('loadeddata', playWhenReady);
+        };
+        video.addEventListener('loadeddata', playWhenReady);
+
+        // Set source and load
+        video.src = url;
+        video.load();
+        dbg('VIEWER: Waiting for loadeddata...');
+
+        // Fallback: try playing after 500ms if loadeddata doesn't fire
+        setTimeout(() => {
+            if (video.readyState >= 2) { // HAVE_CURRENT_DATA
+                dbg('VIEWER: Fallback play (readyState=' + video.readyState + ')');
+                video.play().catch(e => dbg('VIEWER: Fallback error=' + e.message));
+            } else {
+                dbg('VIEWER: readyState=' + video.readyState + ' (not ready)');
+            }
+        }, 500);
     }
 
     /**
