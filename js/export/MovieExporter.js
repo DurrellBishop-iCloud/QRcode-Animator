@@ -255,26 +255,41 @@ export class MovieExporter {
      * @param {string} filename - Filename
      */
     async saveToFile(blob, filename = 'animation.webm') {
+        console.log('[SAVE] Starting save, blob type:', blob.type, 'size:', blob.size, 'filename:', filename);
+
         // Try Web Share API first (works on iOS - shows share sheet with "Save Video")
         if (navigator.share) {
+            console.log('[SAVE] navigator.share exists');
             try {
                 const file = new File([blob], filename, { type: blob.type });
-                await navigator.share({
-                    files: [file],
-                    title: 'Animation'
-                });
-                return; // Success
+                console.log('[SAVE] Created File object, checking canShare...');
+
+                // Check if sharing files is supported
+                if (navigator.canShare && !navigator.canShare({ files: [file] })) {
+                    console.log('[SAVE] canShare returned false, falling back to download');
+                } else {
+                    console.log('[SAVE] Calling navigator.share...');
+                    await navigator.share({
+                        files: [file],
+                        title: 'Animation'
+                    });
+                    console.log('[SAVE] Share succeeded');
+                    return; // Success
+                }
             } catch (e) {
+                console.log('[SAVE] Share error:', e.name, e.message);
                 // User cancelled - don't fall through to download
                 if (e.name === 'AbortError') {
                     return;
                 }
                 // NotAllowedError or other - try download fallback
-                console.log('Share not supported for files, trying download:', e.name);
             }
+        } else {
+            console.log('[SAVE] navigator.share not available');
         }
 
         // Fallback to download (desktop browsers or if share failed)
+        console.log('[SAVE] Using download fallback');
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;

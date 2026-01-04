@@ -88,7 +88,7 @@ class App {
         console.log('Starting Stop Motion Web App...');
 
         // Show version in debug area with copy button
-        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v36 ready';
+        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v37 ready';
         this.setupCopyButton();
 
         // Start camera
@@ -582,7 +582,7 @@ class App {
      */
     async broadcastVideo() {
         // Clear debug area and show version (keep copy button)
-        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v36\n';
+        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v37\n';
         this.setupCopyButton();
 
         const frameCount = this.frameManager.count;

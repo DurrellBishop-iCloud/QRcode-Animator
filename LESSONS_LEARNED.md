@@ -100,6 +100,55 @@ getSupportedMimeType() {
 
 ---
 
+## 7. Base64 Extraction Bug with Comma in MimeType
+
+**Date:** 2026-01-04
+
+**What happened:** Video sharing appeared to work but "Base64 len: 16" was logged when it should have been ~228000. The chunking logic wasn't working properly.
+
+**Root cause:** The mimetype `video/mp4;codecs=avc1.424028,mp4a.40.2` contains a comma. Code used `base64Data.split(',')[1]` which returned `mp4a.40.2;base64` (16 chars) instead of the actual base64 data.
+
+**Fix:** Find base64 data using the `;base64,` marker instead of splitting on comma:
+```javascript
+const base64Marker = ';base64,';
+const markerIndex = base64Data.indexOf(base64Marker);
+const base64Only = markerIndex >= 0
+    ? base64Data.substring(markerIndex + base64Marker.length)
+    : base64Data.split(',')[1];
+```
+
+**Prevention:** Don't assume data URL format. MimeTypes can contain special characters.
+
+---
+
+## 8. Copy Button Destroyed by innerHTML Reset
+
+**Date:** 2026-01-04
+
+**What happened:** Added a Copy button to debug area. Button worked on startup but stopped working after sharing (debug was populated with log messages).
+
+**Root cause:** `broadcastVideo()` used `innerHTML = '...'` to reset the debug area, which destroyed the button element and its event listener.
+
+**Fix:** Extract `setupCopyButton()` method and call it after each innerHTML reset.
+
+**Prevention:** When using innerHTML to reset content, remember to re-attach event listeners to any interactive elements.
+
+---
+
+## 9. Tap Event Clash with Settings
+
+**Date:** 2026-01-04
+
+**What happened:** Tried to add tap-to-copy on debug area, but it kept opening settings instead.
+
+**Root cause:** The ui-overlay has `pointer-events: none`, so clicks pass through to the video element below, which has a click handler to open settings.
+
+**Fix:** Added `pointer-events: auto` to `.display-text` CSS so it captures its own clicks.
+
+**Prevention:** Check CSS pointer-events when adding click handlers to overlay elements.
+
+---
+
 ## General Prevention Strategies
 
 1. **Ask about deployment setup early** - Local files? Dev server? GitHub Pages?
