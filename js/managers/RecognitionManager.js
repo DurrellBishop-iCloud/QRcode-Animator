@@ -244,6 +244,11 @@ export class RecognitionManager {
             const channelName = data.substring(3); // Remove "CH-" prefix
             if (channelName) {
                 settings.broadcastChannel = channelName;
+                // Update the input field in settings
+                const channelInput = document.getElementById('broadcast-channel');
+                if (channelInput) {
+                    channelInput.value = channelName;
+                }
                 this.displayText = 'Channel: ' + channelName;
                 eventBus.publish(Events.DISPLAY_TEXT, { text: this.displayText });
                 // Clear after a moment
