@@ -9,7 +9,7 @@ import { FrameManager } from './managers/FrameManager.js';
 import { PlaybackManager } from './managers/PlaybackManager.js';
 import { AudioManager } from './managers/AudioManager.js';
 import { RecognitionManager } from './managers/RecognitionManager.js';
-import { BroadcastManager } from './managers/BroadcastManager.js';
+import { FirebaseSignaling } from './managers/FirebaseSignaling.js';
 import { UIController } from './ui/UIController.js';
 import { SettingsPanel } from './ui/SettingsPanel.js';
 import { FilterPipeline } from './filters/FilterPipeline.js';
@@ -58,8 +58,8 @@ class App {
         // Recognition (needs audio manager)
         this.recognitionManager = new RecognitionManager(this.audioManager);
 
-        // Broadcast (WebRTC peer-to-peer)
-        this.broadcastManager = new BroadcastManager();
+        // Broadcast (WebRTC via Firebase signaling)
+        this.broadcastManager = new FirebaseSignaling();
 
         // UI
         this.uiController = new UIController(this.elements);
@@ -516,15 +516,13 @@ class App {
         // Viewer mode toggle
         viewerModeToggle.addEventListener('change', async (e) => {
             const enabled = e.target.checked;
-            const channel = broadcastChannel.value.trim(); // Read directly from input
+            const channel = broadcastChannel.value.trim();
 
             console.log('Viewer toggle:', enabled, 'channel:', channel);
-            alert('Toggle: ' + enabled + ', channel: ' + channel); // Debug alert
 
             if (enabled) {
                 if (!channel) {
                     viewerStatus.textContent = 'Enter a channel name first';
-                    alert('No channel name');
                     viewerModeToggle.checked = false;
                     return;
                 }
@@ -540,7 +538,6 @@ class App {
                     viewerStatus.textContent = 'Listening on: ' + channel;
                 } catch (error) {
                     console.error('Viewer mode failed:', error);
-                    alert('Error: ' + (error.message || error));
                     viewerStatus.textContent = 'Error: ' + (error.message || error);
                     viewerModeToggle.checked = false;
                 }
