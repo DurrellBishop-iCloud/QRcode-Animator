@@ -76,6 +76,8 @@ class SettingsManagerClass {
             console.warn('Failed to load settings:', error);
             this._settings = { ...DEFAULT_SETTINGS };
         }
+        // Always start with viewer mode disabled (don't persist this state)
+        this._settings.viewerModeEnabled = false;
     }
 
     /**

@@ -573,7 +573,10 @@ class App {
     setupViewerMode() {
         const { viewerModeToggle, broadcastChannel, viewerStatus } = this.elements;
 
-        // Load saved channel name
+        // Always start with viewer mode disabled
+        viewerModeToggle.checked = false;
+
+        // Load saved channel name (but not the toggle state)
         if (settings.broadcastChannel) {
             broadcastChannel.value = settings.broadcastChannel;
         }
