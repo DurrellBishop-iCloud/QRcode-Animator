@@ -193,6 +193,7 @@ html, body {
     width: 90%;
     max-width: 400px;
     max-height: 80vh;
+    margin-top: 60px; /* Extra space so keyboard doesn't hide header */
     background: #1c1c1e;
     border-radius: 12px;
     overflow: hidden;
