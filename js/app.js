@@ -705,6 +705,7 @@ class App {
         newVideo.id = 'received-video';
         newVideo.playsinline = true;
         newVideo.loop = true;
+        newVideo.muted = true; // Required for autoplay
         newVideo.style.cssText = 'width:100%;height:100%;object-fit:contain;';
 
         // Create object URL and set source
