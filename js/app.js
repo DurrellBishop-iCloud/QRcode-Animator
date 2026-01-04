@@ -677,14 +677,26 @@ class App {
         // Hide waiting message
         waiting.classList.add('hidden');
 
-        // Create object URL
+        // Completely reset the video element first
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
+
+        // Create new object URL
         const url = URL.createObjectURL(blob);
+
+        // Set up play handler BEFORE setting source
+        video.oncanplay = function() {
+            this.play();
+            this.oncanplay = null; // Clear handler
+        };
+
+        // Now set new source and load
         video.src = url;
         video.loop = true;
-        video.load(); // Force reload the new source
-        video.play();
+        video.load();
 
-        console.log('Playing received video:', blob.size, 'bytes');
+        console.log('Loading new video:', blob.size, 'bytes');
     }
 
     /**
