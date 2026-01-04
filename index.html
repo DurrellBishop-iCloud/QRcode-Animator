@@ -41,8 +41,9 @@
         <div id="viewer-overlay" class="viewer-overlay hidden">
             <video id="received-video" playsinline></video>
             <div id="viewer-waiting" class="viewer-waiting">
-                <p>Waiting for videos...</p>
+                <div id="channel-qr-code" class="channel-qr"></div>
                 <p id="viewer-channel-display" class="channel-name"></p>
+                <p class="scan-hint">Scan to set channel</p>
             </div>
         </div>
 
@@ -194,6 +195,7 @@
     <!-- Scripts -->
     <script src="lib/jsqr.min.js?v=20250103x"></script>
     <script src="lib/peerjs.min.js?v=20250103x"></script>
+    <script src="lib/qrcode-generator.min.js?v=20250104"></script>
     <script type="module" src="js/app.js?v=26"></script>
 </body>
 </html>

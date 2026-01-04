@@ -397,10 +397,30 @@ html, body {
     font-size: 24px;
 }
 
+.viewer-waiting .channel-qr {
+    margin-bottom: 20px;
+}
+
+.viewer-waiting .channel-qr img,
+.viewer-waiting .channel-qr canvas {
+    width: 200px;
+    height: 200px;
+    background: #fff;
+    padding: 10px;
+    border-radius: 8px;
+}
+
 .viewer-waiting .channel-name {
-    font-size: 18px;
-    color: #8e8e93;
+    font-size: 24px;
+    color: #fff;
     margin-top: 10px;
+    font-weight: 600;
+}
+
+.viewer-waiting .scan-hint {
+    font-size: 14px;
+    color: #8e8e93;
+    margin-top: 8px;
 }
 
 .viewer-waiting.hidden {

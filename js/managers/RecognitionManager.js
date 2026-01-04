@@ -239,6 +239,22 @@ export class RecognitionManager {
 
         const code = data.toLowerCase();
 
+        // Handle channel setting (CH-ChannelName)
+        if (data.toUpperCase().startsWith('CH-')) {
+            const channelName = data.substring(3); // Remove "CH-" prefix
+            if (channelName) {
+                settings.broadcastChannel = channelName;
+                this.displayText = 'Channel: ' + channelName;
+                eventBus.publish(Events.DISPLAY_TEXT, { text: this.displayText });
+                // Clear after a moment
+                setTimeout(() => {
+                    this.displayText = '';
+                    eventBus.publish(Events.DISPLAY_TEXT, { text: '' });
+                }, 2000);
+            }
+            return;
+        }
+
         if (code === 'play') {
             this.displayText = '';
             if (this.currentMode !== 'Play') {

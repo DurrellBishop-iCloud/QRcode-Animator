@@ -644,14 +644,39 @@ class App {
         this.isRunning = false; // Stop recognition loop
         this.cameraManager.stopSession(); // Stop camera - not needed in viewer mode
         this.elements.viewerOverlay.classList.remove('hidden');
-        this.elements.viewerChannelDisplay.textContent = channel;
+        this.elements.viewerChannelDisplay.textContent = 'CH-' + channel;
         this.elements.viewerWaiting.classList.remove('hidden');
         this.elements.settingsModal.classList.add('hidden');
+
+        // Generate QR code for the channel
+        this.generateChannelQRCode(channel);
 
         // Tap to show settings menu (stays in viewer mode)
         this.elements.viewerOverlay.onclick = () => {
             this.elements.settingsModal.classList.remove('hidden');
         };
+    }
+
+    /**
+     * Generate QR code displaying the channel name
+     */
+    generateChannelQRCode(channel) {
+        const qrContainer = document.getElementById('channel-qr-code');
+        qrContainer.innerHTML = ''; // Clear previous
+
+        // Create QR code with "CH-" prefix
+        const qrData = 'CH-' + channel;
+
+        // Use qrcode-generator library
+        const qr = qrcode(0, 'M'); // Type 0 = auto, Error correction M
+        qr.addData(qrData);
+        qr.make();
+
+        // Create image
+        const img = document.createElement('img');
+        img.src = qr.createDataURL(8); // Cell size 8
+        img.alt = qrData;
+        qrContainer.appendChild(img);
     }
 
     /**
