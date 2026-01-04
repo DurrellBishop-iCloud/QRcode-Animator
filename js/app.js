@@ -671,32 +671,41 @@ class App {
      * Play a received video
      */
     playReceivedVideo(blob) {
-        const video = this.elements.receivedVideo;
+        const overlay = this.elements.viewerOverlay;
         const waiting = this.elements.viewerWaiting;
+        const oldVideo = this.elements.receivedVideo;
 
         // Hide waiting message
         waiting.classList.add('hidden');
 
-        // Completely reset the video element first
-        video.pause();
-        video.removeAttribute('src');
-        video.load();
+        // DELETE the old video element completely
+        if (oldVideo) {
+            oldVideo.pause();
+            oldVideo.src = '';
+            oldVideo.remove();
+        }
 
-        // Create new object URL
+        // Create a FRESH video element
+        const newVideo = document.createElement('video');
+        newVideo.id = 'received-video';
+        newVideo.playsinline = true;
+        newVideo.loop = true;
+        newVideo.style.cssText = 'width:100%;height:100%;object-fit:contain;';
+
+        // Create object URL and set source
         const url = URL.createObjectURL(blob);
+        newVideo.src = url;
 
-        // Set up play handler BEFORE setting source
-        video.oncanplay = function() {
-            this.play();
-            this.oncanplay = null; // Clear handler
-        };
+        // Insert into overlay
+        overlay.insertBefore(newVideo, waiting);
 
-        // Now set new source and load
-        video.src = url;
-        video.loop = true;
-        video.load();
+        // Update reference
+        this.elements.receivedVideo = newVideo;
 
-        console.log('Loading new video:', blob.size, 'bytes');
+        // Play
+        newVideo.play();
+
+        console.log('Created new video element:', blob.size, 'bytes');
     }
 
     /**
