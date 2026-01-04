@@ -16,17 +16,6 @@ import { FilterPipeline } from './filters/FilterPipeline.js';
 import { MovieExporter } from './export/MovieExporter.js';
 import { ServerUploader } from './export/ServerUploader.js';
 
-// TEMP DEBUG - remove later
-function dbg(msg) {
-    const box = document.getElementById('debug-box');
-    if (box) {
-        box.innerHTML += '<br>' + msg;
-        box.scrollTop = box.scrollHeight;
-    }
-    console.log('[DBG]', msg);
-}
-window.dbg = dbg; // Make available globally
-
 class App {
     constructor() {
         // DOM elements
@@ -531,10 +520,7 @@ class App {
      * Broadcast video to viewers via WebRTC
      */
     async broadcastVideo() {
-        const frameCount = this.frameManager.count;
-        dbg('SENDER: broadcastVideo called, frames=' + frameCount);
-
-        if (frameCount === 0) {
+        if (this.frameManager.count === 0) {
             this.uiController.updateDisplayText('No frames');
             setTimeout(() => this.uiController.updateDisplayText(''), 2000);
             return;
@@ -551,15 +537,12 @@ class App {
 
         let blob;
         try {
-            const frames = this.frameManager.getAllFrames();
-            dbg('SENDER: Exporting ' + frames.length + ' frames');
             blob = await this.movieExporter.exportToBlob(
-                frames,
+                this.frameManager.getAllFrames(),
                 {
                     screenSize: this.uiController.getScreenSize()
                 }
             );
-            dbg('SENDER: Export done, blob size=' + blob.size);
         } catch (error) {
             console.error('Export failed:', error);
             this.uiController.updateDisplayText('Export fail');
@@ -686,16 +669,7 @@ class App {
     /**
      * Play a received video
      */
-    async playReceivedVideo(blob) {
-        dbg('VIEWER: playReceivedVideo, size=' + blob.size);
-
-        // Compute simple checksum of first 100 bytes to verify content differs
-        const firstBytes = await blob.slice(0, 100).arrayBuffer();
-        const arr = new Uint8Array(firstBytes);
-        let checksum = 0;
-        for (let i = 0; i < arr.length; i++) checksum += arr[i];
-        dbg('VIEWER: blob checksum=' + checksum);
-
+    playReceivedVideo(blob) {
         const video = this.elements.receivedVideo;
         const waiting = this.elements.viewerWaiting;
 
@@ -704,49 +678,34 @@ class App {
 
         // Clean up old video URL
         if (this.currentVideoUrl) {
-            dbg('VIEWER: Revoking old URL');
             URL.revokeObjectURL(this.currentVideoUrl);
         }
 
-        // Pause current playback
+        // Pause current playback and clear buffer
         video.pause();
         video.removeAttribute('src');
-        video.load(); // Clear buffer
+        video.load();
 
         // Create new object URL
         const url = URL.createObjectURL(blob);
         this.currentVideoUrl = url;
-        dbg('VIEWER: New URL=' + url.substring(0, 50) + '...');
 
-        // Set attributes
+        // Set attributes and source
         video.muted = true;
         video.loop = true;
         video.playsInline = true;
-
-        // Use loadeddata event to know when ready
-        const playWhenReady = () => {
-            dbg('VIEWER: loadeddata fired, playing...');
-            video.play().then(() => {
-                dbg('VIEWER: Playing!');
-            }).catch(e => {
-                dbg('VIEWER: Play error=' + e.message);
-            });
-            video.removeEventListener('loadeddata', playWhenReady);
-        };
-        video.addEventListener('loadeddata', playWhenReady);
-
-        // Set source and load
         video.src = url;
         video.load();
-        dbg('VIEWER: Waiting for loadeddata...');
 
-        // Fallback: try playing after 500ms if loadeddata doesn't fire
+        // Play when ready
+        video.addEventListener('loadeddata', () => {
+            video.play().catch(e => console.error('Play error:', e));
+        }, { once: true });
+
+        // Fallback play after 500ms
         setTimeout(() => {
-            if (video.readyState >= 2) { // HAVE_CURRENT_DATA
-                dbg('VIEWER: Fallback play (readyState=' + video.readyState + ')');
-                video.play().catch(e => dbg('VIEWER: Fallback error=' + e.message));
-            } else {
-                dbg('VIEWER: readyState=' + video.readyState + ' (not ready)');
+            if (video.readyState >= 2) {
+                video.play().catch(() => {});
             }
         }, 500);
     }

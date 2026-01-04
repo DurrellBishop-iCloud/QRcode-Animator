@@ -119,13 +119,8 @@ export class FirebaseSignaling {
      */
     async handleOffer(offer) {
         // Ignore if we're already processing an offer
-        if (this.processingOffer) {
-            if (window.dbg) window.dbg('IGNORING offer - already processing');
-            return;
-        }
+        if (this.processingOffer) return;
         this.processingOffer = true;
-
-        if (window.dbg) window.dbg('handleOffer called - cleaning up old connection');
 
         // Clean up any existing connection first
         if (this.dataChannel) {
@@ -142,7 +137,6 @@ export class FirebaseSignaling {
         // Reset chunk buffer
         this.receivedChunks = [];
         this.expectedChunks = 0;
-        if (window.dbg) window.dbg('Chunks reset: array length=' + this.receivedChunks.length);
 
         // Create fresh peer connection
         this.peerConnection = new RTCPeerConnection(RTC_CONFIG);
@@ -202,37 +196,30 @@ export class FirebaseSignaling {
 
                 if (message.type === 'chunk') {
                     // Chunked transfer
-                    if (window.dbg) window.dbg('Chunk ' + (message.index + 1) + '/' + message.total + ' len=' + message.data.length);
                     this.receivedChunks[message.index] = message.data;
                     this.expectedChunks = message.total;
 
                     // Check if we have all chunks
                     const received = this.receivedChunks.filter(c => c !== undefined).length;
                     if (received === this.expectedChunks) {
-                        if (window.dbg) window.dbg('All chunks received, reassembling...');
                         const fullData = this.receivedChunks.join('');
                         const blob = this.base64ToBlob(fullData, message.mimeType);
-                        if (window.dbg) window.dbg('Blob created: ' + blob.size + ' bytes');
                         eventBus.publish(Events.VIDEO_RECEIVED, { blob });
 
                         // Reset for next transfer
                         this.receivedChunks = [];
                         this.expectedChunks = 0;
-                        // Delay before allowing next offer (give video time to load)
+                        // Delay before allowing next offer
                         setTimeout(() => {
                             this.processingOffer = false;
-                            if (window.dbg) window.dbg('Ready for next offer');
                         }, 3000);
                     }
                 } else if (message.type === 'video') {
                     // Single message (small video)
-                    if (window.dbg) window.dbg('Received complete video (single msg)');
                     const blob = this.base64ToBlob(message.data, message.mimeType);
-                    if (window.dbg) window.dbg('Blob created: ' + blob.size + ' bytes');
                     eventBus.publish(Events.VIDEO_RECEIVED, { blob });
                     setTimeout(() => {
                         this.processingOffer = false;
-                        if (window.dbg) window.dbg('Ready for next offer');
                     }, 3000);
                 }
             } catch (e) {
@@ -255,19 +242,15 @@ export class FirebaseSignaling {
     async sendVideo(videoBlob, channelName) {
         await this.init();
 
-        if (window.dbg) window.dbg('SENDER: sendVideo called, blob=' + videoBlob.size);
-
         this.channelName = channelName;
         this.channelRef = this.db.ref('channels/' + channelName);
 
-        // CRITICAL: Clean up any existing connection first
+        // Clean up any existing connection first
         if (this.dataChannel) {
-            if (window.dbg) window.dbg('SENDER: Closing old data channel');
             this.dataChannel.close();
             this.dataChannel = null;
         }
         if (this.peerConnection) {
-            if (window.dbg) window.dbg('SENDER: Closing old peer connection');
             this.peerConnection.close();
             this.peerConnection = null;
         }
@@ -283,8 +266,7 @@ export class FirebaseSignaling {
             throw new Error('No viewer on channel');
         }
 
-        // Create NEW peer connection
-        if (window.dbg) window.dbg('SENDER: Creating new RTCPeerConnection');
+        // Create new peer connection
         this.peerConnection = new RTCPeerConnection(RTC_CONFIG);
 
         // Create data channel
@@ -309,7 +291,6 @@ export class FirebaseSignaling {
         await this.channelRef.child('senderCandidates').remove();
         await this.channelRef.child('viewerCandidates').remove();
 
-        if (window.dbg) window.dbg('SENDER: Sending offer to Firebase');
         await this.channelRef.child('offer').set({
             type: offer.type,
             sdp: offer.sdp
@@ -318,18 +299,16 @@ export class FirebaseSignaling {
         // Store blob reference for use in callback
         const blobToSend = videoBlob;
 
-        // Wait for answer - use .once() to avoid listener accumulation
+        // Wait for answer
         return new Promise((resolve, reject) => {
             const timeout = setTimeout(() => {
                 this.channelRef.child('answer').off();
                 reject(new Error('Connection timeout'));
             }, 15000);
 
-            // Use a one-time listener approach
             const answerHandler = async (snapshot) => {
                 const answer = snapshot.val();
                 if (answer && answer.sdp) {
-                    if (window.dbg) window.dbg('SENDER: Received answer');
                     clearTimeout(timeout);
                     // Remove this listener immediately
                     this.channelRef.child('answer').off('value', answerHandler);
@@ -346,10 +325,8 @@ export class FirebaseSignaling {
 
                     // Wait for data channel to open, then send
                     this.dataChannel.onopen = async () => {
-                        if (window.dbg) window.dbg('SENDER: Data channel open, sending ' + blobToSend.size + ' bytes');
                         try {
                             await this.sendVideoData(blobToSend);
-                            if (window.dbg) window.dbg('SENDER: Send complete!');
                             resolve(true);
                         } catch (e) {
                             reject(e);
@@ -370,8 +347,6 @@ export class FirebaseSignaling {
      * Send video data over data channel
      */
     async sendVideoData(videoBlob) {
-        if (window.dbg) window.dbg('SENDER: sendVideoData blob=' + videoBlob.size);
-
         // Convert to base64
         const reader = new FileReader();
         const base64Promise = new Promise((resolve, reject) => {
@@ -386,8 +361,6 @@ export class FirebaseSignaling {
         const base64Only = base64Data.split(',')[1]; // Remove data URL prefix
         const mimeType = videoBlob.type;
 
-        if (window.dbg) window.dbg('SENDER: base64 length=' + base64Only.length);
-
         if (base64Only.length < CHUNK_SIZE) {
             // Small enough to send in one message
             const message = JSON.stringify({
@@ -397,11 +370,9 @@ export class FirebaseSignaling {
                 size: videoBlob.size
             });
             this.dataChannel.send(message);
-            if (window.dbg) window.dbg('SENDER: Sent single message');
         } else {
             // Split into chunks
             const totalChunks = Math.ceil(base64Only.length / CHUNK_SIZE);
-            if (window.dbg) window.dbg('SENDER: Sending ' + totalChunks + ' chunks');
 
             for (let i = 0; i < totalChunks; i++) {
                 const start = i * CHUNK_SIZE;
@@ -423,7 +394,6 @@ export class FirebaseSignaling {
                     await new Promise(r => setTimeout(r, 5));
                 }
             }
-            if (window.dbg) window.dbg('SENDER: All ' + totalChunks + ' chunks sent');
         }
 
         eventBus.publish(Events.BROADCAST_STATUS, { status: 'sent' });
