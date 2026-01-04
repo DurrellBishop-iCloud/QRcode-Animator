@@ -69,6 +69,7 @@ export class MovieExporter {
 
             // Build frame sequence based on reverse and bounce settings
             let framesToRender = [...frames];
+            console.log(`[EXPORT] Input frames: ${frames.length}, bounce: ${bounce}, reverse: ${reverse}`);
 
             // If reverse, start with frames reversed
             if (reverse) {
@@ -79,6 +80,7 @@ export class MovieExporter {
             if (bounce && framesToRender.length > 1) {
                 const bounceBack = [...framesToRender].reverse().slice(1, -1);
                 framesToRender = [...framesToRender, ...bounceBack];
+                console.log(`[EXPORT] After bounce: ${framesToRender.length} frames`);
             }
 
             return new Promise((resolve, reject) => {

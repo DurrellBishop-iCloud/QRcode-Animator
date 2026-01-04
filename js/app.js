@@ -88,7 +88,7 @@ class App {
         console.log('Starting Stop Motion Web App...');
 
         // Show version in debug area with copy button
-        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v38 ready';
+        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v39 ready';
         this.setupCopyButton();
 
         // Start camera
@@ -497,13 +497,20 @@ class App {
         this.uiController.clearOnionSkin();
         this.updateUI();
 
-        this.uiController.updateDisplayText('Exporting...');
+        // Setup debug for export
+        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v39 EXPORT\n';
+        this.setupCopyButton();
+        this.debugLog(`Frames: ${framesToExport.length}`);
+        this.debugLog(`Bounce: ${settings.bounceEnabled}`);
+        this.debugLog(`Reverse: ${settings.reverseMovie}`);
+        this.debugLog('Exporting...');
 
         try {
             const blob = await this.movieExporter.exportToBlob(
                 framesToExport,
                 { screenSize }
             );
+            this.debugLog(`Blob: ${blob.size} bytes`);
 
             // Upload to server in background
             this.serverUploader.uploadVideo(blob);
@@ -526,10 +533,12 @@ class App {
         const button = document.getElementById('save-button');
 
         // Setup debug area for save
-        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v38 SAVE\n';
+        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v39 SAVE\n';
         this.setupCopyButton();
         this.debugLog(`Blob: ${blob.size} bytes`);
         this.debugLog(`Type: ${blob.type}`);
+        this.debugLog(`Bounce: ${settings.bounceEnabled}`);
+        this.debugLog(`Reverse: ${settings.reverseMovie}`);
 
         prompt.classList.remove('hidden');
 
@@ -586,7 +595,7 @@ class App {
      */
     async broadcastVideo() {
         // Clear debug area and show version (keep copy button)
-        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v38\n';
+        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v39\n';
         this.setupCopyButton();
 
         const frameCount = this.frameManager.count;
