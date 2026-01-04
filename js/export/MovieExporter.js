@@ -254,42 +254,55 @@ export class MovieExporter {
      * @param {Blob} blob - Video blob
      * @param {string} filename - Filename
      */
-    async saveToFile(blob, filename = 'animation.webm') {
-        console.log('[SAVE] Starting save, blob type:', blob.type, 'size:', blob.size, 'filename:', filename);
+    async saveToFile(blob, filename = 'animation.webm', debugLog = () => {}) {
+        debugLog('Starting save...');
 
         // Try Web Share API first (works on iOS - shows share sheet with "Save Video")
         if (navigator.share) {
-            console.log('[SAVE] navigator.share exists');
+            debugLog('navigator.share: YES');
             try {
                 const file = new File([blob], filename, { type: blob.type });
-                console.log('[SAVE] Created File object, checking canShare...');
+                debugLog('File created');
 
                 // Check if sharing files is supported
-                if (navigator.canShare && !navigator.canShare({ files: [file] })) {
-                    console.log('[SAVE] canShare returned false, falling back to download');
+                if (navigator.canShare) {
+                    const canShare = navigator.canShare({ files: [file] });
+                    debugLog(`canShare: ${canShare}`);
+                    if (!canShare) {
+                        debugLog('canShare=false, using download');
+                    } else {
+                        debugLog('Calling share...');
+                        await navigator.share({
+                            files: [file],
+                            title: 'Animation'
+                        });
+                        debugLog('Share OK!');
+                        return; // Success
+                    }
                 } else {
-                    console.log('[SAVE] Calling navigator.share...');
+                    debugLog('No canShare, trying share...');
                     await navigator.share({
                         files: [file],
                         title: 'Animation'
                     });
-                    console.log('[SAVE] Share succeeded');
-                    return; // Success
+                    debugLog('Share OK!');
+                    return;
                 }
             } catch (e) {
-                console.log('[SAVE] Share error:', e.name, e.message);
+                debugLog(`Error: ${e.name}: ${e.message}`);
                 // User cancelled - don't fall through to download
                 if (e.name === 'AbortError') {
+                    debugLog('User cancelled');
                     return;
                 }
                 // NotAllowedError or other - try download fallback
             }
         } else {
-            console.log('[SAVE] navigator.share not available');
+            debugLog('navigator.share: NO');
         }
 
         // Fallback to download (desktop browsers or if share failed)
-        console.log('[SAVE] Using download fallback');
+        debugLog('Using download fallback');
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;

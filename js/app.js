@@ -88,7 +88,7 @@ class App {
         console.log('Starting Stop Motion Web App...');
 
         // Show version in debug area with copy button
-        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v37 ready';
+        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v38 ready';
         this.setupCopyButton();
 
         // Start camera
@@ -525,7 +525,12 @@ class App {
         const prompt = document.getElementById('save-prompt');
         const button = document.getElementById('save-button');
 
-        this.uiController.updateDisplayText('');
+        // Setup debug area for save
+        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v38 SAVE\n';
+        this.setupCopyButton();
+        this.debugLog(`Blob: ${blob.size} bytes`);
+        this.debugLog(`Type: ${blob.type}`);
+
         prompt.classList.remove('hidden');
 
         // Handle tap (user gesture required for share API)
@@ -536,10 +541,9 @@ class App {
             // Use correct extension based on blob type (mp4 for iOS, webm for others)
             const ext = this.movieExporter.getFileExtension(blob.type);
             const filename = `animation_${Date.now()}.${ext}`;
-            await this.movieExporter.saveToFile(blob, filename);
+            this.debugLog(`Filename: ${filename}`);
 
-            this.uiController.updateDisplayText('Saved!');
-            setTimeout(() => this.uiController.updateDisplayText(''), 2000);
+            await this.movieExporter.saveToFile(blob, filename, (msg) => this.debugLog(msg));
         };
 
         button.addEventListener('click', handleTap);
@@ -582,7 +586,7 @@ class App {
      */
     async broadcastVideo() {
         // Clear debug area and show version (keep copy button)
-        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v37\n';
+        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v38\n';
         this.setupCopyButton();
 
         const frameCount = this.frameManager.count;
