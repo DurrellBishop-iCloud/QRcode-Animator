@@ -118,6 +118,13 @@ export class FirebaseSignaling {
      * Handle incoming offer from sender
      */
     async handleOffer(offer) {
+        // Ignore if we're already processing an offer
+        if (this.processingOffer) {
+            if (window.dbg) window.dbg('IGNORING offer - already processing');
+            return;
+        }
+        this.processingOffer = true;
+
         if (window.dbg) window.dbg('handleOffer called - cleaning up old connection');
 
         // Clean up any existing connection first
@@ -211,6 +218,7 @@ export class FirebaseSignaling {
                         // Reset for next transfer
                         this.receivedChunks = [];
                         this.expectedChunks = 0;
+                        this.processingOffer = false; // Allow next offer
                     }
                 } else if (message.type === 'video') {
                     // Single message (small video)
@@ -218,6 +226,7 @@ export class FirebaseSignaling {
                     const blob = this.base64ToBlob(message.data, message.mimeType);
                     if (window.dbg) window.dbg('Blob created: ' + blob.size + ' bytes');
                     eventBus.publish(Events.VIDEO_RECEIVED, { blob });
+                    this.processingOffer = false; // Allow next offer
                 }
             } catch (e) {
                 console.error('Error processing received data:', e);
