@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Stop Motion Studio</title>
-    <link rel="stylesheet" href="css/styles.css?v=20250104c">
+    <link rel="stylesheet" href="css/styles.css?v=20250104d">
 </head>
 <body>
     <div id="app" class="app-container">
@@ -70,6 +70,24 @@
                 </header>
 
                 <div class="settings-form">
+                    <!-- Viewer Mode Section (first for easy access) -->
+                    <section class="settings-section">
+                        <h3>Viewer Mode</h3>
+                        <p class="hint">Receive videos from others. Enter a channel name, enable viewer mode, then tap Done.</p>
+
+                        <div class="form-group">
+                            <label for="broadcast-channel">Channel Name</label>
+                            <input type="text" id="broadcast-channel" placeholder="FamilyName">
+                        </div>
+
+                        <div class="form-group toggle">
+                            <label for="viewer-mode-toggle">Enable Viewer Mode</label>
+                            <input type="checkbox" id="viewer-mode-toggle">
+                        </div>
+
+                        <div id="viewer-status" class="hint"></div>
+                    </section>
+
                     <!-- Recognition Section -->
                     <section class="settings-section">
                         <h3>Recognition</h3>
@@ -168,24 +186,6 @@
                             <input type="checkbox" id="reverse-toggle">
                         </div>
                     </section>
-
-                    <!-- Viewer Mode Section -->
-                    <section class="settings-section">
-                        <h3>Viewer Mode</h3>
-
-                        <div class="form-group toggle">
-                            <label for="viewer-mode-toggle">Enable Viewer Mode</label>
-                            <input type="checkbox" id="viewer-mode-toggle">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="broadcast-channel">Channel Name</label>
-                            <input type="text" id="broadcast-channel" placeholder="FamilyName">
-                            <p class="hint">Others share to this channel name</p>
-                        </div>
-
-                        <div id="viewer-status" class="hint"></div>
-                    </section>
                 </div>
             </div>
         </div>
@@ -194,6 +194,6 @@
     <!-- Scripts -->
     <script src="lib/jsqr.min.js?v=20250103x"></script>
     <script src="lib/peerjs.min.js?v=20250103x"></script>
-    <script type="module" src="js/app.js?v=20250104c"></script>
+    <script type="module" src="js/app.js?v=20250104d"></script>
 </body>
 </html>

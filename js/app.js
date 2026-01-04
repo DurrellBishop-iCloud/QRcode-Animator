@@ -565,6 +565,7 @@ class App {
      */
     enterViewerMode(channel) {
         this.isRunning = false; // Stop recognition loop
+        this.cameraManager.stopSession(); // Stop camera - not needed in viewer mode
         this.elements.viewerOverlay.classList.remove('hidden');
         this.elements.viewerChannelDisplay.textContent = channel;
         this.elements.viewerWaiting.classList.remove('hidden');
@@ -580,10 +581,14 @@ class App {
     /**
      * Exit viewer mode
      */
-    exitViewerMode() {
+    async exitViewerMode() {
         this.broadcastManager.stop();
         this.elements.viewerOverlay.classList.add('hidden');
         this.elements.viewerStatus.textContent = '';
+
+        // Restart camera
+        await this.cameraManager.startSession();
+
         this.isRunning = true;
         requestAnimationFrame(this.loop); // Restart recognition loop
     }
