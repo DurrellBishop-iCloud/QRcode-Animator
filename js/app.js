@@ -677,13 +677,14 @@ class App {
         // Hide waiting message
         waiting.classList.add('hidden');
 
-        // Create object URL and play
+        // Create object URL
         const url = URL.createObjectURL(blob);
         video.src = url;
         video.loop = true;
+        video.load(); // Force reload the new source
         video.play();
 
-        console.log('Playing received video');
+        console.log('Playing received video:', blob.size, 'bytes');
     }
 
     /**
