@@ -181,7 +181,7 @@ html, body {
     word-break: break-word;
     white-space: pre-wrap;
     font-family: monospace;
-    background: rgba(0, 0, 0, 0.8);
+    background: #333;
     max-height: 200px;
     overflow-y: auto;
     border: 1px solid #0f0;

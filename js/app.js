@@ -557,8 +557,8 @@ class App {
      * Broadcast video to viewers via WebRTC
      */
     async broadcastVideo() {
-        // Clear debug area
-        this.elements.displayText.textContent = '';
+        // Clear debug area and show version
+        this.elements.displayText.textContent = 'v31\n';
 
         const frameCount = this.frameManager.count;
         this.debugLog(`Frames: ${frameCount}`);
