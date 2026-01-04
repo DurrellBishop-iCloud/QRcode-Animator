@@ -87,18 +87,21 @@ class App {
     async init() {
         console.log('Starting Stop Motion Web App...');
 
-        // Show version in debug area
-        this.elements.displayText.textContent = 'v33 ready';
+        // Show version in debug area with copy button
+        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v34 ready';
 
-        // Tap to copy debug text
-        this.elements.displayText.addEventListener('click', () => {
-            const text = this.elements.displayText.textContent;
+        // Copy button handler
+        document.getElementById('copy-debug').addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Get text content without the button
+            const clone = this.elements.displayText.cloneNode(true);
+            clone.querySelector('#copy-debug')?.remove();
+            const text = clone.textContent;
             navigator.clipboard.writeText(text).then(() => {
-                const original = this.elements.displayText.style.borderColor;
-                this.elements.displayText.style.borderColor = '#fff';
+                document.getElementById('copy-debug').textContent = 'Copied!';
                 setTimeout(() => {
-                    this.elements.displayText.style.borderColor = original;
-                }, 200);
+                    document.getElementById('copy-debug').textContent = 'Copy';
+                }, 1000);
             });
         });
 
@@ -562,7 +565,8 @@ class App {
     debugLog(msg) {
         const el = this.elements.displayText;
         if (el) {
-            el.textContent += msg + '\n';
+            // Append text node to preserve the copy button
+            el.appendChild(document.createTextNode(msg + '\n'));
             el.scrollTop = el.scrollHeight;
         }
         console.log('[DEBUG]', msg);
@@ -572,8 +576,8 @@ class App {
      * Broadcast video to viewers via WebRTC
      */
     async broadcastVideo() {
-        // Clear debug area and show version
-        this.elements.displayText.textContent = 'v33\n';
+        // Clear debug area and show version (keep copy button)
+        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v34\n';
 
         const frameCount = this.frameManager.count;
         this.debugLog(`Frames: ${frameCount}`);
