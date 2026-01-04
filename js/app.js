@@ -16,6 +16,9 @@ import { FilterPipeline } from './filters/FilterPipeline.js';
 import { MovieExporter } from './export/MovieExporter.js';
 import { ServerUploader } from './export/ServerUploader.js';
 
+// Set to true to show debug panel
+const DEBUG_MODE = false;
+
 class App {
     constructor() {
         // DOM elements
@@ -87,9 +90,13 @@ class App {
     async init() {
         console.log('Starting Stop Motion Web App...');
 
-        // Show version in debug area with copy button
-        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v39 ready';
-        this.setupCopyButton();
+        // Show version in debug area with copy button (if debug mode)
+        if (DEBUG_MODE) {
+            this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v40 ready';
+            this.setupCopyButton();
+        } else {
+            this.elements.displayText.style.display = 'none';
+        }
 
         // Start camera
         const cameraStarted = await this.cameraManager.startSession();
@@ -497,20 +504,25 @@ class App {
         this.uiController.clearOnionSkin();
         this.updateUI();
 
-        // Setup debug for export
-        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v39 EXPORT\n';
-        this.setupCopyButton();
-        this.debugLog(`Frames: ${framesToExport.length}`);
-        this.debugLog(`Bounce: ${settings.bounceEnabled}`);
-        this.debugLog(`Reverse: ${settings.reverseMovie}`);
-        this.debugLog('Exporting...');
+        // Setup debug for export (if debug mode)
+        if (DEBUG_MODE) {
+            this.elements.displayText.style.display = '';
+            this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v40 EXPORT\n';
+            this.setupCopyButton();
+            this.debugLog(`Frames: ${framesToExport.length}`);
+            this.debugLog(`Bounce: ${settings.bounceEnabled}`);
+            this.debugLog(`Reverse: ${settings.reverseMovie}`);
+            this.debugLog('Exporting...');
+        } else {
+            this.uiController.updateDisplayText('Exporting...');
+        }
 
         try {
             const blob = await this.movieExporter.exportToBlob(
                 framesToExport,
                 { screenSize }
             );
-            this.debugLog(`Blob: ${blob.size} bytes`);
+            if (DEBUG_MODE) this.debugLog(`Blob: ${blob.size} bytes`);
 
             // Upload to server in background
             this.serverUploader.uploadVideo(blob);
@@ -532,13 +544,16 @@ class App {
         const prompt = document.getElementById('save-prompt');
         const button = document.getElementById('save-button');
 
-        // Setup debug area for save
-        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v39 SAVE\n';
-        this.setupCopyButton();
-        this.debugLog(`Blob: ${blob.size} bytes`);
-        this.debugLog(`Type: ${blob.type}`);
-        this.debugLog(`Bounce: ${settings.bounceEnabled}`);
-        this.debugLog(`Reverse: ${settings.reverseMovie}`);
+        // Setup debug area for save (if debug mode)
+        if (DEBUG_MODE) {
+            this.elements.displayText.style.display = '';
+            this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v40 SAVE\n';
+            this.setupCopyButton();
+            this.debugLog(`Blob: ${blob.size} bytes`);
+            this.debugLog(`Type: ${blob.type}`);
+            this.debugLog(`Bounce: ${settings.bounceEnabled}`);
+            this.debugLog(`Reverse: ${settings.reverseMovie}`);
+        }
 
         prompt.classList.remove('hidden');
 
@@ -550,9 +565,15 @@ class App {
             // Use correct extension based on blob type (mp4 for iOS, webm for others)
             const ext = this.movieExporter.getFileExtension(blob.type);
             const filename = `animation_${Date.now()}.${ext}`;
-            this.debugLog(`Filename: ${filename}`);
+            if (DEBUG_MODE) this.debugLog(`Filename: ${filename}`);
 
-            await this.movieExporter.saveToFile(blob, filename, (msg) => this.debugLog(msg));
+            const debugFn = DEBUG_MODE ? (msg) => this.debugLog(msg) : () => {};
+            await this.movieExporter.saveToFile(blob, filename, debugFn);
+
+            if (!DEBUG_MODE) {
+                this.uiController.updateDisplayText('Saved!');
+                setTimeout(() => this.uiController.updateDisplayText(''), 2000);
+            }
         };
 
         button.addEventListener('click', handleTap);
@@ -594,34 +615,42 @@ class App {
      * Broadcast video to viewers via WebRTC
      */
     async broadcastVideo() {
-        // Clear debug area and show version (keep copy button)
-        this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v39\n';
-        this.setupCopyButton();
+        // Clear debug area and show version (if debug mode)
+        if (DEBUG_MODE) {
+            this.elements.displayText.style.display = '';
+            this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v40\n';
+            this.setupCopyButton();
+        }
 
         const frameCount = this.frameManager.count;
-        this.debugLog(`Frames: ${frameCount}`);
-        this.debugLog(`Bounce: ${settings.bounceEnabled}`);
-        this.debugLog(`Reverse: ${settings.reverseMovie}`);
+        if (DEBUG_MODE) {
+            this.debugLog(`Frames: ${frameCount}`);
+            this.debugLog(`Bounce: ${settings.bounceEnabled}`);
+            this.debugLog(`Reverse: ${settings.reverseMovie}`);
+        }
 
         if (frameCount === 0) {
-            this.debugLog('ERROR: No frames');
+            if (DEBUG_MODE) this.debugLog('ERROR: No frames');
+            else this.uiController.updateDisplayText('No frames');
             return;
         }
 
         const channelName = settings.broadcastChannel;
-        this.debugLog(`Channel: ${channelName || '(none)'}`);
+        if (DEBUG_MODE) this.debugLog(`Channel: ${channelName || '(none)'}`);
 
         if (!channelName) {
-            this.debugLog('ERROR: No channel set');
+            if (DEBUG_MODE) this.debugLog('ERROR: No channel set');
+            else this.uiController.updateDisplayText('No channel');
             return;
         }
 
-        this.debugLog('Exporting...');
+        if (DEBUG_MODE) this.debugLog('Exporting...');
+        else this.uiController.updateDisplayText('Exporting...');
 
         let blob;
         try {
             const allFrames = this.frameManager.getAllFrames();
-            this.debugLog(`Raw frames: ${allFrames.length}`);
+            if (DEBUG_MODE) this.debugLog(`Raw frames: ${allFrames.length}`);
 
             blob = await this.movieExporter.exportToBlob(
                 allFrames,
@@ -630,24 +659,33 @@ class App {
                 }
             );
 
-            this.debugLog(`Blob size: ${blob.size} bytes`);
-            this.debugLog(`Blob type: ${blob.type}`);
+            if (DEBUG_MODE) {
+                this.debugLog(`Blob size: ${blob.size} bytes`);
+                this.debugLog(`Blob type: ${blob.type}`);
+            }
         } catch (error) {
             console.error('Export failed:', error);
-            this.debugLog(`EXPORT ERROR: ${error.message}`);
+            if (DEBUG_MODE) this.debugLog(`EXPORT ERROR: ${error.message}`);
+            else this.uiController.updateDisplayText('Export failed');
             return;
         }
 
-        this.debugLog('Connecting...');
+        if (DEBUG_MODE) this.debugLog('Connecting...');
+        else this.uiController.updateDisplayText('Connecting...');
 
         try {
-            await this.broadcastManager.sendVideo(blob, channelName, (msg) => this.debugLog(msg));
+            const debugFn = DEBUG_MODE ? (msg) => this.debugLog(msg) : () => {};
+            await this.broadcastManager.sendVideo(blob, channelName, debugFn);
 
-            this.debugLog('SUCCESS: Sent!');
+            if (DEBUG_MODE) this.debugLog('SUCCESS: Sent!');
+            else this.uiController.updateDisplayText('Sent!');
+            setTimeout(() => this.uiController.updateDisplayText(''), 2000);
 
         } catch (error) {
             console.error('Send failed:', error);
-            this.debugLog(`SEND ERROR: ${error.message}`);
+            if (DEBUG_MODE) this.debugLog(`SEND ERROR: ${error.message}`);
+            else this.uiController.updateDisplayText('Send failed');
+            setTimeout(() => this.uiController.updateDisplayText(''), 2000);
         }
     }
 
