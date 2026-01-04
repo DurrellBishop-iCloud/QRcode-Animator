@@ -149,6 +149,11 @@ export class RecognitionManager {
 
         const code = this.lastDetectedCode.toLowerCase();
 
+        // Ignore channel/group QR codes (CG-xxx) - don't capture
+        if (this.lastDetectedCode.toUpperCase().startsWith('CG-')) {
+            return;
+        }
+
         // Handle command codes immediately
         if (code === 'play') {
             console.log('Switching back to Make mode');
@@ -257,6 +262,12 @@ export class RecognitionManager {
                     eventBus.publish(Events.DISPLAY_TEXT, { text: '' });
                 }, 2000);
             }
+            return;
+        }
+
+        // Ignore channel/group QR codes (CG-xxx) - these are shown by viewer devices
+        if (data.toUpperCase().startsWith('CG-')) {
+            // Don't trigger any action for channel group codes
             return;
         }
 
