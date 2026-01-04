@@ -212,11 +212,30 @@ export class MovieExporter {
     }
 
     /**
-     * Save blob as downloadable file
+     * Save blob - uses Share API on iOS (save to Photos), download on desktop
      * @param {Blob} blob - Video blob
      * @param {string} filename - Filename
      */
-    saveToFile(blob, filename = 'animation.webm') {
+    async saveToFile(blob, filename = 'animation.webm') {
+        // Try Web Share API first (works great on iOS - shows "Save Video" option)
+        if (navigator.canShare && navigator.canShare({ files: [new File([blob], filename, { type: blob.type })] })) {
+            try {
+                const file = new File([blob], filename, { type: blob.type });
+                await navigator.share({
+                    files: [file],
+                    title: 'Animation'
+                });
+                return; // Success
+            } catch (e) {
+                // User cancelled or share failed - fall through to download
+                if (e.name === 'AbortError') {
+                    return; // User cancelled, don't try download
+                }
+                console.log('Share failed, trying download:', e);
+            }
+        }
+
+        // Fallback to download (desktop browsers)
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;

@@ -499,8 +499,8 @@ class App {
                 { screenSize }
             );
 
-            // Download file
-            this.movieExporter.saveToFile(blob, `animation_${Date.now()}.webm`);
+            // Save file (shows share sheet on iOS, downloads on desktop)
+            await this.movieExporter.saveToFile(blob, `animation_${Date.now()}.webm`);
 
             // Upload to server
             this.serverUploader.uploadVideo(blob);
