@@ -355,6 +355,14 @@ html, body {
     margin-top: 8px;
 }
 
+/* Viewer mode instructions */
+.settings-section > .hint {
+    color: #ffd60a;
+    font-size: 14px;
+    margin-bottom: 16px;
+    line-height: 1.4;
+}
+
 /* ===== Viewer Mode Overlay ===== */
 .viewer-overlay {
     position: fixed;
