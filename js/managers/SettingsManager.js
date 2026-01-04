@@ -21,6 +21,7 @@ const DEFAULT_SETTINGS = {
     // Playback
     frameRate: 12, // fps
     reverseMovie: false,
+    bounceEnabled: true, // Play forward then backward
 
     // Camera (limited in web)
     zoomFactor: 1.7,
@@ -178,6 +179,9 @@ class SettingsManagerClass {
 
     get reverseMovie() { return this._settings.reverseMovie; }
     set reverseMovie(v) { this.set('reverseMovie', v); }
+
+    get bounceEnabled() { return this._settings.bounceEnabled; }
+    set bounceEnabled(v) { this.set('bounceEnabled', v); }
 
     get zoomFactor() { return this._settings.zoomFactor; }
     set zoomFactor(v) { this.set('zoomFactor', v); }

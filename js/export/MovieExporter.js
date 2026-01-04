@@ -30,7 +30,8 @@ export class MovieExporter {
             cropTop = settings.frameTopThickness,
             cropBottom = settings.frameBottomThickness,
             screenSize = { width: window.innerWidth, height: window.innerHeight },
-            reverse = settings.reverseMovie
+            reverse = settings.reverseMovie,
+            bounce = settings.bounceEnabled
         } = options;
 
         this.isExporting = true;
@@ -66,8 +67,19 @@ export class MovieExporter {
                 }
             };
 
-            // Reverse frames if needed
-            const framesToRender = reverse ? [...frames].reverse() : frames;
+            // Build frame sequence based on reverse and bounce settings
+            let framesToRender = [...frames];
+
+            // If reverse, start with frames reversed
+            if (reverse) {
+                framesToRender = framesToRender.reverse();
+            }
+
+            // If bounce, add reversed copy (excluding endpoints to avoid duplicate frames)
+            if (bounce && framesToRender.length > 1) {
+                const bounceBack = [...framesToRender].reverse().slice(1, -1);
+                framesToRender = [...framesToRender, ...bounceBack];
+            }
 
             return new Promise((resolve, reject) => {
                 recorder.onstop = () => {

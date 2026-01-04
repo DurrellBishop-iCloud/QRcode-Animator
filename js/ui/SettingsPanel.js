@@ -55,11 +55,28 @@ export class SettingsPanel {
             // Playback
             frameRate: document.getElementById('frame-rate'),
             frameRateValue: document.getElementById('frame-rate-value'),
+            bounceToggle: document.getElementById('bounce-toggle'),
             reverseToggle: document.getElementById('reverse-toggle'),
 
             // Network
             serverAddress: document.getElementById('server-address')
         };
+
+        // DEBUG: Show what elements are found
+        const debugEl = document.getElementById('display-text');
+        if (debugEl) {
+            const found = [];
+            const missing = [];
+            for (const [key, el] of Object.entries(this.elements)) {
+                if (el) {
+                    found.push(key);
+                } else {
+                    missing.push(key);
+                }
+            }
+            debugEl.textContent = `Missing: ${missing.join(', ') || 'none'}`;
+            debugEl.style.fontSize = '10px';
+        }
     }
 
     /**
@@ -173,6 +190,11 @@ export class SettingsPanel {
             elements.frameRateValue.textContent = `${value} fps`;
         });
 
+        // Bounce
+        elements.bounceToggle?.addEventListener('change', (e) => {
+            settings.bounceEnabled = e.target.checked;
+        });
+
         // Reverse
         elements.reverseToggle?.addEventListener('change', (e) => {
             settings.reverseMovie = e.target.checked;
@@ -268,6 +290,9 @@ export class SettingsPanel {
         if (elements.frameRate) {
             elements.frameRate.value = settings.frameRate;
             elements.frameRateValue.textContent = `${settings.frameRate} fps`;
+        }
+        if (elements.bounceToggle) {
+            elements.bounceToggle.checked = settings.bounceEnabled;
         }
         if (elements.reverseToggle) {
             elements.reverseToggle.checked = settings.reverseMovie;

@@ -12,6 +12,7 @@ export class PlaybackManager {
         this.currentFrame = null;
         this.isPlaying = false;
         this.timer = null;
+        this.playDirection = 1; // 1 = forward, -1 = backward
 
         // Subscribe to frame rate changes for real-time updates
         settings.subscribe('frameRate', () => {
@@ -31,17 +32,48 @@ export class PlaybackManager {
 
         const interval = 1000 / settings.frameRate;
         this.timer = setInterval(() => {
-            this.currentFrameIndex = (this.currentFrameIndex + 1) % this.frames.length;
-            this.currentFrame = this.frames[this.currentFrameIndex];
-
-            eventBus.publish(Events.PLAYBACK_FRAME, {
-                index: this.currentFrameIndex,
-                total: this.frames.length,
-                frame: this.currentFrame
-            });
+            this.advanceFrame();
         }, interval);
 
         console.log(`Playback restarted at ${settings.frameRate} fps`);
+    }
+
+    /**
+     * Advance to next frame, handling bounce and reverse modes
+     */
+    advanceFrame() {
+        const bounce = settings.bounceEnabled;
+        const lastIndex = this.frames.length - 1;
+
+        // Calculate next index
+        let nextIndex = this.currentFrameIndex + this.playDirection;
+
+        if (bounce) {
+            // Bounce mode: reverse direction at ends
+            if (nextIndex > lastIndex) {
+                this.playDirection = -1;
+                nextIndex = lastIndex - 1;
+            } else if (nextIndex < 0) {
+                this.playDirection = 1;
+                nextIndex = 1;
+            }
+            // Handle single frame case
+            if (this.frames.length <= 1) {
+                nextIndex = 0;
+            }
+        } else {
+            // Non-bounce: wrap around
+            nextIndex = (nextIndex + this.frames.length) % this.frames.length;
+        }
+
+        this.currentFrameIndex = nextIndex;
+        this.currentFrame = this.frames[this.currentFrameIndex];
+
+        eventBus.publish(Events.PLAYBACK_FRAME, {
+            index: this.currentFrameIndex,
+            total: this.frames.length,
+            frame: this.currentFrame
+        });
     }
 
     /**
@@ -70,24 +102,35 @@ export class PlaybackManager {
         this.isPlaying = true;
         const interval = 1000 / settings.frameRate;
 
+        // Set initial direction based on reverse setting
+        // If reverse is on, start playing backward (-1), otherwise forward (1)
+        this.playDirection = settings.reverseMovie ? -1 : 1;
+
+        // Set starting frame based on direction
+        if (this.playDirection === -1) {
+            this.currentFrameIndex = this.frames.length - 1;
+        } else {
+            this.currentFrameIndex = 0;
+        }
+        this.currentFrame = this.frames[this.currentFrameIndex];
+
         eventBus.publish(Events.PLAYBACK_STARTED, {
             frameCount: this.frames.length,
             frameRate: settings.frameRate
         });
 
-        this.timer = setInterval(() => {
-            // Advance to next frame (loop)
-            this.currentFrameIndex = (this.currentFrameIndex + 1) % this.frames.length;
-            this.currentFrame = this.frames[this.currentFrameIndex];
+        // Show first frame immediately
+        eventBus.publish(Events.PLAYBACK_FRAME, {
+            index: this.currentFrameIndex,
+            total: this.frames.length,
+            frame: this.currentFrame
+        });
 
-            eventBus.publish(Events.PLAYBACK_FRAME, {
-                index: this.currentFrameIndex,
-                total: this.frames.length,
-                frame: this.currentFrame
-            });
+        this.timer = setInterval(() => {
+            this.advanceFrame();
         }, interval);
 
-        console.log(`Playback started at ${settings.frameRate} fps`);
+        console.log(`Playback started at ${settings.frameRate} fps, direction: ${this.playDirection === 1 ? 'forward' : 'backward'}, bounce: ${settings.bounceEnabled}`);
     }
 
     /**
