@@ -703,28 +703,34 @@ class App {
         dbg('Creating new video element');
         const newVideo = document.createElement('video');
         newVideo.id = 'received-video';
-        newVideo.playsinline = true;
+        newVideo.setAttribute('playsinline', '');
+        newVideo.setAttribute('muted', '');
+        newVideo.setAttribute('autoplay', '');
         newVideo.loop = true;
-        newVideo.muted = true; // Required for autoplay
+        newVideo.muted = true;
+        newVideo.playsInline = true;
         newVideo.style.cssText = 'width:100%;height:100%;object-fit:contain;';
+
+        // Insert into overlay FIRST (must be in DOM for autoplay)
+        overlay.insertBefore(newVideo, waiting);
+
+        // Update reference
+        this.elements.receivedVideo = newVideo;
 
         // Create object URL and set source
         const url = URL.createObjectURL(blob);
         dbg('Object URL: ' + url.substring(0, 50) + '...');
         newVideo.src = url;
 
-        // Insert into overlay
-        overlay.insertBefore(newVideo, waiting);
-
-        // Update reference
-        this.elements.receivedVideo = newVideo;
-
-        // Play
-        newVideo.play().then(() => {
-            dbg('Video playing successfully');
-        }).catch(e => {
-            dbg('Play ERROR: ' + e.message);
-        });
+        // Try to play after load
+        newVideo.onloadeddata = () => {
+            dbg('Video loaded, attempting play...');
+            newVideo.play().then(() => {
+                dbg('Video playing successfully');
+            }).catch(e => {
+                dbg('Play ERROR: ' + e.message);
+            });
+        };
     }
 
     /**
