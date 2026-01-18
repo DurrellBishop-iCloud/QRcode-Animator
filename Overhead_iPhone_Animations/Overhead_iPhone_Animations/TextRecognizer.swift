@@ -11,6 +11,10 @@ import AVFoundation
 class TextRecognizer: RecognitionTechnique {
     weak var delegate: RecognitionTechniqueDelegate?
     private(set) var isCurrentlyDetecting = false
+    private var lastDetectedTrigger: String = ""
+
+    // Trigger words that map to actions (same as QR code commands)
+    private let triggerWords = ["play", "back", "forward", "delete", "save", "share", "kaleidoscope", "long", "background"]
 
     private lazy var textRequest: VNRecognizeTextRequest = {
         let request = VNRecognizeTextRequest { [weak self] request, error in
@@ -39,20 +43,37 @@ class TextRecognizer: RecognitionTechnique {
             return
         }
 
-        let hasText = results.contains { observation in
-            guard let candidate = observation.topCandidates(1).first else { return false }
-            return candidate.confidence > 0.5
+        // Extract all recognized text and look for trigger words
+        var detectedTrigger: String? = nil
+
+        for observation in results {
+            guard let candidate = observation.topCandidates(1).first,
+                  candidate.confidence > 0.5 else { continue }
+
+            let recognizedText = candidate.string.lowercased()
+
+            // Check if any trigger word is contained in the recognized text
+            for trigger in triggerWords {
+                if recognizedText.contains(trigger) {
+                    detectedTrigger = trigger
+                    break
+                }
+            }
+
+            if detectedTrigger != nil { break }
         }
 
-        if hasText {
-            if !isCurrentlyDetecting {
+        if let trigger = detectedTrigger {
+            if !isCurrentlyDetecting || trigger != lastDetectedTrigger {
+                lastDetectedTrigger = trigger
                 isCurrentlyDetecting = true
                 delegate?.didDetectTarget()
-                delegate?.didDetectData("")
+                delegate?.didDetectData(trigger)
             }
         } else {
             if isCurrentlyDetecting {
                 isCurrentlyDetecting = false
+                lastDetectedTrigger = ""
                 delegate?.didLoseTarget()
             }
         }
@@ -60,5 +81,6 @@ class TextRecognizer: RecognitionTechnique {
 
     func reset() {
         isCurrentlyDetecting = false
+        lastDetectedTrigger = ""
     }
 }
