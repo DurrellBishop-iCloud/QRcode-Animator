@@ -236,7 +236,8 @@ struct ContentView: View {
                         frameRate: settings.frameRate,
                         cropTop: settings.frameTopThickness,
                         cropBottom: settings.frameBottomThickness,
-                        screenSize: screenSize
+                        screenSize: screenSize,
+                        reverse: settings.reverseMovie
                     ) { _, _ in }
                 }
 
@@ -269,7 +270,8 @@ struct ContentView: View {
             frameRate: settings.frameRate,
             cropTop: settings.frameTopThickness,
             cropBottom: settings.frameBottomThickness,
-            screenSize: screenSize
+            screenSize: screenSize,
+            reverse: settings.reverseMovie
         ) { success, error in
             if success {
                 // Upload to server
@@ -317,7 +319,8 @@ struct ContentView: View {
             frameRate: settings.frameRate,
             cropTop: settings.frameTopThickness,
             cropBottom: settings.frameBottomThickness,
-            screenSize: screenSize
+            screenSize: screenSize,
+            reverse: settings.reverseMovie
         ) { success, _ in
             let exportDuration = Date().timeIntervalSince(exportStartTime)
             print("📤 SHARE: Video export completed in \(String(format: "%.2f", exportDuration))s")

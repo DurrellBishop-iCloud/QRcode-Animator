@@ -160,6 +160,7 @@ struct SettingsView: View {
                         get: { settings.frameRate == 6.0 },
                         set: { settings.frameRate = $0 ? 6.0 : 12.0 }
                     ))
+                    Toggle("Reverse Movie", isOn: $settings.reverseMovie)
                 }
 
                 Section(header: Text("About")) {

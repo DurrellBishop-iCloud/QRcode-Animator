@@ -10,7 +10,7 @@ import UIKit
 import Photos
 
 class MovieExporter {
-    static func saveToDocuments(frames: [UIImage], sessionID: String, frameRate: Double = 12.0, cropTop: Double = 0, cropBottom: Double = 0, screenSize: CGSize, completion: @escaping (Bool, Error?) -> Void) {
+    static func saveToDocuments(frames: [UIImage], sessionID: String, frameRate: Double = 12.0, cropTop: Double = 0, cropBottom: Double = 0, screenSize: CGSize, reverse: Bool = false, completion: @escaping (Bool, Error?) -> Void) {
         guard !frames.isEmpty else {
             completion(false, NSError(domain: "MovieExporter", code: 1, userInfo: [NSLocalizedDescriptionKey: "No frames to export"]))
             return
@@ -95,7 +95,11 @@ class MovieExporter {
         print("📐 EXPORT: Photo=\(photoWidth)x\(photoHeight), Crop (camera px): top=\(Int(finalCropTop)), bottom=\(Int(finalCropBottom))")
         print("📐 EXPORT: Final video=\(Int(photoWidth))x\(Int(finalHeight)), Aspect=\(String(format: "%.3f", finalAspectRatio))")
 
-        createVideo(from: frames, outputURL: outputURL, frameRate: frameRate, cropTop: finalCropTop, cropBottom: finalCropBottom) { success, error in
+        // Reverse frames if setting is enabled
+        let framesToExport = reverse ? frames.reversed() : Array(frames)
+        print("📐 EXPORT: Reverse=\(reverse), frame count=\(framesToExport.count)")
+
+        createVideo(from: framesToExport, outputURL: outputURL, frameRate: frameRate, cropTop: finalCropTop, cropBottom: finalCropBottom) { success, error in
             completion(success, error)
         }
     }
@@ -126,7 +130,7 @@ class MovieExporter {
         }
     }
 
-    static func exportToPhotos(frames: [UIImage], sessionID: String, frameRate: Double = 12.0, cropTop: Double = 0, cropBottom: Double = 0, screenSize: CGSize, replacingAsset: String? = nil, completion: @escaping (Bool, Error?, String?) -> Void) {
+    static func exportToPhotos(frames: [UIImage], sessionID: String, frameRate: Double = 12.0, cropTop: Double = 0, cropBottom: Double = 0, screenSize: CGSize, reverse: Bool = false, replacingAsset: String? = nil, completion: @escaping (Bool, Error?, String?) -> Void) {
         guard !frames.isEmpty else {
             completion(false, NSError(domain: "MovieExporter", code: 1, userInfo: [NSLocalizedDescriptionKey: "No frames to export"]), nil)
             return
@@ -165,7 +169,10 @@ class MovieExporter {
 
         print("📐 CROP: UI values - top=\(cropTop), bottom=\(cropBottom), effective: top=\(effectiveCropTop), bottom=\(effectiveCropBottom)")
 
-        createVideo(from: frames, outputURL: tempURL, frameRate: frameRate, cropTop: finalCropTop, cropBottom: finalCropBottom) { success, error in
+        // Reverse frames if setting is enabled
+        let framesToExport = reverse ? frames.reversed() : Array(frames)
+
+        createVideo(from: framesToExport, outputURL: tempURL, frameRate: frameRate, cropTop: finalCropTop, cropBottom: finalCropBottom) { success, error in
             guard success, error == nil else {
                 completion(false, error, nil)
                 return

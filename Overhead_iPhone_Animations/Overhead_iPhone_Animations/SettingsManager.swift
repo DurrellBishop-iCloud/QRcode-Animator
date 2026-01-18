@@ -35,6 +35,7 @@ class SettingsManager: ObservableObject {
         static let backgroundTransparent = "backgroundTransparent"
         static let transparencyAdjust = "transparencyAdjust"
         static let useBackground = "useBackground"
+        static let reverseMovie = "reverseMovie"
     }
 
     @Published var recognitionType: RecognitionType {
@@ -165,6 +166,12 @@ class SettingsManager: ObservableObject {
         }
     }
 
+    @Published var reverseMovie: Bool {
+        didSet {
+            UserDefaults.standard.set(reverseMovie, forKey: Keys.reverseMovie)
+        }
+    }
+
     private init() {
         let savedTypeString = UserDefaults.standard.string(forKey: Keys.recognitionType) ?? RecognitionType.qrCode.rawValue
         self.recognitionType = RecognitionType(rawValue: savedTypeString) ?? .qrCode
@@ -194,5 +201,6 @@ class SettingsManager: ObservableObject {
         self.backgroundTransparent = UserDefaults.standard.bool(forKey: Keys.backgroundTransparent)
         self.transparencyAdjust = UserDefaults.standard.object(forKey: Keys.transparencyAdjust) as? Double ?? 0.0
         self.useBackground = UserDefaults.standard.bool(forKey: Keys.useBackground)
+        self.reverseMovie = UserDefaults.standard.bool(forKey: Keys.reverseMovie)
     }
 }
