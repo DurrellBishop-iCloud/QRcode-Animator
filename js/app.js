@@ -269,11 +269,6 @@ class App {
         settings.subscribe('onionSkinEnabled', () => this.renderCurrentView());
         settings.subscribe('onionSkinOpacity', () => this.renderCurrentView());
         settings.subscribe('kaleidoscopeEnabled', () => {});
-        settings.subscribe('recognitionType', (type) => {
-            // Text recognition needs slower rate due to OCR processing time
-            this.recognitionSkip = type === 'text' ? 10 : 3;
-            console.log(`Recognition skip set to ${this.recognitionSkip} for ${type}`);
-        });
     }
 
     /**
