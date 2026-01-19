@@ -15,10 +15,11 @@ export class BarcodeRecognizer extends RecognitionTechnique {
             // Supported barcode formats (matching Swift)
             this.detector = new BarcodeDetector({
                 formats: [
+                    'code_39',  // Prioritized - wider bars, better for distance
                     'ean_8',
                     'ean_13',
                     'upc_e',
-                    'code_39',
+                    
                     'code_93',
                     'code_128',
                     'itf'
