@@ -6,6 +6,7 @@ import { eventBus, Events } from '../core/EventBus.js';
 import { settings } from './SettingsManager.js';
 import { QRCodeRecognizer } from '../recognition/QRCodeRecognizer.js';
 import { BarcodeRecognizer } from '../recognition/BarcodeRecognizer.js';
+import { TextRecognizer } from '../recognition/TextRecognizer.js';
 import { ColorSampleRecognizer } from '../recognition/ColorSampleRecognizer.js';
 
 // QR code command lookup
@@ -38,6 +39,7 @@ export class RecognitionManager {
         this.qrCodeRecognizer = new QRCodeRecognizer();
         this.barcodeRecognizer = new BarcodeRecognizer();
         this.colorSampleRecognizer = new ColorSampleRecognizer();
+        this.textRecognizer = new TextRecognizer();
 
         this.currentRecognizer = null;
 
@@ -71,6 +73,7 @@ export class RecognitionManager {
         setupRecognizer(this.qrCodeRecognizer);
         setupRecognizer(this.barcodeRecognizer);
         setupRecognizer(this.colorSampleRecognizer);
+        setupRecognizer(this.textRecognizer);
     }
 
     /**
@@ -98,6 +101,9 @@ export class RecognitionManager {
                 break;
             case 'barcode':
                 this.currentRecognizer = this.barcodeRecognizer;
+                break;
+            case 'text':
+                this.currentRecognizer = this.textRecognizer;
                 break;
             case 'colorSample':
                 this.currentRecognizer = this.colorSampleRecognizer;
