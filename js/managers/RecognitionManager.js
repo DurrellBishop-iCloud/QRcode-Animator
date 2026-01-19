@@ -21,6 +21,20 @@ const QR_COMMANDS = {
     'background': Events.COMMAND_BACKGROUND
 };
 
+// Barcode single-character shortcuts
+const BARCODE_SHORTCUTS = {
+    'p': 'play',
+    'c': 'capture',
+    's': 'save',
+    'b': 'back',
+    'f': 'forward',
+    'd': 'delete',
+    'h': 'share',
+    'k': 'kaleidoscope',
+    'l': 'long',
+    'g': 'background'
+};
+
 // Display text mapping
 const DISPLAY_TEXT = {
     'save': 'Saved - Start again',
@@ -242,7 +256,13 @@ export class RecognitionManager {
     handleDetectData(data) {
         this.lastDetectedCode = data;
 
-        const code = data.toLowerCase();
+        let code = data.toLowerCase();
+
+        // Translate barcode shortcuts to full commands
+        if (settings.recognitionType === 'barcode' && BARCODE_SHORTCUTS[code]) {
+            code = BARCODE_SHORTCUTS[code];
+            this.lastDetectedCode = code; // Update for capture
+        }
 
         // Handle channel setting (CH-ChannelName)
         if (data.toUpperCase().startsWith('CH-')) {
