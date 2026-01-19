@@ -218,7 +218,6 @@ export class RecognitionManager {
         }
 
         // Regular capture (in Make mode, viewing live feed)
-        }
         if (this.currentMode === 'Make') {
             this.lostTargetTimer = setTimeout(() => {
                 eventBus.publish(Events.FLASH_TRIGGER, {});
