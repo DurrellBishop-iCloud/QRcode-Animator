@@ -179,6 +179,10 @@ export class TextRecognizer extends RecognitionTechnique {
         // Check confidence threshold
         if (data.confidence < this.confidenceThreshold) {
             // Low confidence - treat as no detection
+            const debugEl = document.getElementById('ocr-debug');
+            if (debugEl) {
+                debugEl.textContent = 'Low confidence: ' + Math.round(data.confidence) + '%';
+            }
             if (this.isCurrentlyDetecting) {
                 this.isCurrentlyDetecting = false;
                 this.triggerLoseTarget();
@@ -214,6 +218,12 @@ export class TextRecognizer extends RecognitionTechnique {
             if (!this.isCurrentlyDetecting) {
                 this.isCurrentlyDetecting = true;
                 this.triggerDetectTarget();
+            }
+
+            // Update debug display
+            const debugEl = document.getElementById('ocr-debug');
+            if (debugEl) {
+                debugEl.textContent = 'OCR: "' + text + '" (' + Math.round(data.confidence) + '%)';
             }
 
             console.log('OCR detected: "' + text + '" (confidence: ' + data.confidence.toFixed(1) + '%)');
