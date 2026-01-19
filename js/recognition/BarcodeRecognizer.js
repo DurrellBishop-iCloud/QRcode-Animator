@@ -56,6 +56,16 @@ export class BarcodeRecognizer extends RecognitionTechnique {
             const barcodes = await this.detector.detect(imageBitmap);
 
             results = barcodes.map(barcode => barcode.rawValue);
+
+            // Debug output
+            const debugEl = document.getElementById('barcode-debug');
+            if (debugEl) {
+                if (barcodes.length > 0) {
+                    debugEl.textContent = 'Barcode: "' + results[0] + '" (' + barcodes[0].format + ')'; 
+                } else {
+                    debugEl.textContent = 'Scanning...'; 
+                }
+            }
         } catch (error) {
             console.error('Barcode detection error:', error);
         }
