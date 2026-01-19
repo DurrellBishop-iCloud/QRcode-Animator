@@ -25,9 +25,9 @@ export class BarcodeRecognizer extends RecognitionTechnique {
                     'itf'
                 ]
             });
-            console.log('Using native BarcodeDetector for barcodes');
+            console.log('Using native BarcodeDetector for barcodes');            // Show debug on startup            setTimeout(() => {                const debugEl = document.getElementById('barcode-debug');                if (debugEl) debugEl.textContent = 'Barcode ready';            }, 1000);
         } else {
-            console.warn('BarcodeDetector not available - barcode detection disabled');
+            console.warn('BarcodeDetector not available');            setTimeout(() => {                const debugEl = document.getElementById('barcode-debug');                if (debugEl) debugEl.textContent = 'BarcodeDetector NOT supported';            }, 1000);
         }
 
         // Canvas for processing
