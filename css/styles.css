@@ -500,3 +500,17 @@ html, body {
         padding-top: 16px;
     }
 }
+
+/* ===== Orientation Lock (Portrait Only) ===== */
+@media screen and (orientation: landscape) {
+    html {
+        transform: rotate(-90deg);
+        transform-origin: left top;
+        width: 100vh;
+        height: 100vw;
+        overflow-x: hidden;
+        position: absolute;
+        top: 100%;
+        left: 0;
+    }
+}
