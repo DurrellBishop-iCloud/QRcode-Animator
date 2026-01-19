@@ -13,7 +13,7 @@ export class TextRecognizer extends RecognitionTechnique {
         this.isReady = false;
         this.lastResult = null;
         this.lastResultTime = 0;
-        this.confidenceThreshold = 70; // Only accept high confidence results
+        this.confidenceThreshold = 50; // Only accept high confidence results
         this.resultCooldown = 500; // ms between accepting same result
 
         // Canvas for image processing
@@ -21,8 +21,8 @@ export class TextRecognizer extends RecognitionTechnique {
         this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
 
         // ROI parameters (center portion of frame)
-        this.roiWidthPercent = 0.5;  // Use center 50% width
-        this.roiHeightPercent = 0.3; // Use center 30% height
+        this.roiWidthPercent = 0.7;  // Use center 50% width
+        this.roiHeightPercent = 0.5; // Use center 30% height
 
         // Initialize the Tesseract worker
         this.initWorker();
@@ -151,15 +151,16 @@ export class TextRecognizer extends RecognitionTechnique {
         const imageData = sourceCtx.getImageData(0, 0, width, height);
         const data = imageData.data;
 
-        // Convert to grayscale and apply threshold
-        const threshold = 128;
+        // Convert to grayscale with contrast boost
+        
 
         for (let i = 0; i < data.length; i += 4) {
             // Grayscale using luminosity method
             const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
 
-            // Apply threshold (binary image)
-            const value = gray > threshold ? 255 : 0;
+            // Boost contrast instead of hard threshold
+            let value = ((gray - 128) * 1.5) + 128;
+            value = Math.max(0, Math.min(255, value));
 
             data[i] = value;     // R
             data[i + 1] = value; // G
