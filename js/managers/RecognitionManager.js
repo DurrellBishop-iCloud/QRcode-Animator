@@ -224,6 +224,11 @@ export class RecognitionManager {
         }
 
         // Regular capture (in Make mode, viewing live feed)
+        // For text recognition, only "snap" triggers capture
+        if (settings.recognitionType === 'text' && code !== 'snap') {
+            this.clearDisplayText();
+            return;
+        }
         if (this.currentMode === 'Make') {
             this.lostTargetTimer = setTimeout(() => {
                 eventBus.publish(Events.FLASH_TRIGGER, {});
