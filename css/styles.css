@@ -501,8 +501,8 @@ html, body {
     }
 }
 
-/* ===== Orientation Lock (Portrait Only) ===== */
-@media screen and (orientation: landscape) {
+/* ===== Orientation Lock (Portrait Only - Mobile) ===== */
+@media screen and (orientation: landscape) and (hover: none) and (pointer: coarse) {
     html {
         transform: rotate(-90deg);
         transform-origin: left top;
