@@ -88,45 +88,41 @@ class App {
      * Initialize and start the app
      */
     async init() {
-        const log = window._log || console.log;
-        log('init() called');
-
+        console.log('Starting Stop Motion Web App...');
         this.elements.displayText.style.display = 'none';
 
-        log('Starting camera...');
-        let cameraStarted = false;
-        try {
-            cameraStarted = await this.cameraManager.startSession();
-        } catch (e) {
-            log('Camera exception: ' + e.message);
-        }
-        log('Camera: ' + (cameraStarted ? 'OK' : 'FAILED'));
+        // Start camera
+        const cameraStarted = await this.cameraManager.startSession();
 
         if (!cameraStarted) {
             return;
         }
 
-        log('Init canvases...');
+        // Initialize canvases
         const dims = this.cameraManager.getDimensions();
         this.uiController.initCanvases(dims.width, dims.height);
-        log('Canvases: OK (' + dims.width + 'x' + dims.height + ')');
 
-        log('Loading saved frames...');
+        // Restore saved frames from IndexedDB (survives reload/recharge)
         try {
             const restored = await this.frameManager.loadFromDB();
-            log('DB restore: ' + (restored ? this.frameManager.count + ' frames' : 'none'));
+            if (restored) {
+                console.log(`Restored ${this.frameManager.count} frames from previous session`);
+                this.uiController.updateDisplayText(`Restored ${this.frameManager.count} frames`);
+                setTimeout(() => this.uiController.updateDisplayText(''), 3000);
+            }
         } catch (e) {
-            log('DB restore failed: ' + e.message);
+            console.warn('Could not restore frames:', e);
         }
 
-        log('Starting loop...');
+        // Start recognition loop
         this.isRunning = true;
         requestAnimationFrame(this.loop);
 
+        // Update initial UI
         this.updateUI();
         this.setupOrientationDetection();
 
-        log('App ready!');
+        console.log('App started successfully');
     }
 
     /**
@@ -912,16 +908,8 @@ class App {
 }
 
 // Initialize app when DOM is ready
-if (window._log) window._log('app.js module loaded');
 document.addEventListener('DOMContentLoaded', () => {
-    if (window._log) window._log('DOMContentLoaded fired');
-    try {
-        const app = new App();
-        if (window._log) window._log('App constructed');
-        app.init();
-        window.stopMotionApp = app;
-    } catch (e) {
-        if (window._log) window._log('CONSTRUCTOR ERROR: ' + e.message);
-        if (window._log && e.stack) window._log(e.stack.substring(0, 300));
-    }
+    const app = new App();
+    app.init();
+    window.stopMotionApp = app;
 });
