@@ -110,6 +110,14 @@ class App {
         const dims = this.cameraManager.getDimensions();
         this.uiController.initCanvases(dims.width, dims.height);
 
+        // Restore saved frames from IndexedDB (survives reload/recharge)
+        const restored = await this.frameManager.loadFromDB();
+        if (restored) {
+            console.log(`Restored ${this.frameManager.count} frames from previous session`);
+            this.uiController.updateDisplayText(`Restored ${this.frameManager.count} frames`);
+            setTimeout(() => this.uiController.updateDisplayText(''), 3000);
+        }
+
         // Start recognition loop
         this.isRunning = true;
         requestAnimationFrame(this.loop);
@@ -236,9 +244,14 @@ class App {
             this.updateUI();
         });
 
-        // Save command
+        // Save command (save frames + export movie backup, keep working)
         eventBus.subscribe(Events.COMMAND_SAVE, () => {
-            this.saveAndReset();
+            this.saveAndContinue();
+        });
+
+        // New command (export movie, clear frames, start fresh)
+        eventBus.subscribe(Events.COMMAND_NEW, () => {
+            this.newSession();
         });
 
         // Share command - broadcast to viewers
@@ -488,9 +501,44 @@ class App {
     }
 
     /**
-     * Save and reset session
+     * Save and continue - persist frames to IndexedDB + export movie backup
+     * Frames are kept so user can continue animating
      */
-    async saveAndReset() {
+    async saveAndContinue() {
+        if (this.frameManager.count === 0) return;
+
+        const framesToExport = this.frameManager.getAllFrames();
+        const screenSize = this.uiController.getScreenSize();
+
+        // Save frames to IndexedDB (persist for reload/recharge)
+        await this.frameManager.saveToDB();
+
+        this.uiController.updateDisplayText('Saving...');
+
+        try {
+            // Export movie as backup
+            const blob = await this.movieExporter.exportToBlob(
+                framesToExport,
+                { screenSize }
+            );
+
+            // Upload to server in background
+            this.serverUploader.uploadVideo(blob);
+
+            // Show save prompt (user tap required for share API on iOS)
+            this.showSavePrompt(blob, false);
+
+        } catch (error) {
+            console.error('Save failed:', error);
+            this.uiController.updateDisplayText('Save failed');
+            setTimeout(() => this.uiController.updateDisplayText(''), 2000);
+        }
+    }
+
+    /**
+     * New session - export movie, clear everything, start fresh
+     */
+    async newSession() {
         if (this.frameManager.count === 0) return;
 
         // Get frames before clearing
@@ -498,40 +546,28 @@ class App {
         const screenSize = this.uiController.getScreenSize();
 
         // Clear everything immediately so user sees fresh view
-        this.frameManager.clear();
+        await this.frameManager.clearAll();
         this.filterPipeline.reset();
         this.uiController.clearMainCanvas();
         this.uiController.clearOnionSkin();
         this.updateUI();
 
-        // Setup debug for export (if debug mode)
-        if (DEBUG_MODE) {
-            this.elements.displayText.style.display = '';
-            this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v40 EXPORT\n';
-            this.setupCopyButton();
-            this.debugLog(`Frames: ${framesToExport.length}`);
-            this.debugLog(`Bounce: ${settings.bounceEnabled}`);
-            this.debugLog(`Reverse: ${settings.reverseMovie}`);
-            this.debugLog('Exporting...');
-        } else {
-            this.uiController.updateDisplayText('Exporting...');
-        }
+        this.uiController.updateDisplayText('Exporting...');
 
         try {
             const blob = await this.movieExporter.exportToBlob(
                 framesToExport,
                 { screenSize }
             );
-            if (DEBUG_MODE) this.debugLog(`Blob: ${blob.size} bytes`);
 
             // Upload to server in background
             this.serverUploader.uploadVideo(blob);
 
             // Show save prompt (user tap required for share API on iOS)
-            this.showSavePrompt(blob);
+            this.showSavePrompt(blob, true);
 
         } catch (error) {
-            console.error('Save failed:', error);
+            console.error('Export failed:', error);
             this.uiController.updateDisplayText('Export failed');
             setTimeout(() => this.uiController.updateDisplayText(''), 2000);
         }
@@ -539,22 +575,14 @@ class App {
 
     /**
      * Show save prompt overlay - requires user tap for share API
+     * @param {Blob} blob - Video blob
+     * @param {boolean} isNew - True if this is a "new session" save (frames already cleared)
      */
-    showSavePrompt(blob) {
+    showSavePrompt(blob, isNew = false) {
         const prompt = document.getElementById('save-prompt');
         const button = document.getElementById('save-button');
 
-        // Setup debug area for save (if debug mode)
-        if (DEBUG_MODE) {
-            this.elements.displayText.style.display = '';
-            this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v40 SAVE\n';
-            this.setupCopyButton();
-            this.debugLog(`Blob: ${blob.size} bytes`);
-            this.debugLog(`Type: ${blob.type}`);
-            this.debugLog(`Bounce: ${settings.bounceEnabled}`);
-            this.debugLog(`Reverse: ${settings.reverseMovie}`);
-        }
-
+        button.textContent = isNew ? 'Tap to Save Movie' : 'Tap to Save Backup';
         prompt.classList.remove('hidden');
 
         // Handle tap (user gesture required for share API)
@@ -565,15 +593,13 @@ class App {
             // Use correct extension based on blob type (mp4 for iOS, webm for others)
             const ext = this.movieExporter.getFileExtension(blob.type);
             const filename = `animation_${Date.now()}.${ext}`;
-            if (DEBUG_MODE) this.debugLog(`Filename: ${filename}`);
 
             const debugFn = DEBUG_MODE ? (msg) => this.debugLog(msg) : () => {};
             await this.movieExporter.saveToFile(blob, filename, debugFn);
 
-            if (!DEBUG_MODE) {
-                this.uiController.updateDisplayText('Saved!');
-                setTimeout(() => this.uiController.updateDisplayText(''), 2000);
-            }
+            const message = isNew ? 'Saved - New session' : `Saved - ${this.frameManager.count} frames kept`;
+            this.uiController.updateDisplayText(message);
+            setTimeout(() => this.uiController.updateDisplayText(''), 3000);
         };
 
         button.addEventListener('click', handleTap);

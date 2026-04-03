@@ -1,10 +1,14 @@
 /**
  * FrameManager - Manages captured frames array and navigation
  * Port of Swift CameraManager (frame storage) + CameraManager+Navigation
+ * v55: Added IndexedDB persistence for frames (survive page reload / recharge)
  */
 import { eventBus, Events } from '../core/EventBus.js';
 
 const MAX_FRAMES = 300; // Memory limit
+const DB_NAME = 'stopMotionFrames';
+const DB_VERSION = 1;
+const STORE_NAME = 'frames';
 
 export class FrameManager {
     constructor() {
@@ -12,6 +16,153 @@ export class FrameManager {
         this.currentFrameIndex = 0;
         this.isViewingLiveFeed = true;
         this.backgroundImage = null;
+        this.db = null;
+        this._saveTimer = null;
+    }
+
+    /**
+     * Open IndexedDB connection
+     * @returns {Promise<IDBDatabase>}
+     */
+    async openDB() {
+        if (this.db) return this.db;
+
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                if (!db.objectStoreNames.contains(STORE_NAME)) {
+                    db.createObjectStore(STORE_NAME);
+                }
+            };
+
+            request.onsuccess = (event) => {
+                this.db = event.target.result;
+                resolve(this.db);
+            };
+
+            request.onerror = (event) => {
+                console.error('IndexedDB error:', event.target.error);
+                reject(event.target.error);
+            };
+        });
+    }
+
+    /**
+     * Save all frames to IndexedDB
+     * Debounced to avoid hammering the DB on rapid captures
+     */
+    scheduleSave() {
+        if (this._saveTimer) {
+            clearTimeout(this._saveTimer);
+        }
+        this._saveTimer = setTimeout(() => {
+            this.saveToDB();
+        }, 500);
+    }
+
+    /**
+     * Save frames to IndexedDB
+     */
+    async saveToDB() {
+        try {
+            const db = await this.openDB();
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            const store = tx.objectStore(STORE_NAME);
+
+            // Convert ImageData to serializable format
+            const serialized = this.frames.map(frame => ({
+                width: frame.width,
+                height: frame.height,
+                data: Array.from(frame.data)
+            }));
+
+            store.put(serialized, 'currentFrames');
+            store.put(this.currentFrameIndex, 'currentIndex');
+
+            await new Promise((resolve, reject) => {
+                tx.oncomplete = resolve;
+                tx.onerror = () => reject(tx.error);
+            });
+
+            console.log(`Saved ${this.frames.length} frames to IndexedDB`);
+        } catch (error) {
+            console.error('Failed to save frames to IndexedDB:', error);
+        }
+    }
+
+    /**
+     * Load frames from IndexedDB
+     * @returns {Promise<boolean>} True if frames were restored
+     */
+    async loadFromDB() {
+        try {
+            const db = await this.openDB();
+            const tx = db.transaction(STORE_NAME, 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+
+            const framesRequest = store.get('currentFrames');
+            const indexRequest = store.get('currentIndex');
+
+            return new Promise((resolve) => {
+                tx.oncomplete = () => {
+                    const serialized = framesRequest.result;
+                    const savedIndex = indexRequest.result;
+
+                    if (!serialized || serialized.length === 0) {
+                        resolve(false);
+                        return;
+                    }
+
+                    // Restore ImageData objects
+                    this.frames = serialized.map(frame => {
+                        return new ImageData(
+                            new Uint8ClampedArray(frame.data),
+                            frame.width,
+                            frame.height
+                        );
+                    });
+
+                    this.currentFrameIndex = Math.min(
+                        savedIndex || this.frames.length - 1,
+                        this.frames.length - 1
+                    );
+                    this.isViewingLiveFeed = true;
+
+                    console.log(`Restored ${this.frames.length} frames from IndexedDB`);
+                    resolve(true);
+                };
+
+                tx.onerror = () => {
+                    console.error('Failed to load frames:', tx.error);
+                    resolve(false);
+                };
+            });
+        } catch (error) {
+            console.error('Failed to load frames from IndexedDB:', error);
+            return false;
+        }
+    }
+
+    /**
+     * Clear saved frames from IndexedDB
+     */
+    async clearDB() {
+        try {
+            const db = await this.openDB();
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            const store = tx.objectStore(STORE_NAME);
+            store.delete('currentFrames');
+            store.delete('currentIndex');
+            await new Promise((resolve, reject) => {
+                tx.oncomplete = resolve;
+                tx.onerror = () => reject(tx.error);
+            });
+            console.log('Cleared frames from IndexedDB');
+        } catch (error) {
+            console.error('Failed to clear IndexedDB:', error);
+        }
     }
 
     /**
@@ -34,6 +185,7 @@ export class FrameManager {
             total: this.frames.length
         });
 
+        this.scheduleSave();
         console.log(`Frame captured. Total: ${this.frames.length}`);
         return true;
     }
@@ -62,6 +214,7 @@ export class FrameManager {
             longCapture: true
         });
 
+        this.scheduleSave();
         console.log(`Long capture: added 4 frames. Total: ${this.frames.length}`);
     }
 
@@ -89,6 +242,7 @@ export class FrameManager {
             total: this.frames.length
         });
 
+        this.scheduleSave();
         console.log(`Frame deleted. Total: ${this.frames.length}`);
     }
 
@@ -233,13 +387,21 @@ export class FrameManager {
     }
 
     /**
-     * Clear all frames and reset
+     * Clear all frames and reset (memory only, does not clear DB)
      */
     clear() {
         this.frames = [];
         this.currentFrameIndex = 0;
         this.isViewingLiveFeed = true;
         this.backgroundImage = null;
+    }
+
+    /**
+     * Clear all frames, reset, and clear DB
+     */
+    async clearAll() {
+        this.clear();
+        await this.clearDB();
     }
 
     /**

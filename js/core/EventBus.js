@@ -105,6 +105,7 @@ export const Events = {
     COMMAND_LONG_CAPTURE: 'command:longCapture',
     COMMAND_BACKGROUND: 'command:background',
     COMMAND_CAPTURE: 'command:capture',
+    COMMAND_NEW: 'command:new',
 
     // Export events
     EXPORT_STARTED: 'export:started',

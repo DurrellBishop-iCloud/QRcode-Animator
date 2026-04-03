@@ -18,7 +18,8 @@ const QR_COMMANDS = {
     'share': Events.COMMAND_SHARE,
     'kaleidoscope': Events.COMMAND_KALEIDOSCOPE,
     'long': Events.COMMAND_LONG_CAPTURE,
-    'background': Events.COMMAND_BACKGROUND
+    'background': Events.COMMAND_BACKGROUND,
+    'new': Events.COMMAND_NEW
 };
 
 // Barcode single-character shortcuts
@@ -32,7 +33,8 @@ const BARCODE_SHORTCUTS = {
     'h': 'share',
     'k': 'kaleidoscope',
     'l': 'long',
-    'g': 'background'
+    'g': 'background',
+    'n': 'new'
 };
 
 // Display text mapping
@@ -42,7 +44,7 @@ const DISPLAY_TEXT = {
 };
 
 // Hidden commands (no display text)
-const HIDDEN_COMMANDS = ['play', 'back', 'forward', 'delete', 'kaleidoscope', 'long', 'background'];
+const HIDDEN_COMMANDS = ['play', 'back', 'forward', 'delete', 'kaleidoscope', 'long', 'background', 'new'];
 
 export class RecognitionManager {
     constructor(audioManager) {
@@ -186,9 +188,16 @@ export class RecognitionManager {
             return;
         }
 
-        // Save command
+        // Save command (save frames + movie backup, keep working)
         if (code === 'save') {
             eventBus.publish(Events.COMMAND_SAVE, {});
+            this.clearDisplayText();
+            return;
+        }
+
+        // New command (save movie, clear frames, start fresh)
+        if (code === 'new') {
+            eventBus.publish(Events.COMMAND_NEW, {});
             this.clearDisplayText();
             return;
         }
