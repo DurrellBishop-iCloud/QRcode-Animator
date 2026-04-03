@@ -93,6 +93,7 @@ export const Events = {
     PLAYBACK_STARTED: 'playback:started',
     PLAYBACK_STOPPED: 'playback:stopped',
     PLAYBACK_FRAME: 'playback:frame',
+    PLAYBACK_COMPLETE: 'playback:complete',
 
     // Command events (from QR codes)
     COMMAND_PLAY: 'command:play',

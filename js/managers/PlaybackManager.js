@@ -39,7 +39,7 @@ export class PlaybackManager {
     }
 
     /**
-     * Advance to next frame, handling bounce and reverse modes
+     * Advance to next frame - plays through once then stops
      */
     advanceFrame() {
         const bounce = settings.bounceEnabled;
@@ -54,16 +54,24 @@ export class PlaybackManager {
                 this.playDirection = -1;
                 nextIndex = lastIndex - 1;
             } else if (nextIndex < 0) {
-                this.playDirection = 1;
-                nextIndex = 1;
+                // Finished bounce (forward + back) — stop
+                this.stopPlayback();
+                eventBus.publish(Events.PLAYBACK_COMPLETE, {});
+                return;
             }
             // Handle single frame case
             if (this.frames.length <= 1) {
-                nextIndex = 0;
+                this.stopPlayback();
+                eventBus.publish(Events.PLAYBACK_COMPLETE, {});
+                return;
             }
         } else {
-            // Non-bounce: wrap around
-            nextIndex = (nextIndex + this.frames.length) % this.frames.length;
+            // Non-bounce: stop at end
+            if (nextIndex > lastIndex) {
+                this.stopPlayback();
+                eventBus.publish(Events.PLAYBACK_COMPLETE, {});
+                return;
+            }
         }
 
         this.currentFrameIndex = nextIndex;

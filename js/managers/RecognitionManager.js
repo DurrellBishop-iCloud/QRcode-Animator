@@ -170,10 +170,9 @@ export class RecognitionManager {
             return;
         }
 
-        // Handle command codes immediately
+        // Play command - don't switch back to Make when QR removed
+        // Playback runs through once and returns to Make on its own
         if (code === 'play') {
-            console.log('Switching back to Make mode');
-            this.setMode('Make');
             this.clearDisplayText();
             return;
         }

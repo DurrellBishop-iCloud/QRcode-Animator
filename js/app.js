@@ -264,6 +264,12 @@ class App {
             this.captureBackground();
         });
 
+        // Playback complete — return to Make mode
+        eventBus.subscribe(Events.PLAYBACK_COMPLETE, () => {
+            this.handleModeChange('Make');
+            this.recognitionManager.setMode('Make');
+        });
+
         // Playback frame updates
         eventBus.subscribe(Events.PLAYBACK_FRAME, ({ frame }) => {
             if (frame) {
