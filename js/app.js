@@ -111,11 +111,15 @@ class App {
         this.uiController.initCanvases(dims.width, dims.height);
 
         // Restore saved frames from IndexedDB (survives reload/recharge)
-        const restored = await this.frameManager.loadFromDB();
-        if (restored) {
-            console.log(`Restored ${this.frameManager.count} frames from previous session`);
-            this.uiController.updateDisplayText(`Restored ${this.frameManager.count} frames`);
-            setTimeout(() => this.uiController.updateDisplayText(''), 3000);
+        try {
+            const restored = await this.frameManager.loadFromDB();
+            if (restored) {
+                console.log(`Restored ${this.frameManager.count} frames from previous session`);
+                this.uiController.updateDisplayText(`Restored ${this.frameManager.count} frames`);
+                setTimeout(() => this.uiController.updateDisplayText(''), 3000);
+            }
+        } catch (e) {
+            console.warn('Could not restore frames:', e);
         }
 
         // Start recognition loop

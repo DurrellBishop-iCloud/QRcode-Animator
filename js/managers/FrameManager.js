@@ -64,6 +64,7 @@ export class FrameManager {
 
     /**
      * Save frames to IndexedDB
+     * Stores each frame separately to avoid memory spikes
      */
     async saveToDB() {
         try {
@@ -71,15 +72,25 @@ export class FrameManager {
             const tx = db.transaction(STORE_NAME, 'readwrite');
             const store = tx.objectStore(STORE_NAME);
 
-            // Convert ImageData to serializable format
-            const serialized = this.frames.map(frame => ({
-                width: frame.width,
-                height: frame.height,
-                data: Array.from(frame.data)
-            }));
-
-            store.put(serialized, 'currentFrames');
+            // Store frame count and index
+            store.put(this.frames.length, 'frameCount');
             store.put(this.currentFrameIndex, 'currentIndex');
+
+            // Store each frame individually (avoids huge single object)
+            for (let i = 0; i < this.frames.length; i++) {
+                const frame = this.frames[i];
+                store.put({
+                    width: frame.width,
+                    height: frame.height,
+                    buffer: frame.data.buffer.slice(0)
+                }, 'frame_' + i);
+            }
+
+            // Clean up any old frames beyond current count
+            // (in case previous session had more frames)
+            for (let i = this.frames.length; i < this.frames.length + 50; i++) {
+                store.delete('frame_' + i);
+            }
 
             await new Promise((resolve, reject) => {
                 tx.oncomplete = resolve;
@@ -99,46 +110,61 @@ export class FrameManager {
     async loadFromDB() {
         try {
             const db = await this.openDB();
-            const tx = db.transaction(STORE_NAME, 'readonly');
-            const store = tx.objectStore(STORE_NAME);
 
-            const framesRequest = store.get('currentFrames');
-            const indexRequest = store.get('currentIndex');
-
-            return new Promise((resolve) => {
-                tx.oncomplete = () => {
-                    const serialized = framesRequest.result;
-                    const savedIndex = indexRequest.result;
-
-                    if (!serialized || serialized.length === 0) {
-                        resolve(false);
-                        return;
-                    }
-
-                    // Restore ImageData objects
-                    this.frames = serialized.map(frame => {
-                        return new ImageData(
-                            new Uint8ClampedArray(frame.data),
-                            frame.width,
-                            frame.height
-                        );
-                    });
-
-                    this.currentFrameIndex = Math.min(
-                        savedIndex || this.frames.length - 1,
-                        this.frames.length - 1
-                    );
-                    this.isViewingLiveFeed = true;
-
-                    console.log(`Restored ${this.frames.length} frames from IndexedDB`);
-                    resolve(true);
-                };
-
-                tx.onerror = () => {
-                    console.error('Failed to load frames:', tx.error);
-                    resolve(false);
-                };
+            // First get the frame count
+            const countResult = await new Promise((resolve) => {
+                const tx = db.transaction(STORE_NAME, 'readonly');
+                const req = tx.objectStore(STORE_NAME).get('frameCount');
+                tx.oncomplete = () => resolve(req.result);
+                tx.onerror = () => resolve(null);
             });
+
+            if (!countResult || countResult === 0) {
+                return false;
+            }
+
+            const frameCount = countResult;
+
+            // Load saved index
+            const savedIndex = await new Promise((resolve) => {
+                const tx = db.transaction(STORE_NAME, 'readonly');
+                const req = tx.objectStore(STORE_NAME).get('currentIndex');
+                tx.oncomplete = () => resolve(req.result || 0);
+                tx.onerror = () => resolve(0);
+            });
+
+            // Load frames one at a time
+            const frames = [];
+            for (let i = 0; i < frameCount; i++) {
+                const frame = await new Promise((resolve) => {
+                    const tx = db.transaction(STORE_NAME, 'readonly');
+                    const req = tx.objectStore(STORE_NAME).get('frame_' + i);
+                    tx.oncomplete = () => resolve(req.result);
+                    tx.onerror = () => resolve(null);
+                });
+
+                if (!frame || !frame.buffer) {
+                    console.warn(`Frame ${i} missing or corrupt, stopping restore`);
+                    break;
+                }
+
+                frames.push(new ImageData(
+                    new Uint8ClampedArray(frame.buffer),
+                    frame.width,
+                    frame.height
+                ));
+            }
+
+            if (frames.length === 0) {
+                return false;
+            }
+
+            this.frames = frames;
+            this.currentFrameIndex = Math.min(savedIndex, this.frames.length - 1);
+            this.isViewingLiveFeed = true;
+
+            console.log(`Restored ${this.frames.length} frames from IndexedDB`);
+            return true;
         } catch (error) {
             console.error('Failed to load frames from IndexedDB:', error);
             return false;
@@ -153,8 +179,7 @@ export class FrameManager {
             const db = await this.openDB();
             const tx = db.transaction(STORE_NAME, 'readwrite');
             const store = tx.objectStore(STORE_NAME);
-            store.delete('currentFrames');
-            store.delete('currentIndex');
+            store.clear();
             await new Promise((resolve, reject) => {
                 tx.oncomplete = resolve;
                 tx.onerror = () => reject(tx.error);
