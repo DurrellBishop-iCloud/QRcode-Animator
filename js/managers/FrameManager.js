@@ -28,6 +28,11 @@ export class FrameManager {
         if (this.db) return this.db;
 
         return new Promise((resolve, reject) => {
+            if (!window.indexedDB) {
+                reject(new Error('IndexedDB not supported'));
+                return;
+            }
+
             const request = indexedDB.open(DB_NAME, DB_VERSION);
 
             request.onupgradeneeded = (event) => {
@@ -39,12 +44,18 @@ export class FrameManager {
 
             request.onsuccess = (event) => {
                 this.db = event.target.result;
+                this.db.onerror = () => {}; // Suppress uncaught DB errors
                 resolve(this.db);
             };
 
             request.onerror = (event) => {
                 console.error('IndexedDB error:', event.target.error);
                 reject(event.target.error);
+            };
+
+            request.onblocked = () => {
+                console.warn('IndexedDB blocked');
+                reject(new Error('IndexedDB blocked'));
             };
         });
     }
@@ -86,8 +97,10 @@ export class FrameManager {
                 }, 'frame_' + i);
             }
 
+            // Clean up old format key from v55-initial
+            store.delete('currentFrames');
+
             // Clean up any old frames beyond current count
-            // (in case previous session had more frames)
             for (let i = this.frames.length; i < this.frames.length + 50; i++) {
                 store.delete('frame_' + i);
             }
