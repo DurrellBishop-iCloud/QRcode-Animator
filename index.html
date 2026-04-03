@@ -228,11 +228,47 @@
         </div>
     </div>
 
+    <!-- Debug overlay - visible on screen -->
+    <div id="screen-debug" style="position:fixed;top:0;left:0;right:0;background:rgba(0,0,0,0.9);color:lime;padding:15px;font-size:16px;z-index:99999;font-family:monospace;white-space:pre-wrap;max-height:50vh;overflow-y:auto;"></div>
+    <script>
+    // Screen debug logger - catches everything before modules load
+    var _dbg = document.getElementById('screen-debug');
+    var _debugLines = [];
+    window._log = function(msg) {
+        _debugLines.push(new Date().toLocaleTimeString() + ' ' + msg);
+        if (_dbg) _dbg.textContent = _debugLines.join('\n');
+        console.log('[DBG]', msg);
+    };
+    window._log('v55 page loaded');
+    window._log('UA: ' + navigator.userAgent.substring(0, 60));
+
+    // Catch ALL errors
+    window.onerror = function(msg, url, line, col, err) {
+        window._log('ERROR: ' + msg);
+        window._log('  at ' + (url||'').split('/').pop() + ':' + line + ':' + col);
+        if (err && err.stack) window._log('  ' + err.stack.substring(0, 200));
+        return false;
+    };
+    window.addEventListener('unhandledrejection', function(e) {
+        window._log('PROMISE ERROR: ' + (e.reason ? (e.reason.message || e.reason) : 'unknown'));
+        if (e.reason && e.reason.stack) window._log('  ' + e.reason.stack.substring(0, 200));
+    });
+    </script>
+
     <!-- Scripts -->
+    <script>window._log('Loading QuaggaJS...');</script>
     <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.8.4/dist/quagga.min.js"></script>
+    <script>window._log('QuaggaJS: ' + (typeof Quagga !== 'undefined' ? 'OK' : 'FAILED'));</script>
+    <script>window._log('Loading jsQR...');</script>
     <script src="lib/jsqr.min.js?v=20250103x"></script>
+    <script>window._log('jsQR: ' + (typeof jsQR !== 'undefined' ? 'OK' : 'FAILED'));</script>
+    <script>window._log('Loading PeerJS...');</script>
     <script src="lib/peerjs.min.js?v=20250103x"></script>
+    <script>window._log('PeerJS: ' + (typeof Peer !== 'undefined' ? 'OK' : 'FAILED'));</script>
+    <script>window._log('Loading qrcode-gen...');</script>
     <script src="lib/qrcode-generator.min.js?v=20250104"></script>
-    <script type="module" src="js/app.js?v=55"></script>
+    <script>window._log('qrcode-gen: ' + (typeof qrcode !== 'undefined' ? 'OK' : 'FAILED'));</script>
+    <script>window._log('Loading app module...');</script>
+    <script type="module" src="js/app.js?v=55b"></script>
 </body>
 </html>

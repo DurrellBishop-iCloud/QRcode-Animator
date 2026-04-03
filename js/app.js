@@ -88,51 +88,45 @@ class App {
      * Initialize and start the app
      */
     async init() {
-        console.log('Starting Stop Motion Web App...');
+        const log = window._log || console.log;
+        log('init() called');
 
-        // Show version in debug area with copy button (if debug mode)
-        if (DEBUG_MODE) {
-            this.elements.displayText.innerHTML = '<button id="copy-debug" style="float:right;background:#555;color:#0f0;border:1px solid #0f0;padding:2px 8px;font-size:12px;border-radius:3px;">Copy</button>v40 ready';
-            this.setupCopyButton();
-        } else {
-            this.elements.displayText.style.display = 'none';
+        this.elements.displayText.style.display = 'none';
+
+        log('Starting camera...');
+        let cameraStarted = false;
+        try {
+            cameraStarted = await this.cameraManager.startSession();
+        } catch (e) {
+            log('Camera exception: ' + e.message);
         }
-
-        // Start camera
-        const cameraStarted = await this.cameraManager.startSession();
+        log('Camera: ' + (cameraStarted ? 'OK' : 'FAILED'));
 
         if (!cameraStarted) {
-            // Error already shown by CameraManager
             return;
         }
 
-        // Initialize canvases
+        log('Init canvases...');
         const dims = this.cameraManager.getDimensions();
         this.uiController.initCanvases(dims.width, dims.height);
+        log('Canvases: OK (' + dims.width + 'x' + dims.height + ')');
 
-        // Restore saved frames from IndexedDB (survives reload/recharge)
+        log('Loading saved frames...');
         try {
             const restored = await this.frameManager.loadFromDB();
-            if (restored) {
-                console.log(`Restored ${this.frameManager.count} frames from previous session`);
-                this.uiController.updateDisplayText(`Restored ${this.frameManager.count} frames`);
-                setTimeout(() => this.uiController.updateDisplayText(''), 3000);
-            }
+            log('DB restore: ' + (restored ? this.frameManager.count + ' frames' : 'none'));
         } catch (e) {
-            console.warn('Could not restore frames:', e);
+            log('DB restore failed: ' + e.message);
         }
 
-        // Start recognition loop
+        log('Starting loop...');
         this.isRunning = true;
         requestAnimationFrame(this.loop);
 
-        // Update initial UI
         this.updateUI();
-
-        // Setup orientation detection
         this.setupOrientationDetection();
 
-        console.log('App started successfully');
+        log('App ready!');
     }
 
     /**
@@ -918,10 +912,16 @@ class App {
 }
 
 // Initialize app when DOM is ready
+if (window._log) window._log('app.js module loaded');
 document.addEventListener('DOMContentLoaded', () => {
-    const app = new App();
-    app.init();
-
-    // Expose for debugging
-    window.stopMotionApp = app;
+    if (window._log) window._log('DOMContentLoaded fired');
+    try {
+        const app = new App();
+        if (window._log) window._log('App constructed');
+        app.init();
+        window.stopMotionApp = app;
+    } catch (e) {
+        if (window._log) window._log('CONSTRUCTOR ERROR: ' + e.message);
+        if (window._log && e.stack) window._log(e.stack.substring(0, 300));
+    }
 });
